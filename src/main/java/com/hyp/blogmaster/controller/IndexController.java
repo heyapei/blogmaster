@@ -1,5 +1,6 @@
 package com.hyp.blogmaster.controller;
 
+import com.hyp.blogmaster.exception.MyDefinitionException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,17 @@ public class IndexController {
     public String index(Model model) {
         model.addAttribute("name", "heyapei");
         return "index";
+    }
+
+    @RequestMapping("/testError")
+    public String testError() {
+        log.info("请求错误示例页面");
+        try {
+            Integer.parseInt("nihao");
+        } catch (NumberFormatException e) {
+            throw new MyDefinitionException("该地址请求失败");
+        }
+        return "redirect:http://www.yapei.cool";
     }
 
 

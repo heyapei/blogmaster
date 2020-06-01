@@ -9,3 +9,7 @@
 则直接是使用
 <div  th:include="/inc/copyright"></div>
 ```
+
+```$xslt
+下一步是集成shiro框架 使用这个框架做权限判断
+```

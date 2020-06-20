@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @Api(value = "首页地址")
 public class IndexController {
-    @RequestMapping("/")
+    @RequestMapping("/index")
     @ApiOperation(value = "默认用户进入首页")
     public String index(Model model) {
         model.addAttribute("name", "heyapei");
@@ -38,7 +38,7 @@ public class IndexController {
 
 
 
-    @RequestMapping("/admin")
+    @RequestMapping("/")
     @ApiOperation(value = "默认进入管理员登录页面")
     public String adminLogin() {
         return "login/adminLogin";

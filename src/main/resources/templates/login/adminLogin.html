@@ -1,117 +1,44 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en" >
-
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-	<title>管理员登录页面</title>
-	<!-- Meta tag Keywords -->
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta charset="UTF-8" />
-	<meta name="keywords" content="blog,login" />
-	<script src="/static/res/bootstrap/js/jQuery.js"></script>
-	<!--引用公共的bootstrap的内容-->
-	<head th:include="/inc/bootstrap :: bootstrap"></head>
 
-	<script>
-		addEventListener("load", function () {
-			setTimeout(hideURLbar, 0);
-		}, false);
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>管理员登录页面</title>
+    <meta name="keywords" content="login"/>
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
 
-		function hideURLbar() {
-			window.scrollTo(0, 1);
-		}
-	</script>
-	<!-- Meta tag Keywords -->
 
-	<!-- css files -->
-	<link rel="stylesheet" href="/static/page/login/css/style.css" type="text/css" media="all" />
-	<!-- Style-CSS -->
-	<link href="/static/page/login/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
 <body>
-	<div class="main-bg">
-		<!-- title -->
-		<h1>欢迎回来</h1>
-		<!-- //title -->
-		<div class="sub-main-w3">
-			<div class="image-style">
 
-			</div>
-			<!-- vertical tabs -->
-			<div class="vertical-tab">
-				<div id="section1" class="section-w3ls">
-					<input type="radio" name="sections" id="option1" checked>
-					<label for="option1" class="icon-left-w3pvt"><span class="fa fa-user-circle" aria-hidden="true"></span>登录</label>
-					<article>
-						<form action="#" method="post">
-							<div class="input">
-								<span class="fa fa-envelope-o" aria-hidden="true"></span>
-								<input type="email" placeholder="Email" name="email" required />
-							</div>
-							<div class="input">
-								<span class="fa fa-key" aria-hidden="true"></span>
-								<input type="password" placeholder="Password" name="password" required />
-							</div>
-							<button type="submit" class="btn submit">Login</button>
-						</form>
-					</article>
-				</div>
-				<div id="section2" class="section-w3ls">
-					<input type="radio" name="sections" id="option2">
-					<label for="option2" class="icon-left-w3pvt"><span class="fa fa-pencil-square" aria-hidden="true"></span>注册</label>
-					<article>
-						<form action="#" method="post">
+<div class="container">
+    <div class="col-md-4"></div>
+    <div class="col-md-4" style="background-color:#eee;margin-top:200px;">
+        <h3 style="text-align: center">后端管理程序</h3>
+        <form action="/login/adminlogin">
+            <div class="form-group">
+                <label for="userName">用户名:</label>
+                <input type="text" class="form-control" style="color:red;" id="userName" name="userName">
+            </div>
+            <div class="form-group">
+                <label for="passWord">密码</label>
+                <input type="password" class="form-control" style="color:red;" id="passWord" name="passWord" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="登陆" class="btn btn-success form-control">
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4"></div>
+</div>
 
-							<div class="input">
-								<span class="fa fa-envelope-o" aria-hidden="true"></span>
-								<input type="email" placeholder="Email" name="email" required />
-							</div>
-							<div class="input">
-								<span class="fa fa-code" aria-hidden="true"></span>
-								<input type="text" placeholder="verifyCode" name="verifyCode" required />
-							</div>
 
-							<div class="input">
-								<span class="fa fa-user-o" aria-hidden="true"></span>
-								<input type="text" placeholder="Username" name="name" required />
-							</div>
-							<div class="input">
-								<span class="fa fa-key" aria-hidden="true"></span>
-								<input type="password" placeholder="Password" name="password" required />
-							</div>
-							<div class="input">
-								<span class="fa fa-key" aria-hidden="true"></span>
-								<input type="password" placeholder="Confirm Password" name="password" required />
-							</div>
-							<button type="submit" class="btn submit">Register</button>
-						</form>
-					</article>
-				</div>
-				<div id="section3" class="section-w3ls">
-					<input type="radio" name="sections" id="option3">
-					<label for="option3" class="icon-left-w3pvt"><span class="fa fa-lock" aria-hidden="true"></span>重置</label>
-					<article>
-						<form action="#" method="post">
-							<p class="para-style">输入注册时候的邮箱地址，我们会发送一封重置邮件</p>
-							<p class="para-style-2">按照邮件说明进行密码重置</p>
-							<div class="input">
-								<span class="fa fa-envelope-o" aria-hidden="true"></span>
-								<input type="email" placeholder="Email" name="email" required />
-							</div>
-							<button type="submit" class="btn submit last-btn">Reset</button>
-						</form>
-					</article>
-				</div>
-			</div>
-			<!-- //vertical tabs -->
-			<div class="clear"></div>
-		</div>
-		<!-- copyright -->
-
-		<!-- //copyright -->
-	</div>
-
-	<div  th:include="/inc/copyright" ></div>
+<!--版权信息-->
+<div th:include="/inc/copyright"></div>
 
 </body>
 

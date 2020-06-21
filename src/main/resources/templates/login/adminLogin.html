@@ -3,7 +3,7 @@
 <head>
 
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>管理员登录页面</title>
+    <title>微信功能管理员登录页面</title>
     <meta name="keywords" content="login"/>
     <script src="/static/res/bootstrap/js/jQuery.js"></script>
     <!--引用公共的bootstrap的内容-->
@@ -18,8 +18,10 @@
 <div class="container">
     <div class="col-md-4"></div>
     <div class="col-md-4" style="background-color:#eee;margin-top:200px;">
-        <h3 style="text-align: center">后端管理程序</h3>
-        <form action="/login/adminlogin">
+
+        <h3 style="text-align: center;line-height: 75px">微信功能后端管理程序</h3>
+
+        <form action="/login/adminlogin" th:method="post">
             <div class="form-group">
                 <label for="userName">用户名:</label>
                 <input type="text" class="form-control" style="color:red;" id="userName" name="userName">
@@ -38,7 +40,7 @@
 
 
 <!--版权信息-->
-<div th:include="/inc/copyright"></div>
+<!--<div th:include="/inc/copyright"></div>-->
 
 </body>
 

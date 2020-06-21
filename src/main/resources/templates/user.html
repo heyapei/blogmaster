@@ -1,0 +1,21 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/6/21 17:17 
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+用户登录成功你好呀
+<a shiro:hasPermission="/users/add" href="admin.html">Administer the system</a>
+<!--<button shiro:hasPermission="/users/add" type="button"  onclick="" class="btn btn-info" style="float: right; margin-right: 1px;">新增</button>-->
+<button shiro:hasPermission="/users/add" type="button"  onclick="" class="btn btn-info" style="float: right; margin-right: 1px;">新增</button>
+<button shiro:hasPermission="/users/add" type="button"  onclick="" class="btn btn-info" style="float: right; margin-right: 1px;">新增</button>
+</body>
+</html>

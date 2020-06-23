@@ -1,0 +1,118 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/6/23 20:52 
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>首页--统计面板&nbsp;&nbsp;&nbsp;</title>
+    <meta name="keywords" content="login"/>
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
+
+    <!--网页文字滚动工具-->
+    <head th:include="/inc/commonutil/titlecircle"></head>
+
+    <script>
+        //这里代码多了几行，但是不会延迟显示，速度比较好，格式可以自定义，是理想的时间显示
+        setInterval("fun(show_time)", 1);
+        function fun(timeID) {
+            var date = new Date();  //创建对象  
+            var y = date.getFullYear();     //获取年份  
+            var m = date.getMonth() + 1;   //获取月份  返回0-11  
+            var d = date.getDate(); // 获取日  
+            var w = date.getDay();   //获取星期几  返回0-6   (0=星期天) 
+            var ww = ' 星期' + '日一二三四五六'.charAt(new Date().getDay());//星期几
+            var h = date.getHours();  //时
+            var minute = date.getMinutes()  //分
+            var s = date.getSeconds(); //秒
+            var sss = date.getMilliseconds(); //毫秒
+            if (m < 10) {
+                m = "0" + m;
+            }
+            if (d < 10) {
+                d = "0" + d;
+            }
+            if (h < 10) {
+                h = "0" + h;
+            }
+            if (minute < 10) {
+                minute = "0" + minute;
+            }
+            if (s < 10) {
+                s = "0" + s;
+            }
+            if (sss < 10) {
+                sss = "00" + sss;
+            } else if (sss < 100) {
+                sss = "0" + sss;
+            }
+            /*关闭了毫秒显示*/
+            //document.getElementById(timeID.id).innerHTML = y + "-" + m + "-" + d + "   " + h + ":" + minute + ":" + s + "." + sss + "  " + ww;
+            document.getElementById(timeID.id).innerHTML = y + "-" + m + "-" + d + "   " + h + ":" + minute + ":" + s  + "  " + ww;
+        }
+    </script>
+      
+</head>
+<body>
+
+<!--通用头部信息-->
+<div class="container">
+    <div th:include="inc/head/simplehead :: header"></div>
+</div>
+<!--面板数据-->
+<div class="container">
+    <div class="row clearfix">
+
+        <div class="col-md-4 column">
+            <div class="alert alert-dismissable alert-success">
+                <p>当前时间：<label id="show_time">2020年6月23日21点52分</label></p>
+                <p>今日天气：<label id="show_weather">🌤35℃</label></p>
+            </div>
+        </div>
+
+        <div class="col-md-2 column">
+            <div class="alert alert-dismissable alert-success">
+                <h4>
+                    新增作品
+                </h4>
+                <strong>Warning!</strong>
+            </div>
+        </div>
+
+        <div class="col-md-2 column">
+            <div class="alert alert-dismissable alert-success">
+                <h4>
+                    新增作品
+                </h4>
+                <strong>Warning!</strong>
+            </div>
+        </div>
+        <div class="col-md-2 column">
+            <div class="alert alert-dismissable alert-success">
+                <h4>
+                    新增作品
+                </h4>
+                <strong>Warning!</strong>
+            </div>
+        </div>
+        <div class="col-md-2 column">
+            <div class="alert alert-dismissable alert-success">
+                <h4>
+                    新增作品
+                </h4>
+                <strong>Warning!</strong>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>

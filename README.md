@@ -1,5 +1,31 @@
 # 2020年5月31日 管理后台程序 开启
 
+
+
+```
+2020年6月23日23点40分
+学会读取文件json数据，这样就不用存入数据库了
+ /**
+     * 读取本地json文件中的数据
+     */
+    @Value("classpath:file/areacode/city.json")
+    private Resource demo;
+    @Test
+    public void demo() {
+        try {
+            String areaData = IOUtils.toString(demo.getInputStream(), String.valueOf(Charset.forName("UTF-8")));
+            log.info("查询结果：{}", areaData);
+            List<AreaCode> areaCodes = JSONArray.parseArray(areaData, AreaCode.class);
+            log.info("查询结果：{}", areaCodes);
+        } catch (IOException e) {
+            log.error("", e);
+        }
+
+    }
+今天还为这个项目加了很多工具类
+```
+
+
 ```$xslt
 2020年6月21日 23点19分
 多数据源的设置

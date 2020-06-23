@@ -35,3 +35,6 @@ build/
 /src/main/resources/wechat.properties
 /src/main/resources/application-dev.properties
 /src/main/resources/application.properties
+/src/main/resources/amap-key.properties
+/src/main/resources/redis-key.properties
+/src/main/resources/secret-key.properties

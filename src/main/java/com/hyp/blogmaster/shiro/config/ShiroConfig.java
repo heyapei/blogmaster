@@ -78,7 +78,7 @@ public class ShiroConfig {
         // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
         shiroFilterFactoryBean.setLoginUrl("/login");
         // 登录成功后要跳转的链接
-        shiroFilterFactoryBean.setSuccessUrl("/usersPage");
+        shiroFilterFactoryBean.setSuccessUrl("/index");
         //未授权界面;
         shiroFilterFactoryBean.setUnauthorizedUrl("/403");
         //拦截器.
@@ -87,11 +87,15 @@ public class ShiroConfig {
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
         filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/css/**", "anon");
+        /*放过首页*/
+        filterChainDefinitionMap.put("/", "anon");
         filterChainDefinitionMap.put("/login/adminlogin", "anon");
         filterChainDefinitionMap.put("favicon.ico", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/img/**", "anon");
+        /*放过静态资源*/
         filterChainDefinitionMap.put("/static/**", "anon");
+        /*放过网页图标*/
         filterChainDefinitionMap.put("/favicon.ico", "anon");
         filterChainDefinitionMap.put("/font-awesome/**", "anon");
         //<!-- 过滤链定义，从上向下顺序执行，一般将 /**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;

@@ -30,16 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 public class LoginController {
 
 
-    /*@RequestMapping("/adminlogin")
-    @ApiOperation(value = "后端程序登录程序")
-    public String index(Model model, String userName, String passWord) {
-
-        log.info("用户登录程序：{}，{}", userName, passWord);
-
-        return "index";
-    }*/
-
-
     @RequestMapping(value = "/adminlogin", method = RequestMethod.POST)
     public String login(HttpServletRequest request, AdminUser user, Model model) {
         log.info("用户登录程序：{}", user.toString());
@@ -52,7 +42,7 @@ public class LoginController {
         MyError myError = new MyError();
         try {
             subject.login(token);
-            return "redirect:/login/usersPage";
+            return "redirect:/login/admin";
         } catch (LockedAccountException lae) {
             token.clear();
             myError.setErrorCode(400);
@@ -69,9 +59,9 @@ public class LoginController {
     }
 
 
-    @RequestMapping(value = {"/usersPage", ""})
+    @RequestMapping(value = {"/admin", ""})
     public String usersPage() {
-        return "index";
+        return "manage/dashboard";
     }
 
 

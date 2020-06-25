@@ -14,10 +14,6 @@ $(function () {
 });
 
 
-
-
-
-
 /*总投票数据查询*/
 function getTotalQuantityVo() {
     $.ajax({
@@ -40,7 +36,6 @@ function getTotalQuantityVo() {
 }
 
 
-
 /*天气预报*/
 function getWeather() {
     $.ajax({
@@ -49,13 +44,55 @@ function getWeather() {
         cache: true,
         dataType: "JSON",
         success: function (responseData) {
-            console.log(responseData);
             let locationName = responseData.data.cityInfo.city;
             $("#location_name").html(locationName);
 
             /*添加天气内容*/
             let weatherContent = "";
-            weatherContent += "<b style='text-align: left;color: red' title='空气质量等级："+
+            weatherContent += "<b>今日天气：";
+            weatherContent += responseData.data.data.forecast[0].type.replace(/\s+/g, "") + " ";
+            weatherContent += responseData.data.data.forecast[0].low.replace(/\s+/g, "") + " ";
+            weatherContent += responseData.data.data.forecast[0].high.replace(/\s+/g, "") + " ";
+            weatherContent += "空气:" + responseData.data.data.quality;
+            weatherContent += "</b>";
+            weatherContent += " <a id=\"modal-19586\" href=\"#modal-container-weather\" role=\"button\" class=\"btn\" data-toggle=\"modal\">更多</a>";
+            $("#weather_content").html(weatherContent)
+
+            let moreWeatherInfo = "";
+            moreWeatherInfo += "<table class=\"table table-hover table-condensed\"> " +
+                "<thead> " +
+                "<tr> " +
+                "<th> 日期 </th> " +
+                "<th> 天气 </th> " +
+                "<th> 温度 </th> " +
+                "<th> 空气指数 </th> " +
+                "<th> 风向/风力 </th> " +
+                "<th> 日出/日落 </th> " +
+                "<th> 提示 </th> " +
+                "</tr> " +
+                "</thead> " +
+                "<tbody>";
+
+            for (let i in responseData.data.data.forecast) {
+
+                moreWeatherInfo += "<tr>" +
+                    "<td>" + timeStampToDate(responseData.data.data.forecast[i].ymd) + "" + responseData.data.data.forecast[i].week + "</td>" +
+                    "<td>" + responseData.data.data.forecast[i].type + "</td>" +
+                    "<td>" + responseData.data.data.forecast[i].low.replace(/\s+/g, "") + " " +
+                    responseData.data.data.forecast[i].high.replace(/\s+/g, "") + "</td>" +
+                    "<td>" + responseData.data.data.forecast[i].aqi + "</td>" +
+                    "<td>" + responseData.data.data.forecast[i].fx + "/" + responseData.data.data.forecast[i].fl + "</td>" +
+                    "<td>" + responseData.data.data.forecast[i].sunrise + "/" + responseData.data.data.forecast[i].sunset + "</td>" +
+                    "<td>" + responseData.data.data.forecast[i].notice + "</td>"
+                    +"</tr>";
+            }
+            moreWeatherInfo += "</tbody></table>";
+            console.log(moreWeatherInfo);
+
+            $("#modal-weather-body").html(moreWeatherInfo);
+
+
+            /*weatherContent += "<b style='text-align: left;color: red' title='空气质量等级："+
                 responseData.data.data.quality+"，建议：" +
                 responseData.data.data.ganmao+"'>" +
                 "PM2.5:" + responseData.data.data.pm25+"</b>";
@@ -76,9 +113,8 @@ function getWeather() {
                 if (i >= 5) {
                     break;
                 }
-            }
-            console.log(weatherContent)
-            $("#weather_content").html(weatherContent)
+            }*/
+
             //$("#weather_content").innerHTML = weatherContent;
             //$("#weather_content").val(weatherContent);
             //$("#weather_content").text(weatherContent);
@@ -99,7 +135,6 @@ function getDailyWord() {
         cache: true,
         dataType: "TEXT",
         success: function (responseData) {
-            console.log(responseData);
             $("#daily_word").html(responseData);
         },
         error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
@@ -126,9 +161,9 @@ function timeStampToDate(timestamp) {
     date.getSeconds();  // 获取秒数(0-59)*/
     let Y = date.getFullYear() + '-';
     let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-    let D = date.getDate() + ' ';
+    let D = (date.getDate()  < 10 ? '0' + (date.getDate()) : date.getDate()) +" " ;
     let h = date.getHours() + ':';
     let m = date.getMinutes() + ':';
     let s = date.getSeconds();
-    return Y + M + D ;
+    return Y + M + D;
 }

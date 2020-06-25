@@ -21,6 +21,7 @@
     <script>
         //这里代码多了几行，但是不会延迟显示，速度比较好，格式可以自定义，是理想的时间显示
         setInterval("fun(show_time)", 1);
+
         function fun(timeID) {
             var date = new Date();  //创建对象  
             var y = date.getFullYear();     //获取年份  
@@ -54,15 +55,24 @@
             }
             /*关闭了毫秒显示*/
             //document.getElementById(timeID.id).innerHTML = y + "-" + m + "-" + d + "   " + h + ":" + minute + ":" + s + "." + sss + "  " + ww;
-            document.getElementById(timeID.id).innerHTML = y + "-" + m + "-" + d + "   " + h + ":" + minute + ":" + s  + "  " + ww;
+            document.getElementById(timeID.id).innerHTML = y + "-" + m + "-" + d + "   " + h + ":" + minute + ":" + s + "  " + ww;
         }
     </script>
-
     <script src="/static/page/manage/dashboardgetinfo.js"></script>
-      
+    <!--table内容居中-->
+    <style>
+        .table tbody tr td {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+        .table th {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+    </style>
 </head>
 <body>
-
 <!--通用头部信息-->
 <div class="container">
     <div th:include="inc/head/simplehead :: header"></div>
@@ -79,7 +89,7 @@
 
         <div class="col-md-8 column">
             <div class="alert alert-dismissable alert-success">
-                <p style="align-content: center;text-align: center" id="daily_word">每日一言的位置</p>
+                <p style="align-content: center;text-align: center" id="daily_word">正在加载每日一言</p>
                 <div id="weather_content" style="text-align: center;margin-top: 13px"></div>
             </div>
         </div>
@@ -150,6 +160,23 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-container-weather" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog" style="width: 100%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">
+                    15天内天气预报
+                </h4>
+            </div>
+            <div class="modal-body" id="modal-weather-body">
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

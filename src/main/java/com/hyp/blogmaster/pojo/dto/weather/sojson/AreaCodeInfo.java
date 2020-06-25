@@ -12,7 +12,7 @@ import lombok.Data;
  * @website http://www.bejson.com/java2pojo/
  */
 @Data
-public class AreaCode {
+public class AreaCodeInfo {
     private long areaid;
     private String countyname;
 }

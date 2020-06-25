@@ -2,7 +2,7 @@ package com.hyp.blogmaster;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hyp.blogmaster.pojo.dto.weather.sojson.AreaCode;
+import com.hyp.blogmaster.pojo.dto.weather.sojson.AreaCodeInfo;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -48,14 +48,14 @@ public class NoNameTest {
      * 读取本地json文件中的数据
      */
     @Value("classpath:file/areacode/city.json")
-    private Resource demo;
+    private Resource areaCodeCity;
 
     @Test
     public void demo() {
         try {
-            String areaData = IOUtils.toString(demo.getInputStream(), String.valueOf(Charset.forName("UTF-8")));
+            String areaData = IOUtils.toString(areaCodeCity.getInputStream(), String.valueOf(Charset.forName("UTF-8")));
             log.info("查询结果：{}", areaData);
-            List<AreaCode> areaCodes = JSONArray.parseArray(areaData, AreaCode.class);
+            List<AreaCodeInfo> areaCodes = JSONArray.parseArray(areaData, AreaCodeInfo.class);
             log.info("查询结果：{}", areaCodes);
         } catch (IOException e) {
             log.error("", e);

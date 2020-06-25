@@ -57,6 +57,8 @@
             document.getElementById(timeID.id).innerHTML = y + "-" + m + "-" + d + "   " + h + ":" + minute + ":" + s  + "  " + ww;
         }
     </script>
+
+    <script src="/static/page/manage/dashboardgetinfo.js"></script>
       
 </head>
 <body>
@@ -71,8 +73,24 @@
 
         <div class="col-md-4 column">
             <div class="alert alert-dismissable alert-success">
-                <p>当前时间：<label id="show_time">2020年6月23日21点52分</label></p>
-                <p>今日天气：<label id="show_weather">🌤35℃</label></p>
+                <p>当前时间：<label id="show_time"></label></p>
+                <p>当前位置：<label id="location_name">正在检查位置信息</label></p>
+            </div>
+        </div>
+
+        <div class="col-md-8 column">
+            <div class="alert alert-dismissable alert-success">
+                <p style="align-content: center;text-align: center" id="daily_word">每日一言的位置</p>
+                <div id="weather_content" style="text-align: center;margin-top: 13px"></div>
+            </div>
+        </div>
+
+        <!--<div class="col-md-2 column">
+            <div class="alert alert-dismissable alert-success">
+                <h4>
+                    新增作品
+                </h4>
+                <strong>Warning!</strong>
             </div>
         </div>
 
@@ -84,7 +102,6 @@
                 <strong>Warning!</strong>
             </div>
         </div>
-
         <div class="col-md-2 column">
             <div class="alert alert-dismissable alert-success">
                 <h4>
@@ -100,15 +117,7 @@
                 </h4>
                 <strong>Warning!</strong>
             </div>
-        </div>
-        <div class="col-md-2 column">
-            <div class="alert alert-dismissable alert-success">
-                <h4>
-                    新增作品
-                </h4>
-                <strong>Warning!</strong>
-            </div>
-        </div>
+        </div>-->
 
     </div>
 </div>

@@ -1,6 +1,7 @@
 package com.hyp.blogmaster.controller.manager;
 
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
+import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
 import com.hyp.blogmaster.pojo.vo.result.Result;
 import com.hyp.blogmaster.service.DashboardService;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
@@ -47,14 +48,28 @@ public class DashboardApiController {
 
     /**
      * 获取每日一言
-     *
+     * 该接口已无法使用
      * @return
      */
+    @Deprecated
     @GetMapping(value = "get/dailyWord")
     public Result getDailyWord() {
         String dailyWordReturn = myHttpClientUtil.getParameter("http://api.hanximeng.com/hitokoto/api.php", null, null, 2000, 2000, 2000);
         return Result.buildResult(Result.Status.OK, dailyWordReturn);
     }
+
+    /**
+     * 获取总数据统计
+     * @return
+     */
+    @GetMapping(value = "get/totalQuantity")
+    public Result getTotalQuantity() {
+        TotalQuantityVO totalQuantityVO = dashboardService.getTotalQuantityVO();
+        return Result.buildResult(Result.Status.OK, totalQuantityVO);
+    }
+
+
+
 
 
 }

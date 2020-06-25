@@ -9,7 +9,36 @@ $(function () {
     getWeather();
     /*加载每日一言*/
     getDailyWord();
+    /*总投票数据查询*/
+    getTotalQuantityVo();
 });
+
+
+
+
+
+
+/*总投票数据查询*/
+function getTotalQuantityVo() {
+    $.ajax({
+        url: "/admin/get/totalQuantity",
+        type: "GET",
+        cache: true,
+        dataType: "JSON",
+        success: function (responseData) {
+            $("#total_user_num").html(responseData.data.totalUserNum);
+            $("#total_view_num").html(responseData.data.totalViewNum);
+            $("#total_active_num").html(responseData.data.totalActiveNum);
+            $("#total_user_work_num").html(responseData.data.totalUserWorkNum);
+            $("#total_vote_num").html(responseData.data.totalVoteNum);
+        },
+        error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
+            console.log("ajax错误类型：" + type);
+            console.log(err);
+        }
+    });
+}
+
 
 
 /*天气预报*/

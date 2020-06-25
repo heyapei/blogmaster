@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.hyp.blogmaster.pojo.dto.amap.AmapIpToAddressDTO;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.AreaCodeInfo;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
-import com.hyp.blogmaster.service.DashboardService;
+import com.hyp.blogmaster.pojo.modal.WeixinUserOptionConfig;
+import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
+import com.hyp.blogmaster.service.*;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
 import com.hyp.blogmaster.utils.MyIpMacUtil;
 import com.hyp.blogmaster.utils.amaputil.AmapApiUtil;
@@ -41,6 +43,18 @@ public class DashboardServiceImpl implements DashboardService {
     private AmapApiUtil amapApiUtil;
     @Autowired
     private MyIpMacUtil myIpMacUtil;
+    @Autowired
+    private WeixinUserNoOpenIdIdLogService weixinUserNoOpenIdIdLogService;
+
+    @Autowired
+    private WeixinVoteUserService weixinVoteUserService;
+    @Autowired
+    private WeixinVoteBaseService weixinVoteBaseService;
+
+    @Autowired
+    private WeixinVoteWorkService weixinVoteWorkService;
+
+
 
     @Value("classpath:file/areacode/city.json")
     private Resource areaCodeCity;
@@ -81,14 +95,14 @@ public class DashboardServiceImpl implements DashboardService {
             if (areaCodeInfo.getCountyname().contains(city)) {
                 areaCode = areaCodeInfo.getAreaid();
                 break;
-            }else if (city.contains(areaCodeInfo.getCountyname())) {
+            } else if (city.contains(areaCodeInfo.getCountyname())) {
                 areaCode = areaCodeInfo.getAreaid();
                 break;
             }
         }
         // 检查redis中是否已经存储该天气信息了
         WeatherDTO weatherDTO = (WeatherDTO) redisUtil.get(WEATHER_REDIS_KEY + areaCode);
-        log.info("weatherDTO：{}",weatherDTO);
+        log.info("weatherDTO：{}", weatherDTO);
         if (weatherDTO != null) {
             return weatherDTO;
         }
@@ -105,5 +119,54 @@ public class DashboardServiceImpl implements DashboardService {
         }
         redisUtil.set(WEATHER_REDIS_KEY + areaCode, jsonRootBean, 60 * 60 * 5);
         return jsonRootBean;
+    }
+
+    /**
+     * 获取整个的投票程序的数据
+     *
+     * @return
+     */
+    @Override
+    public TotalQuantityVO getTotalQuantityVO() {
+
+        WeixinUserOptionConfig weixinUserOptionConfig = new WeixinUserOptionConfig();
+        /**
+         * 进入小程序
+         */
+        weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.INTO_WEiXIN_VOTE.getType());
+        Integer intoWeixinVoteNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfig(weixinUserOptionConfig);
+        /**
+         * 浏览投票活动
+         */
+       /* weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.VIEW_WEiXIN_VOTE_WORK.getType());
+        Integer viewWeixinVoteWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfig(weixinUserOptionConfig);
+        */
+        /**
+         * 浏览具体的用户作品
+         */
+        /*weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.INTO_WEiXIN_VOTE_USER_WORK.getType());
+        Integer intoWeixinVoteUserWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfig(weixinUserOptionConfig);
+       */
+        /**
+         * 对具体用户作品投票
+         */
+        weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.VOTE_WEiXIN_VOTE_WORK.getType());
+        Integer voteWeixinVoteWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfig(weixinUserOptionConfig);
+
+
+
+        TotalQuantityVO totalQuantityVO = new TotalQuantityVO();
+        // 浏览总数
+        totalQuantityVO.setTotalViewNum(intoWeixinVoteNum);
+        // 投票总数
+        totalQuantityVO.setTotalVoteNum(voteWeixinVoteWorkNum);
+        // 用户总数
+        totalQuantityVO.setTotalUserNum(weixinVoteUserService.getTotalUser());
+        // 活动总数
+        totalQuantityVO.setTotalActiveNum(weixinVoteBaseService.getTotalActiveNum());
+        // 作品总数
+        totalQuantityVO.setTotalUserWorkNum(weixinVoteWorkService.getTotalUserWorkNum());
+
+        return totalQuantityVO;
     }
 }

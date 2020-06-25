@@ -2,6 +2,7 @@ package com.hyp.blogmaster.service;
 
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDetail;
+import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,5 +26,13 @@ public interface DashboardService {
      * @return
      */
     WeatherDTO getWeatherByIp(HttpServletRequest httpServletRequest);
+
+
+    /**
+     * 获取整个的投票程序的数据
+     * @return
+     */
+    TotalQuantityVO getTotalQuantityVO();
+
 
 }

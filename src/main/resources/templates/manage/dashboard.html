@@ -67,10 +67,9 @@
 <div class="container">
     <div th:include="inc/head/simplehead :: header"></div>
 </div>
-<!--面板数据-->
+<!--面板数据-当前位置以及天气预报显示 -->
 <div class="container">
     <div class="row clearfix">
-
         <div class="col-md-4 column">
             <div class="alert alert-dismissable alert-success">
                 <p>当前时间：<label id="show_time"></label></p>
@@ -84,40 +83,69 @@
                 <div id="weather_content" style="text-align: center;margin-top: 13px"></div>
             </div>
         </div>
+    </div>
+</div>
 
-        <!--<div class="col-md-2 column">
-            <div class="alert alert-dismissable alert-success">
-                <h4>
-                    新增作品
-                </h4>
-                <strong>Warning!</strong>
+<!--面板数据-总数据统计 -->
+<div class="container">
+    <div class="row clearfix">
+        <!--总浏览量-->
+        <div class="col-md-2 column">
+            <div class="alert alert-success alert-warning">
+                <strong>
+                    总浏览量
+                </strong>
+                <p id="total_view_num">正在查询</p>
             </div>
         </div>
 
         <div class="col-md-2 column">
-            <div class="alert alert-dismissable alert-success">
-                <h4>
-                    新增作品
-                </h4>
-                <strong>Warning!</strong>
+            <div class="alert alert-success alert-warning">
+                <strong>
+                    总用户量
+                </strong>
+                <p id="total_user_num">正在查询</p>
             </div>
         </div>
+
         <div class="col-md-2 column">
-            <div class="alert alert-dismissable alert-success">
-                <h4>
-                    新增作品
-                </h4>
-                <strong>Warning!</strong>
+            <div class="alert alert-success alert-warning">
+                <strong>
+                    总活动数量
+                </strong>
+                <p id="total_active_num">正在查询</p>
             </div>
         </div>
+
+
         <div class="col-md-2 column">
-            <div class="alert alert-dismissable alert-success">
-                <h4>
-                    新增作品
-                </h4>
-                <strong>Warning!</strong>
+            <div class="alert alert-success alert-warning">
+                <strong>
+                    总作品数量
+                </strong>
+                <p id="total_user_work_num">正在查询</p>
             </div>
-        </div>-->
+        </div>
+
+        <div class="col-md-2 column">
+            <div class="alert alert-success alert-warning">
+                <strong>
+                    总投票数量
+                </strong>
+                <p id="total_vote_num">正在查询</p>
+            </div>
+        </div>
+
+
+        <div class="col-md-2 column">
+            <div class="alert alert-success alert-warning">
+                <strong>
+                    最佳作品
+                </strong>
+                <p id="total_best_user_work_vote_num">正在查询</p>
+            </div>
+        </div>
+
 
     </div>
 </div>

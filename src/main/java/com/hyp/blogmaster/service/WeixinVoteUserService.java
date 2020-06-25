@@ -3,6 +3,8 @@ package com.hyp.blogmaster.service;
 
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 
+import java.util.Date;
+
 /**
  * @Author 何亚培
  * @Version V1.0
@@ -10,6 +12,15 @@ import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
  * @Description: TODO
  */
 public interface WeixinVoteUserService {
+
+
+    /**
+     * 获取总用户数据量根据日期范围
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    Integer getTotalUserByTime(Date startTime, Date endTime);
 
 
     /**

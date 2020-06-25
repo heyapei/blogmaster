@@ -8,10 +8,7 @@ import com.hyp.blogmaster.mapper.WeixinMusicMapper;
 import com.hyp.blogmaster.mapper.WeixinVoteBaseMapper;
 import com.hyp.blogmaster.mapper.WeixinVoteConfMapper;
 import com.hyp.blogmaster.mapper.WeixinVoteOrganisersMapper;
-import com.hyp.blogmaster.pojo.modal.WeixinMusic;
-import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
-import com.hyp.blogmaster.pojo.modal.WeixinVoteConf;
-import com.hyp.blogmaster.pojo.modal.WeixinVoteOrganisers;
+import com.hyp.blogmaster.pojo.modal.*;
 import com.hyp.blogmaster.pojo.vo.page.weixin.IndexWorksVO;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailByWorkIdVO;
 import com.hyp.blogmaster.service.WeixinVoteBaseService;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +37,27 @@ public class WeixinVoteBaseServiceImpl implements WeixinVoteBaseService {
     private WeixinVoteBaseMapper weixinVoteBaseMapper;
     @Autowired
     private WeixinVoteWorkService weixinVoteWorkService;
+
+    /**
+     * 根据日期范围查询统计数据
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return
+     */
+    @Override
+    public Integer getTotalActiveNumByTime(Date startTime, Date endTime) {
+        Example example = new Example(WeixinVoteBase.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andBetween("createTime", startTime, endTime);
+        int i = 0;
+        try {
+            i = weixinVoteBaseMapper.selectCountByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
 
     /**
      * 获取总数

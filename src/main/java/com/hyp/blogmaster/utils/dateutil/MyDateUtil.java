@@ -1,5 +1,8 @@
 package com.hyp.blogmaster.utils.dateutil;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -8,6 +11,7 @@ import java.util.*;
 /**
  * 日期的工具类 可对农历进行操作
  */
+@Slf4j
 public class MyDateUtil {
 
     private static final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>();

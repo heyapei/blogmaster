@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,7 +54,6 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
     private WeixinVoteWorkService weixinVoteWorkService;
-
 
 
     @Value("classpath:file/areacode/city.json")
@@ -122,6 +122,46 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     /**
+     * 根据日期范围查询统计数据
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public TotalQuantityVO getTotalQuantityVOByTime(Date startTime, Date endTime) {
+
+
+        WeixinUserOptionConfig weixinUserOptionConfig = new WeixinUserOptionConfig();
+        /**
+         * 进入小程序
+         */
+        weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.INTO_WEiXIN_VOTE.getType());
+        Integer intoWeixinVoteNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfigAndTime(weixinUserOptionConfig, startTime, endTime);
+        log.info("查询结果："+intoWeixinVoteNum);
+        /**
+         * 对具体用户作品投票
+         */
+        weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.VOTE_WEiXIN_VOTE_WORK.getType());
+        Integer voteWeixinVoteWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfigAndTime(weixinUserOptionConfig, startTime, endTime);
+        log.info("查询结果2："+voteWeixinVoteWorkNum);
+
+        TotalQuantityVO totalQuantityVO = new TotalQuantityVO();
+        // 浏览总数
+        totalQuantityVO.setTotalViewNum(intoWeixinVoteNum);
+        // 投票总数
+        totalQuantityVO.setTotalVoteNum(voteWeixinVoteWorkNum);
+        // 用户总数
+        totalQuantityVO.setTotalUserNum(weixinVoteUserService.getTotalUserByTime(startTime, endTime));
+        // 活动总数
+        totalQuantityVO.setTotalActiveNum(weixinVoteBaseService.getTotalActiveNumByTime(startTime, endTime));
+        // 作品总数
+        totalQuantityVO.setTotalUserWorkNum(weixinVoteWorkService.getTotalUserWorkNumByTime(startTime, endTime));
+
+        return totalQuantityVO;
+    }
+
+    /**
      * 获取整个的投票程序的数据
      *
      * @return
@@ -152,7 +192,6 @@ public class DashboardServiceImpl implements DashboardService {
          */
         weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.VOTE_WEiXIN_VOTE_WORK.getType());
         Integer voteWeixinVoteWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfig(weixinUserOptionConfig);
-
 
 
         TotalQuantityVO totalQuantityVO = new TotalQuantityVO();

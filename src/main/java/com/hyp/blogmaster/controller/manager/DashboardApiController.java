@@ -5,6 +5,8 @@ import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
 import com.hyp.blogmaster.pojo.vo.result.Result;
 import com.hyp.blogmaster.service.DashboardService;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
+import com.hyp.blogmaster.utils.dateutil.DateStyle;
+import com.hyp.blogmaster.utils.dateutil.MyDateUtil;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @Author 何亚培
@@ -49,6 +53,7 @@ public class DashboardApiController {
     /**
      * 获取每日一言
      * 该接口已无法使用
+     *
      * @return
      */
     @Deprecated
@@ -60,6 +65,7 @@ public class DashboardApiController {
 
     /**
      * 获取总数据统计
+     *
      * @return
      */
     @GetMapping(value = "get/totalQuantity")
@@ -69,7 +75,25 @@ public class DashboardApiController {
     }
 
 
+    /**
+     * 获取当天数据统计
+     *
+     * @return
+     */
+    @GetMapping(value = "get/nowDayQuantity")
+    public Result getNowDayQuantity() {
+        /*获取当前时间*/
+        Calendar calendar = Calendar.getInstance();
+        Date time = calendar.getTime();
+        String timeString = MyDateUtil.DateToString(time, DateStyle.YYYY_MM_DD);
+        String startTimeString = timeString + " 00:00:00";
+        String endTimeString = timeString + " 23:59:59";
+        Date startTime = MyDateUtil.StringToDate(startTimeString, DateStyle.YYYY_MM_DD_HH_MM_SS);
+        Date endTime = MyDateUtil.StringToDate(endTimeString, DateStyle.YYYY_MM_DD_HH_MM_SS);
 
+        TotalQuantityVO totalQuantityVO = dashboardService.getTotalQuantityVOByTime(startTime, endTime);
+        return Result.buildResult(Result.Status.OK, totalQuantityVO);
+    }
 
 
 }

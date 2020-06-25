@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,6 +38,29 @@ public class WeixinVoteWorkServiceImpl implements WeixinVoteWorkService {
 
     @Autowired
     private WeixinVoteUserService weixinVoteUserService;
+
+    /**
+     * 按照时间范围查询
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return
+     */
+    @Override
+    public Integer getTotalUserWorkNumByTime(Date startTime, Date endTime) {
+
+        Example example = new Example(WeixinVoteWork.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andBetween("voteWorkCreateTime", startTime, endTime);
+        int i = 0;
+        try {
+            i = weixinVoteWorkMapper.selectCountByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return i;
+    }
 
     /**
      * 获取总数

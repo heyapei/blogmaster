@@ -1,10 +1,10 @@
 package com.hyp.blogmaster.service;
 
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
-import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDetail;
 import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * @Author 何亚培
@@ -22,6 +22,7 @@ public interface DashboardService {
      * 3. 通过物理地址找到对应的areaCode
      * 4. 判断redis中数据是否存在该地区的天气
      * 5. 如果有就是用redis中的数据 如果没有就使用天气查询接口查询数据并保存到redis中 缓存过期时间8小时
+     *
      * @param httpServletRequest
      * @return
      */
@@ -30,9 +31,20 @@ public interface DashboardService {
 
     /**
      * 获取整个的投票程序的数据
+     *
      * @return
      */
     TotalQuantityVO getTotalQuantityVO();
+
+
+    /**
+     * 根据日期范围查询统计数据
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    TotalQuantityVO getTotalQuantityVOByTime(Date startTime, Date endTime);
 
 
 }

@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailByWorkIdVO;
 
+import java.util.Date;
+
 /**
  * @Author 何亚培
  * @Version V1.0
@@ -13,6 +15,16 @@ import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailByWorkIdVO;
  */
 public interface WeixinVoteBaseService {
 
+
+
+    /**
+     * 根据日期范围查询统计数据
+     *
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    Integer getTotalActiveNumByTime(Date startTime,Date endTime);
 
 
     /**

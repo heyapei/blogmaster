@@ -6,6 +6,7 @@ import com.hyp.blogmaster.pojo.modal.WeixinVoteWork;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailCompleteVO;
 import com.hyp.blogmaster.pojo.vo.page.weixin.WeixinVoteUserWorkDiffVO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +18,13 @@ import java.util.List;
 public interface WeixinVoteWorkService {
 
 
+    /**
+     * 按照时间范围查询
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    Integer getTotalUserWorkNumByTime(Date startTime, Date endTime);
 
     /**
      * 获取总数

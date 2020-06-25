@@ -11,10 +11,127 @@ $(function () {
     getDailyWord();
     /*总投票数据查询*/
     getTotalQuantityVo();
+    /*今日新增数据查询*/
+    getNowQuantityVo();
+/*总数据图表分析*/
+    totalDataAnalysis();
 });
 
 
-/*总投票数据查询*/
+function totalDataAnalysis() {
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('total_data_analysis'));
+    myChart.showLoading();
+    var option = {
+        title: {
+            text: '近一年内数据统计'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },dataZoom: [{
+            type: 'inside',
+            start: 50,
+            end: 100,
+        }, {
+            start: 0,
+            end: 100,
+            handleSize: '80%',
+            handleStyle: {
+                color: '#fff',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+            }
+        }],
+        legend: {
+            data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '邮件营销',
+                type: 'line',
+                stack: '总量',
+                data: [120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+                name: '联盟广告',
+                type: 'line',
+                stack: '总量',
+                data: [220, 182, 191, 234, 290, 330, 310]
+            },
+            {
+                name: '视频广告',
+                type: 'line',
+                stack: '总量',
+                data: [150, 232, 201, 154, 190, 330, 410]
+            },
+            {
+                name: '直接访问',
+                type: 'line',
+                stack: '总量',
+                data: [320, 332, 301, 334, 390, 330, 320]
+            },
+            {
+                name: '搜索引擎',
+                type: 'line',
+                stack: '总量',
+                data: [820, 932, 901, 934, 1290, 1330, 1320]
+            }
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+    myChart.hideLoading();
+    window.addEventListener("resize", function () {
+        myChart.resize();
+    });
+}
+
+
+/*今日新增数据查询*/
+function getNowQuantityVo() {
+    $.ajax({
+        url: "/admin/get/nowDayQuantity",
+        type: "GET",
+        cache: true,
+        dataType: "JSON",
+        success: function (responseData) {
+            $("#today_user_num").html(responseData.data.totalUserNum);
+            $("#today_view_num").html(responseData.data.totalViewNum);
+            $("#today_active_num").html(responseData.data.totalActiveNum);
+            $("#today_user_work_num").html(responseData.data.totalUserWorkNum);
+            $("#today_vote_num").html(responseData.data.totalVoteNum);
+        },
+        error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
+            console.log("ajax错误类型：" + type);
+            console.log(err);
+        }
+    });
+}
+
+
+/*总数据查询*/
 function getTotalQuantityVo() {
     $.ajax({
         url: "/admin/get/totalQuantity",

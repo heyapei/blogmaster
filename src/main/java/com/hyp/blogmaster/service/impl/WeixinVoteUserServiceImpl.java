@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,6 +27,27 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
 
     @Autowired
     private WeixinVoteUserMapper weixinVoteUserMapper;
+
+    /**
+     * 获取总用户数据量根据日期范围
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return
+     */
+    @Override
+    public Integer getTotalUserByTime(Date startTime, Date endTime) {
+        Example example = new Example(WeixinVoteUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andBetween("createTime", startTime, endTime);
+        int i = 0;
+        try {
+            i = weixinVoteUserMapper.selectCountByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
 
     /**
      * 获取总用户数据量

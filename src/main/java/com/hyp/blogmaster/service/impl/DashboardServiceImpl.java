@@ -2,7 +2,9 @@ package com.hyp.blogmaster.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hyp.blogmaster.mapper.WeixinUserOptionLogMapper;
 import com.hyp.blogmaster.pojo.dto.amap.AmapIpToAddressDTO;
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.AreaCodeInfo;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinUserOptionConfig;
@@ -54,6 +56,67 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
     private WeixinVoteWorkService weixinVoteWorkService;
+
+    @Autowired
+    private WeixinUserOptionLogMapper weixinUserOptionLogMapper;
+    @Autowired
+    private WeixinUserOptionLogService weixinUserOptionLogService;
+
+
+    /**
+     * 查询近一年的用户投票增量
+     *
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getWorkVoteDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = weixinUserOptionLogService.getDashboardDataAnalysisByOptionType(3);
+        return userDashboardDataAnalysis;
+    }
+
+    /**
+     * 查询近一年的用户按天统计的数据
+     *
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getUserDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = weixinVoteUserService.getUserDashboardDataAnalysis();
+        return userDashboardDataAnalysis;
+    }
+
+    /**
+     * 查询近一年的作品按天统计的数据
+     *
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getUserWorkDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> dashboardDataAnalysis = weixinVoteWorkService.getDashboardDataAnalysis();
+        if (dashboardDataAnalysis == null) {
+            return null;
+        }
+        return dashboardDataAnalysis;
+    }
+
+    /**
+     * 按照操作类型 查询近一年的数据按天统计的数据
+     *
+     * @param optionType
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getDashboardDataAnalysisByOptionType(Integer optionType) {
+        List<DashboardDataAnalysisDTO> dashboardDataAnalysisByOptionType = null;
+        try {
+            dashboardDataAnalysisByOptionType = weixinUserOptionLogMapper.getDashboardDataAnalysisByOptionType(optionType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("查询近一年的数据按天统计的用户进入小程序数据错误，错误原因：{}", e.toString());
+            return null;
+        }
+        return dashboardDataAnalysisByOptionType;
+    }
 
 
     @Value("classpath:file/areacode/city.json")
@@ -138,13 +201,13 @@ public class DashboardServiceImpl implements DashboardService {
          */
         weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.INTO_WEiXIN_VOTE.getType());
         Integer intoWeixinVoteNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfigAndTime(weixinUserOptionConfig, startTime, endTime);
-        log.info("查询结果："+intoWeixinVoteNum);
+        log.info("查询结果：" + intoWeixinVoteNum);
         /**
          * 对具体用户作品投票
          */
         weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.VOTE_WEiXIN_VOTE_WORK.getType());
         Integer voteWeixinVoteWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfigAndTime(weixinUserOptionConfig, startTime, endTime);
-        log.info("查询结果2："+voteWeixinVoteWorkNum);
+        log.info("查询结果2：" + voteWeixinVoteWorkNum);
 
         TotalQuantityVO totalQuantityVO = new TotalQuantityVO();
         // 浏览总数

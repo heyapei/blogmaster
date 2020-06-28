@@ -1,9 +1,11 @@
 package com.hyp.blogmaster.service;
 
 
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author 何亚培
@@ -12,6 +14,14 @@ import java.util.Date;
  * @Description: TODO
  */
 public interface WeixinVoteUserService {
+
+
+    /**
+     * 查询近一年的用户按天统计的数据
+
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getUserDashboardDataAnalysis();
 
 
     /**

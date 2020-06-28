@@ -1,5 +1,6 @@
 package com.hyp.blogmaster.controller.manager;
 
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
 import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
 import com.hyp.blogmaster.pojo.vo.result.Result;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author 何亚培
@@ -25,7 +27,7 @@ import java.util.Date;
  * @Description: TODO
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/dashboard")
 @Slf4j
 @Api(value = "数据面板查询API，仅供查询数据，需要用户登录")
 public class DashboardApiController {
@@ -37,6 +39,7 @@ public class DashboardApiController {
     private HttpServletRequest httpServletRequest;
     @Autowired
     private MyHttpClientUtil myHttpClientUtil;
+
 
     /**
      * 查询用户天气信息
@@ -95,5 +98,62 @@ public class DashboardApiController {
         return Result.buildResult(Result.Status.OK, totalQuantityVO);
     }
 
+    /**
+     * 按照操作类型 查询近一年的数据按天统计的用户进入小程序数据
+     *
+     * @return
+     */
+    @GetMapping(value = "get/userViewDataAnalysis")
+    public Result getDashboardDataAnalysisUserView() {
+        List<DashboardDataAnalysisDTO> dashboardDataAnalysisByOptionType = dashboardService.getDashboardDataAnalysisByOptionType(0);
+        if (dashboardDataAnalysisByOptionType == null) {
+            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+        }
+        return Result.buildResult(Result.Status.OK, dashboardDataAnalysisByOptionType);
+    }
+
+
+    /**
+     * 查询近一年的作品按天统计的数据
+     *
+     * @return
+     */
+    @GetMapping(value = "get/userWorkDataAnalysis")
+    public Result getUserWorkDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> userWorkDashboardDataAnalysis = dashboardService.getUserWorkDashboardDataAnalysis();
+        if (userWorkDashboardDataAnalysis == null) {
+            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+        }
+        return Result.buildResult(Result.Status.OK, userWorkDashboardDataAnalysis);
+    }
+
+    /**
+     * 查询近一年的用户按天统计的数据
+     *
+     * @return
+     */
+    @GetMapping(value = "get/userDashboardDataAnalysis")
+    public Result getUserDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = dashboardService.getUserDashboardDataAnalysis();
+        if (userDashboardDataAnalysis == null) {
+            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+        }
+        return Result.buildResult(Result.Status.OK, userDashboardDataAnalysis);
+    }
+
+
+    /**
+     * 查询近一年的用户投票增量
+     *
+     * @return
+     */
+    @GetMapping(value = "get/workVoteDashboardDataAnalysis")
+    public Result getWorkVoteDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = dashboardService.getWorkVoteDashboardDataAnalysis();
+        if (userDashboardDataAnalysis == null) {
+            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+        }
+        return Result.buildResult(Result.Status.OK, userDashboardDataAnalysis);
+    }
 
 }

@@ -3,6 +3,7 @@ package com.hyp.blogmaster.service.impl;
 
 import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.mapper.WeixinVoteUserMapper;
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.service.WeixinVoteUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,25 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
 
     @Autowired
     private WeixinVoteUserMapper weixinVoteUserMapper;
+
+
+    /**
+     * 查询近一年的用户按天统计的数据
+     *
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getUserDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = null;
+        try {
+            userDashboardDataAnalysis = weixinVoteUserMapper.getUserDashboardDataAnalysis();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("查询近一年的用户按天统计的数据错误，错误原因：{}",e.toString());
+        }
+
+        return userDashboardDataAnalysis;
+    }
 
     /**
      * 获取总用户数据量根据日期范围

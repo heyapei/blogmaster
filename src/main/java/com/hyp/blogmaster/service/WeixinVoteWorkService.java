@@ -2,6 +2,7 @@ package com.hyp.blogmaster.service;
 
 
 import com.github.pagehelper.PageInfo;
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteWork;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailCompleteVO;
 import com.hyp.blogmaster.pojo.vo.page.weixin.WeixinVoteUserWorkDiffVO;
@@ -16,6 +17,14 @@ import java.util.List;
  * @Description: TODO
  */
 public interface WeixinVoteWorkService {
+
+    /**
+     * 查询近一年的作品按天统计的数据
+     *
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getDashboardDataAnalysis();
+
 
 
     /**

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.mapper.WeixinVoteWorkMapper;
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteWork;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailCompleteVO;
@@ -38,6 +39,25 @@ public class WeixinVoteWorkServiceImpl implements WeixinVoteWorkService {
 
     @Autowired
     private WeixinVoteUserService weixinVoteUserService;
+
+
+    /**
+     * 查询近一年的作品按天统计的数据
+     *
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getDashboardDataAnalysis() {
+
+        List<DashboardDataAnalysisDTO> dashboardDataAnalysis = null;
+        try {
+            dashboardDataAnalysis = weixinVoteWorkMapper.getDashboardDataAnalysis();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("查询近一年的作品按天统计的数据错误，错误原因：{}", e.toString());
+        }
+        return dashboardDataAnalysis;
+    }
 
     /**
      * 按照时间范围查询

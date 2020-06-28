@@ -17,4 +17,15 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <select id="getUserDashboardDataAnalysis"
+          resultType="com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO">
+ SELECT
+	COUNT(id) AS countNum,
+	DATE_FORMAT(create_time,'%Y-%m-%d') AS dateTime
+FROM
+	weixin_vote_user
+	where  create_time between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
+GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
+
+  </select>
 </mapper>

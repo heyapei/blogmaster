@@ -4,6 +4,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import tk.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,9 +15,14 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 
+/**
+ * //basePackages:接口文件的包路径
+ * @author heyapei
+ */
 @Configuration
 @MapperScan(basePackages = "com.hyp.blogmaster.shiro.mapper",
-        sqlSessionFactoryRef = "SecondSqlSessionFactory")//basePackages:接口文件的包路径
+        sqlSessionFactoryRef = "SecondSqlSessionFactory",
+        sqlSessionTemplateRef = "SecondSqlSessionTemplate")
 public class SecondaryDataSourceConfig {
 
     @Bean(name = "SecondaryDataSource")
@@ -36,10 +42,14 @@ public class SecondaryDataSourceConfig {
                         getResources("classpath:mapper/shiro/*.xml"));
         return bean.getObject();// 设置mybatis的xml所在位置
     }
-    
+
+    @Bean
+    public DataSourceTransactionManager db2TransactionManager(@Qualifier("SecondaryDataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
     
     @Bean("SecondSqlSessionTemplate")
-    public SqlSessionTemplate primarySqlSessionTemplate(
+    public SqlSessionTemplate secondSqlSessionTemplate(
             @Qualifier("SecondSqlSessionFactory") SqlSessionFactory sessionfactory) {
         return new SqlSessionTemplate(sessionfactory);
     }

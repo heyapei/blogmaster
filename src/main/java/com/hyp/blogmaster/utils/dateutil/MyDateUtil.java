@@ -1,7 +1,6 @@
 package com.hyp.blogmaster.utils.dateutil;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -784,8 +783,8 @@ public class MyDateUtil {
      * @param date 日期字符串
      * @return 星期
      */
-    public static com.hyp.myweixin.utils.dateutil.Week getWeek(String date) {
-        com.hyp.myweixin.utils.dateutil.Week week = null;
+    public static com.hyp.blogmaster.utils.dateutil.Week getWeek(String date) {
+        com.hyp.blogmaster.utils.dateutil.Week week = null;
         DateStyle dateStyle = getDateStyle(date);
         if (dateStyle != null) {
             Date myDate = StringToDate(date, dateStyle);
@@ -800,32 +799,32 @@ public class MyDateUtil {
      * @param date 日期
      * @return 星期
      */
-    public static com.hyp.myweixin.utils.dateutil.Week getWeek(Date date) {
-        com.hyp.myweixin.utils.dateutil.Week week = null;
+    public static com.hyp.blogmaster.utils.dateutil.Week getWeek(Date date) {
+        com.hyp.blogmaster.utils.dateutil.Week week = null;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int weekNumber = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         switch (weekNumber) {
             case 0:
-                week = com.hyp.myweixin.utils.dateutil.Week.SUNDAY;
+                week = com.hyp.blogmaster.utils.dateutil.Week.SUNDAY;
                 break;
             case 1:
-                week = com.hyp.myweixin.utils.dateutil.Week.MONDAY;
+                week = com.hyp.blogmaster.utils.dateutil.Week.MONDAY;
                 break;
             case 2:
-                week = com.hyp.myweixin.utils.dateutil.Week.TUESDAY;
+                week = com.hyp.blogmaster.utils.dateutil.Week.TUESDAY;
                 break;
             case 3:
-                week = com.hyp.myweixin.utils.dateutil.Week.WEDNESDAY;
+                week = com.hyp.blogmaster.utils.dateutil.Week.WEDNESDAY;
                 break;
             case 4:
-                week = com.hyp.myweixin.utils.dateutil.Week.THURSDAY;
+                week = com.hyp.blogmaster.utils.dateutil.Week.THURSDAY;
                 break;
             case 5:
-                week = com.hyp.myweixin.utils.dateutil.Week.FRIDAY;
+                week = com.hyp.blogmaster.utils.dateutil.Week.FRIDAY;
                 break;
             case 6:
-                week = com.hyp.myweixin.utils.dateutil.Week.SATURDAY;
+                week = com.hyp.blogmaster.utils.dateutil.Week.SATURDAY;
                 break;
         }
         return week;

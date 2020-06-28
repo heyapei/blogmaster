@@ -1,41 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hyp.blogmaster.mapper.WeixinVoteWorkMapper" >
-  <resultMap id="BaseResultMap" type="com.hyp.blogmaster.pojo.modal.WeixinVoteWork" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="vote_work_user_name" property="voteWorkUserName" jdbcType="VARCHAR" />
-    <result column="vote_work_user_id" property="voteWorkUserId" jdbcType="INTEGER" />
-    <result column="vote_work_user_phone" property="voteWorkUserPhone" jdbcType="VARCHAR" />
-    <result column="vote_work_user_weixin" property="voteWorkUserWeixin" jdbcType="VARCHAR" />
-    <result column="vote_work_desc" property="voteWorkDesc" jdbcType="VARCHAR" />
-    <result column="vote_work_name" property="voteWorkName" jdbcType="VARCHAR" />
-    <result column="vote_work_video_url" property="voteWorkVideoUrl" jdbcType="VARCHAR" />
-    <result column="vote_work_create_time" property="voteWorkCreateTime" jdbcType="TIMESTAMP" />
-    <result column="active_vote_base_id" property="activeVoteBaseId" jdbcType="INTEGER" />
-    <result column="vote_work_status" property="voteWorkStatus" jdbcType="INTEGER" />
-    <result column="vote_work_show_order" property="voteWorkShowOrder" jdbcType="INTEGER" />
-    <result column="vote_work_count_num" property="voteWorkCountNum" jdbcType="INTEGER" />
-    <result column="vote_work_count_view_num" property="voteWorkCountViewNum" jdbcType="INTEGER" />
-    <result column="vote_work_img" property="voteWorkImg" jdbcType="LONGVARCHAR" />
-    <result column="vote_work_or" property="voteWorkOr" jdbcType="INTEGER" />
-  </resultMap>
+<mapper namespace="com.hyp.blogmaster.mapper.WeixinVoteWorkMapper">
+    <resultMap id="BaseResultMap" type="com.hyp.blogmaster.pojo.modal.WeixinVoteWork">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="vote_work_user_name" property="voteWorkUserName" jdbcType="VARCHAR"/>
+        <result column="vote_work_user_id" property="voteWorkUserId" jdbcType="INTEGER"/>
+        <result column="vote_work_user_phone" property="voteWorkUserPhone" jdbcType="VARCHAR"/>
+        <result column="vote_work_user_weixin" property="voteWorkUserWeixin" jdbcType="VARCHAR"/>
+        <result column="vote_work_desc" property="voteWorkDesc" jdbcType="VARCHAR"/>
+        <result column="vote_work_name" property="voteWorkName" jdbcType="VARCHAR"/>
+        <result column="vote_work_video_url" property="voteWorkVideoUrl" jdbcType="VARCHAR"/>
+        <result column="vote_work_create_time" property="voteWorkCreateTime" jdbcType="TIMESTAMP"/>
+        <result column="active_vote_base_id" property="activeVoteBaseId" jdbcType="INTEGER"/>
+        <result column="vote_work_status" property="voteWorkStatus" jdbcType="INTEGER"/>
+        <result column="vote_work_show_order" property="voteWorkShowOrder" jdbcType="INTEGER"/>
+        <result column="vote_work_count_num" property="voteWorkCountNum" jdbcType="INTEGER"/>
+        <result column="vote_work_count_view_num" property="voteWorkCountViewNum" jdbcType="INTEGER"/>
+        <result column="vote_work_img" property="voteWorkImg" jdbcType="LONGVARCHAR"/>
+        <result column="vote_work_or" property="voteWorkOr" jdbcType="INTEGER"/>
+    </resultMap>
 
-  <select id="getCountVoteByVoteBaseId" parameterType="integer" resultType="integer">
+    <select id="getCountVoteByVoteBaseId" parameterType="integer" resultType="integer">
           select  SUM(vote_work_count_num) from weixin_vote_work where active_vote_base_id =  #{active_vote_base_id}
   </select>
 
-  <!--想要计算排第几名就是计算比他分数高的有几个，再加上自身就好了-->
-  <select id="getRankNumByUserWorkId" parameterType="integer" resultType="integer">
+    <!--想要计算排第几名就是计算比他分数高的有几个，再加上自身就好了-->
+    <select id="getRankNumByUserWorkId" parameterType="integer" resultType="integer">
          select count(1)+1
   from weixin_vote_work
   where active_vote_base_id = #{voteBaseId} AND vote_work_count_num >
   (select vote_work_count_num from weixin_vote_work where id =#{userWorkId})
   </select>
+    <select id="getDashboardDataAnalysis"
+            resultType="com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO">
+      SELECT
+	COUNT(id) AS countNum,
+	DATE_FORMAT(vote_work_create_time,'%Y-%m-%d') AS dateTime
+FROM
+	weixin_vote_work
+	where  vote_work_create_time between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
+GROUP BY DATE_FORMAT(vote_work_create_time,'%Y-%m-%d')
 
-
+    </select>
 
 
 </mapper>

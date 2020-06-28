@@ -1,0 +1,46 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/6/28 21:11 
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>用户管理</title>
+    <meta name="keywords" content="login"/>
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
+    <head th:include="/inc/commonutil/echarts :: echarts"></head>
+    <!--table内容居中-->
+    <style>
+        .table tbody tr td {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+        .table th {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+    </style>
+</head>
+<body>
+<!--通用头部信息-->
+<div class="container">
+    <div th:include="inc/head/simplehead :: header"></div>
+</div>
+<!--面板数据-当前位置以及天气预报显示 -->
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+           <h1>以下为用户管理页面</h1>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

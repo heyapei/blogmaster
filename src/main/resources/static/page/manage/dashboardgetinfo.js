@@ -13,106 +13,418 @@ $(function () {
     getTotalQuantityVo();
     /*今日新增数据查询*/
     getNowQuantityVo();
-/*总数据图表分析*/
-    totalDataAnalysis();
+    /*用户浏览量分析*/
+    dayUserViewDataAnalysis();
+    /*作品增量分析*/
+    dayUserUserWorkDataAnalysis();
+    /*用户增量和活动增量分析*/
+    dayUserDataAnalysis();
+    /*投票增量分析*/
+    dayUserVoteWorkDataAnalysis();
 });
 
-
-function totalDataAnalysis() {
+/*投票增量分析*/
+function dayUserVoteWorkDataAnalysis() {
 
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('total_data_analysis'));
+    var myChart = echarts.init(document.getElementById('day_vote_work_data_analysis'));
     myChart.showLoading();
-    var option = {
-        title: {
-            text: '近一年内数据统计'
+    $.ajax({
+        url: "/admin/dashboard/get/workVoteDashboardDataAnalysis",
+        type: "GET",
+        cache: true,
+        dataType: "JSON",
+        success: function (responseData) {
+
+            //console.log(responseData);
+            let dateTime = [];
+            let countNum = [];
+            jQuery.each(responseData.data, function (i, item) {
+                dateTime.push(item.dateTime);
+                countNum.push(item.countNum)
+            });
+            //console.log(dateTime)
+            //console.log(countNum)
+
+            let option = {
+                title: {
+                    text: '投票增量',
+                },
+                tooltip: {
+                    trigger: 'axis'
+                }, dataZoom: [{
+                    type: 'inside',
+                    start: 50,
+                    end: 100,
+                }, {
+                    start: 0,
+                    end: 100,
+                    handleSize: '80%',
+                    handleStyle: {
+                        color: '#fff',
+                        shadowBlur: 3,
+                        shadowColor: 'rgba(0, 0, 0, 0.7)',
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    }
+                }],
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dateTime
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '当日量',
+                        type: 'line',
+                        stack: '总量',
+                        itemStyle: {
+                            normal: {
+                                color: '#0b87d9',
+                                lineStyle: {
+                                    color: '#0b87d9'
+                                }
+                            }
+                        },
+                        data: countNum
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.hideLoading();
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
         },
-        tooltip: {
-            trigger: 'axis'
-        },dataZoom: [{
-            type: 'inside',
-            start: 50,
-            end: 100,
-        }, {
-            start: 0,
-            end: 100,
-            handleSize: '80%',
-            handleStyle: {
-                color: '#fff',
-                shadowBlur: 3,
-                shadowColor: 'rgba(0, 0, 0, 0.6)',
-                shadowOffsetX: 2,
-                shadowOffsetY: 2
-            }
-        }],
-        legend: {
-            data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        toolbox: {
-            feature: {
-                saveAsImage: {}
-            }
-        },
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [
-            {
-                name: '邮件营销',
-                type: 'line',
-                stack: '总量',
-                data: [120, 132, 101, 134, 90, 230, 210]
-            },
-            {
-                name: '联盟广告',
-                type: 'line',
-                stack: '总量',
-                data: [220, 182, 191, 234, 290, 330, 310]
-            },
-            {
-                name: '视频广告',
-                type: 'line',
-                stack: '总量',
-                data: [150, 232, 201, 154, 190, 330, 410]
-            },
-            {
-                name: '直接访问',
-                type: 'line',
-                stack: '总量',
-                data: [320, 332, 301, 334, 390, 330, 320]
-            },
-            {
-                name: '搜索引擎',
-                type: 'line',
-                stack: '总量',
-                data: [820, 932, 901, 934, 1290, 1330, 1320]
-            }
-        ]
-    };
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
-    myChart.hideLoading();
-    window.addEventListener("resize", function () {
-        myChart.resize();
+        error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
+            console.log("ajax错误类型：" + type);
+            console.log(err);
+        }
     });
+}
+
+
+/*用户增量分析*/
+function dayUserDataAnalysis() {
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('day_user_data_analysis'));
+    myChart.showLoading();
+    $.ajax({
+        url: "/admin/dashboard/get/userDashboardDataAnalysis",
+        type: "GET",
+        cache: true,
+        dataType: "JSON",
+        success: function (responseData) {
+
+            //console.log(responseData);
+            let dateTime = [];
+            let countNum = [];
+            jQuery.each(responseData.data, function (i, item) {
+                dateTime.push(item.dateTime);
+                countNum.push(item.countNum)
+            });
+            //console.log(dateTime)
+            //console.log(countNum)
+
+            let option = {
+                title: {
+                    text: '用户增量',
+                },
+                tooltip: {
+                    trigger: 'axis'
+                }, dataZoom: [{
+                    type: 'inside',
+                    start: 50,
+                    end: 100,
+                }, {
+                    start: 0,
+                    end: 100,
+                    handleSize: '80%',
+                    handleStyle: {
+                        color: '#fff',
+                        shadowBlur: 3,
+                        shadowColor: 'rgba(0, 0, 0, 0.7)',
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    }
+                }],
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dateTime
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '当日量',
+                        type: 'line',
+                        stack: '总量',
+                        itemStyle: {
+                            normal: {
+                                color: '#2b2b2b',
+                                lineStyle: {
+                                    color: '#2b2b2b'
+                                }
+                            }
+                        },
+                        data: countNum
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.hideLoading();
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
+        },
+        error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
+            console.log("ajax错误类型：" + type);
+            console.log(err);
+        }
+    });
+}
+
+
+/*作品增量分析*/
+function dayUserUserWorkDataAnalysis() {
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('day_user_work_data_analysis'));
+    myChart.showLoading();
+    $.ajax({
+        url: "/admin/dashboard/get/userWorkDataAnalysis",
+        type: "GET",
+        cache: true,
+        dataType: "JSON",
+        success: function (responseData) {
+
+            //console.log(responseData);
+            let dateTime = [];
+            let countNum = [];
+            jQuery.each(responseData.data, function (i, item) {
+                dateTime.push(item.dateTime);
+                countNum.push(item.countNum)
+            });
+            //console.log(dateTime)
+            //console.log(countNum)
+
+            let option = {
+                title: {
+                    text: '作品增量',
+                    //link:'http://www.baidu.com',//主标题超链接
+                    //target:'blank',//主标题超链接打开方式
+                    textStyle: { //设置主标题风格 妈的好像不行的样子
+                        Color: '#00FF00',//设置主标题字体颜色
+                        fontStyle: '',//主标题文字风格
+                    },
+                    //subtext:'副标题',
+                    //sublink:'http://www.baidu.com',//副标题超链接
+                    //subtarget:'blank',//副标题超链接打开方式
+                    //padding:[5,10,5,5],//设置标题内边距,上，右，下，左
+                    //itemGap:10,//主副标题之间的间距
+
+                    /*left:'left',//组件的位置,center,left,right
+                    top:'top',//组件离上边的距离middle,top,bottom*/ //此二者的优先级高于x吗?答案：是
+                    //x:'center',
+                    // backgroundColor:'white',//标题背景色
+                    // borderColor:'gray',//标题边框颜色
+                    //borderWidth:5,//标签线框
+                    //borderRadius:5,//边框切圆角
+                    // shadowBlur:10,//图形阴影模糊大小,该属性配合 shadowColor,shadowOffsetX(阴影水平方向上的偏移距离), shadowOffsetY(阴影垂直方向上的偏移距离。) 一起设置图形的阴影效果。
+                    // shadowColor:'rgba(0,0,0,0.5)'//阴影颜色
+                },
+                tooltip: {
+                    trigger: 'axis'
+                }, dataZoom: [{
+                    type: 'inside',
+                    start: 50,
+                    end: 100,
+                }, {
+                    start: 0,
+                    end: 100,
+                    handleSize: '80%',
+                    handleStyle: {
+                        color: '#fff',
+                        shadowBlur: 3,
+                        shadowColor: 'rgba(0, 0, 0, 0.7)',
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    }
+                }],
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dateTime
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '当日量',
+                        type: 'line',
+                        stack: '总量',
+                        itemStyle: {
+                            normal: {
+                                color: '#00FF00',
+                                lineStyle: {
+                                    color: '#00FF00'
+                                }
+                            }
+                        },
+                        data: countNum
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.hideLoading();
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
+        },
+        error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
+            console.log("ajax错误类型：" + type);
+            console.log(err);
+        }
+    });
+
+}
+
+function dayUserViewDataAnalysis() {
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('day_user_view_data_analysis'));
+    myChart.showLoading();
+
+    $.ajax({
+        url: "/admin/dashboard/get/userViewDataAnalysis",
+        type: "GET",
+        cache: true,
+        dataType: "JSON",
+        success: function (responseData) {
+
+            //console.log(responseData);
+            let dateTime = [];
+            let countNum = [];
+            jQuery.each(responseData.data, function (i, item) {
+                dateTime.push(item.dateTime);
+                countNum.push(item.countNum)
+            });
+            //console.log(dateTime)
+            //console.log(countNum)
+
+            let option = {
+                title: {
+                    text: '用户浏览增量数据'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                }, dataZoom: [{
+                    type: 'inside',
+                    start: 50,
+                    end: 100,
+                }, {
+                    start: 0,
+                    end: 100,
+                    handleSize: '80%',
+                    handleStyle: {
+                        color: '#fff',
+                        shadowBlur: 3,
+                        shadowColor: 'rgba(0, 0, 0, 0.6)',
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    }
+                }],
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dateTime
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '当日量',
+                        type: 'line',
+                        stack: '总量',
+                        data: countNum
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.hideLoading();
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
+        },
+        error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
+            console.log("ajax错误类型：" + type);
+            console.log(err);
+        }
+    });
+
 }
 
 
 /*今日新增数据查询*/
 function getNowQuantityVo() {
     $.ajax({
-        url: "/admin/get/nowDayQuantity",
+        url: "/admin/dashboard/get/nowDayQuantity",
         type: "GET",
         cache: true,
         dataType: "JSON",
@@ -134,7 +446,7 @@ function getNowQuantityVo() {
 /*总数据查询*/
 function getTotalQuantityVo() {
     $.ajax({
-        url: "/admin/get/totalQuantity",
+        url: "/admin/dashboard/get/totalQuantity",
         type: "GET",
         cache: true,
         dataType: "JSON",
@@ -156,7 +468,7 @@ function getTotalQuantityVo() {
 /*天气预报*/
 function getWeather() {
     $.ajax({
-        url: "/admin/get/weather",
+        url: "/admin/dashboard/get/weather",
         type: "GET",
         cache: true,
         dataType: "JSON",
@@ -201,10 +513,10 @@ function getWeather() {
                     "<td>" + responseData.data.data.forecast[i].fx + "/" + responseData.data.data.forecast[i].fl + "</td>" +
                     "<td>" + responseData.data.data.forecast[i].sunrise + "/" + responseData.data.data.forecast[i].sunset + "</td>" +
                     "<td>" + responseData.data.data.forecast[i].notice + "</td>"
-                    +"</tr>";
+                    + "</tr>";
             }
             moreWeatherInfo += "</tbody></table>";
-            console.log(moreWeatherInfo);
+            //console.log(moreWeatherInfo);
 
             $("#modal-weather-body").html(moreWeatherInfo);
 
@@ -278,7 +590,7 @@ function timeStampToDate(timestamp) {
     date.getSeconds();  // 获取秒数(0-59)*/
     let Y = date.getFullYear() + '-';
     let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-    let D = (date.getDate()  < 10 ? '0' + (date.getDate()) : date.getDate()) +" " ;
+    let D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()) + " ";
     let h = date.getHours() + ':';
     let m = date.getMinutes() + ':';
     let s = date.getSeconds();

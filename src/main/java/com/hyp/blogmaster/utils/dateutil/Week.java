@@ -1,4 +1,4 @@
-package com.hyp.myweixin.utils.dateutil;
+package com.hyp.blogmaster.utils.dateutil;
  
 public enum Week {
  

@@ -1,10 +1,12 @@
 package com.hyp.blogmaster.service;
 
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
 import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author 何亚培
@@ -13,6 +15,39 @@ import java.util.Date;
  * @Description: TODO
  */
 public interface DashboardService {
+
+
+    /**
+     * 查询近一年的用户投票增量
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getWorkVoteDashboardDataAnalysis();
+
+    /**
+     * 查询近一年的用户按天统计的数据
+
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getUserDashboardDataAnalysis();
+
+
+
+    /**
+     * 查询近一年的作品按天统计的数据
+     *
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getUserWorkDashboardDataAnalysis();
+
+
+    /**
+     * 按照操作类型 查询近一年的数据按天统计的数据
+     *
+     * @param optionType
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getDashboardDataAnalysisByOptionType(Integer optionType);
+
 
     /**
      * 根据请求ip获取天气信息

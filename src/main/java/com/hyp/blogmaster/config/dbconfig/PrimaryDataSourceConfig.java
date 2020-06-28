@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import tk.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -14,8 +15,14 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 
+/**
+ * //basePackages:接口文件的包路径
+ * @author heyapei
+ */
 @Configuration
-@MapperScan(basePackages = "com.hyp.blogmaster.mapper", sqlSessionFactoryRef = "PrimarySqlSessionFactory")//basePackages:接口文件的包路径
+@MapperScan(basePackages = "com.hyp.blogmaster.mapper",
+        sqlSessionFactoryRef = "PrimarySqlSessionFactory",
+        sqlSessionTemplateRef = "PrimarySqlSessionTemplate")
 public class PrimaryDataSourceConfig {
 
     @Bean(name = "PrimaryDataSource")
@@ -37,6 +44,11 @@ public class PrimaryDataSourceConfig {
                 new PathMatchingResourcePatternResolver().
                         getResources("classpath:mapper/*.xml"));
         return bean.getObject();// 设置mybatis的xml所在位置
+    }
+
+    @Bean
+    public DataSourceTransactionManager db2TransactionManager(@Qualifier("PrimaryDataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
     
     

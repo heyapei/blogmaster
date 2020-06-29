@@ -21,7 +21,105 @@ $(function () {
     dayUserDataAnalysis();
     /*投票增量分析*/
     dayUserVoteWorkDataAnalysis();
+    /**/
+    dayVoteWorkDataAnalysis();
 });
+
+
+/*活动增量分析*/
+function dayVoteWorkDataAnalysis() {
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('day_vote_data_analysis'));
+    myChart.showLoading();
+    $.ajax({
+        url: "/admin/dashboard/get/voteDashboardDataAnalysis",
+        type: "GET",
+        cache: true,
+        dataType: "JSON",
+        success: function (responseData) {
+
+            //console.log(responseData);
+            let dateTime = [];
+            let countNum = [];
+            jQuery.each(responseData.data, function (i, item) {
+                dateTime.push(item.dateTime);
+                countNum.push(item.countNum)
+            });
+            //console.log(dateTime)
+            //console.log(countNum)
+
+            let option = {
+                title: {
+                    text: '活动增量',
+                },
+                tooltip: {
+                    trigger: 'axis'
+                }, dataZoom: [{
+                    type: 'inside',
+                    start: 50,
+                    end: 100,
+                }, {
+                    start: 0,
+                    end: 100,
+                    handleSize: '80%',
+                    handleStyle: {
+                        color: '#fff',
+                        shadowBlur: 3,
+                        shadowColor: 'rgba(0, 0, 0, 0.7)',
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    }
+                }],
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dateTime
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '当日量',
+                        type: 'line',
+                        stack: '总量',
+                        itemStyle: {
+                            normal: {
+                                color: '#299999',
+                                lineStyle: {
+                                    color: '#299999'
+                                }
+                            }
+                        },
+                        data: countNum
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.hideLoading();
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
+        },
+        error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
+            console.log("ajax错误类型：" + type);
+            console.log(err);
+        }
+    });
+}
 
 /*投票增量分析*/
 function dayUserVoteWorkDataAnalysis() {

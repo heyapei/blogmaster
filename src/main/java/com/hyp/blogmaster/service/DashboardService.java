@@ -16,6 +16,12 @@ import java.util.List;
  */
 public interface DashboardService {
 
+    /**
+     * 查询近一年的活动增量
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getVoteDashboardDataAnalysis();
+
 
     /**
      * 查询近一年的用户投票增量

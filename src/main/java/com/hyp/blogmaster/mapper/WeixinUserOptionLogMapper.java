@@ -19,4 +19,12 @@ public interface WeixinUserOptionLogMapper extends MyMapper<WeixinUserOptionLog>
      */
     List<DashboardDataAnalysisDTO> getDashboardDataAnalysisByOptionType(Integer optionType);
 
+
+    /**
+     * 查询近一年的数据按天统计的数据 除了投票的数量
+     *
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getDashboardDataAnalysisWithoutVote();
+
 }

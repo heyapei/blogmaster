@@ -40,7 +40,6 @@ public class WeixinVoteWorkServiceImpl implements WeixinVoteWorkService {
     @Autowired
     private WeixinVoteUserService weixinVoteUserService;
 
-
     /**
      * 查询近一年的作品按天统计的数据
      *

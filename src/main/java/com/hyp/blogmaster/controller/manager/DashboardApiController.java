@@ -5,6 +5,7 @@ import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
 import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
 import com.hyp.blogmaster.pojo.vo.result.Result;
 import com.hyp.blogmaster.service.DashboardService;
+import com.hyp.blogmaster.service.WeixinUserNoOpenIdIdLogService;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
 import com.hyp.blogmaster.utils.dateutil.DateStyle;
 import com.hyp.blogmaster.utils.dateutil.MyDateUtil;
@@ -39,6 +40,9 @@ public class DashboardApiController {
     private HttpServletRequest httpServletRequest;
     @Autowired
     private MyHttpClientUtil myHttpClientUtil;
+
+    @Autowired
+    private WeixinUserNoOpenIdIdLogService weixinUserNoOpenIdIdLogService;
 
 
     /**
@@ -105,7 +109,7 @@ public class DashboardApiController {
      */
     @GetMapping(value = "get/userViewDataAnalysis")
     public Result getDashboardDataAnalysisUserView() {
-        List<DashboardDataAnalysisDTO> dashboardDataAnalysisByOptionType = dashboardService.getDashboardDataAnalysisByOptionType(0);
+        List<DashboardDataAnalysisDTO> dashboardDataAnalysisByOptionType = weixinUserNoOpenIdIdLogService.getDashboardDataAnalysisWithoutVote();
         if (dashboardDataAnalysisByOptionType == null) {
             return Result.buildResult(Result.Status.RESULE_DATA_NONE);
         }
@@ -155,5 +159,21 @@ public class DashboardApiController {
         }
         return Result.buildResult(Result.Status.OK, userDashboardDataAnalysis);
     }
+
+
+    /**
+     * 查询近一年的活动增量
+     *
+     * @return
+     */
+    @GetMapping(value = "get/voteDashboardDataAnalysis")
+    public Result getVoteDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = dashboardService.getVoteDashboardDataAnalysis();
+        if (userDashboardDataAnalysis == null) {
+            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+        }
+        return Result.buildResult(Result.Status.OK, userDashboardDataAnalysis);
+    }
+
 
 }

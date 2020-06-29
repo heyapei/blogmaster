@@ -23,4 +23,17 @@
     <result column="view_count_num" property="viewCountNum" jdbcType="INTEGER" />
     <result column="vote_count_num" property="voteCountNum" jdbcType="INTEGER" />
   </resultMap>
+    <select id="getVoteDashboardDataAnalysis"
+            resultType="com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO">
+
+       SELECT
+	COUNT(id) AS countNum,
+	DATE_FORMAT(create_time,'%Y-%m-%d') AS dateTime
+FROM
+	weixin_vote_base
+	where  create_time between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
+GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
+
+
+    </select>
 </mapper>

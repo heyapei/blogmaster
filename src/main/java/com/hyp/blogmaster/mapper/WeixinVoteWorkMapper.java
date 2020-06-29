@@ -17,6 +17,13 @@ public interface WeixinVoteWorkMapper extends MyMapper<WeixinVoteWork> {
 
 
     /**
+     * 查询近一年的活动增量
+     *
+     * @return
+     */
+     List<DashboardDataAnalysisDTO> getVoteDashboardDataAnalysis();
+
+    /**
      * 查询近一年的作品按天统计的数据
 
      * @return

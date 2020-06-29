@@ -5,14 +5,13 @@ import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.mapper.WeixinUserOptionLogMapper;
 import com.hyp.blogmaster.mapper.WeixinVoteBaseMapper;
 import com.hyp.blogmaster.pojo.dto.amap.AmapIpToAddressDTO;
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinUserOptionConfig;
 import com.hyp.blogmaster.pojo.modal.WeixinUserOptionLog;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
-import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
 import com.hyp.blogmaster.service.WeixinUserNoOpenIdIdLogService;
 import com.hyp.blogmaster.utils.MyIpMacUtil;
 import com.hyp.blogmaster.utils.amaputil.AmapApiUtil;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author 何亚培
@@ -170,5 +170,22 @@ public class WeixinUserNoOpenIdIdLogServiceImpl implements WeixinUserNoOpenIdIdL
             log.error("根据操作类型统计数据错误，错误原因:{}", e.toString());
             throw new MyDefinitionException("根据操作类型统计数据错误");
         }
+    }
+
+    /**
+     * 查询近一年的数据按天统计的数据 除了投票的数量
+     *
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getDashboardDataAnalysisWithoutVote() {
+        List<DashboardDataAnalysisDTO> dashboardDataAnalysisWithoutVote = null;
+        try {
+            dashboardDataAnalysisWithoutVote = weixinUserOptionLogMapper.getDashboardDataAnalysisWithoutVote();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("查询近一年的数据按天统计的数据除了投票的数量错误，错误理由：{}", e.toString());
+        }
+        return dashboardDataAnalysisWithoutVote;
     }
 }

@@ -64,6 +64,17 @@ public class DashboardServiceImpl implements DashboardService {
 
 
     /**
+     * 查询近一年的活动增量
+     *
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getVoteDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> voteDashboardDataAnalysis = weixinVoteBaseService.getVoteDashboardDataAnalysis();
+        return voteDashboardDataAnalysis;
+    }
+
+    /**
      * 查询近一年的用户投票增量
      *
      * @return
@@ -201,7 +212,16 @@ public class DashboardServiceImpl implements DashboardService {
          */
         weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.INTO_WEiXIN_VOTE.getType());
         Integer intoWeixinVoteNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfigAndTime(weixinUserOptionConfig, startTime, endTime);
-        log.info("查询结果：" + intoWeixinVoteNum);
+        /**
+         * 浏览投票活动
+         */
+        weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.VIEW_WEiXIN_VOTE_WORK.getType());
+        Integer viewWeixinVoteWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfigAndTime(weixinUserOptionConfig, startTime, endTime);
+        /**
+         * 浏览具体的用户作品
+         */
+        weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.INTO_WEiXIN_VOTE_USER_WORK.getType());
+        Integer intoWeixinVoteUserWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfigAndTime(weixinUserOptionConfig, startTime, endTime);
         /**
          * 对具体用户作品投票
          */
@@ -211,7 +231,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         TotalQuantityVO totalQuantityVO = new TotalQuantityVO();
         // 浏览总数
-        totalQuantityVO.setTotalViewNum(intoWeixinVoteNum);
+        totalQuantityVO.setTotalViewNum(intoWeixinVoteNum + viewWeixinVoteWorkNum + intoWeixinVoteUserWorkNum);
         // 投票总数
         totalQuantityVO.setTotalVoteNum(voteWeixinVoteWorkNum);
         // 用户总数
@@ -241,15 +261,14 @@ public class DashboardServiceImpl implements DashboardService {
         /**
          * 浏览投票活动
          */
-       /* weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.VIEW_WEiXIN_VOTE_WORK.getType());
+        weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.VIEW_WEiXIN_VOTE_WORK.getType());
         Integer viewWeixinVoteWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfig(weixinUserOptionConfig);
-        */
         /**
          * 浏览具体的用户作品
          */
-        /*weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.INTO_WEiXIN_VOTE_USER_WORK.getType());
+        weixinUserOptionConfig.setType(WeixinUserOptionConfig.typeEnum.INTO_WEiXIN_VOTE_USER_WORK.getType());
         Integer intoWeixinVoteUserWorkNum = weixinUserNoOpenIdIdLogService.getCountNumByOptionConfig(weixinUserOptionConfig);
-       */
+
         /**
          * 对具体用户作品投票
          */
@@ -259,7 +278,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         TotalQuantityVO totalQuantityVO = new TotalQuantityVO();
         // 浏览总数
-        totalQuantityVO.setTotalViewNum(intoWeixinVoteNum);
+        totalQuantityVO.setTotalViewNum(intoWeixinVoteNum + viewWeixinVoteWorkNum + intoWeixinVoteUserWorkNum);
         // 投票总数
         totalQuantityVO.setTotalVoteNum(voteWeixinVoteWorkNum);
         // 用户总数

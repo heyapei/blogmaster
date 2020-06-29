@@ -8,7 +8,11 @@ import com.hyp.blogmaster.mapper.WeixinMusicMapper;
 import com.hyp.blogmaster.mapper.WeixinVoteBaseMapper;
 import com.hyp.blogmaster.mapper.WeixinVoteConfMapper;
 import com.hyp.blogmaster.mapper.WeixinVoteOrganisersMapper;
-import com.hyp.blogmaster.pojo.modal.*;
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
+import com.hyp.blogmaster.pojo.modal.WeixinMusic;
+import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
+import com.hyp.blogmaster.pojo.modal.WeixinVoteConf;
+import com.hyp.blogmaster.pojo.modal.WeixinVoteOrganisers;
 import com.hyp.blogmaster.pojo.vo.page.weixin.IndexWorksVO;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailByWorkIdVO;
 import com.hyp.blogmaster.service.WeixinVoteBaseService;
@@ -37,6 +41,24 @@ public class WeixinVoteBaseServiceImpl implements WeixinVoteBaseService {
     private WeixinVoteBaseMapper weixinVoteBaseMapper;
     @Autowired
     private WeixinVoteWorkService weixinVoteWorkService;
+
+
+    /**
+     * 查询近一年的活动增量
+     *
+     * @return
+     */
+    @Override
+    public List<DashboardDataAnalysisDTO> getVoteDashboardDataAnalysis() {
+        List<DashboardDataAnalysisDTO> voteDashboardDataAnalysis = null;
+        try {
+            voteDashboardDataAnalysis = weixinVoteBaseMapper.getVoteDashboardDataAnalysis();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("查询近一年的活动增量错误，错误原因：{}", e.toString());
+        }
+        return voteDashboardDataAnalysis;
+    }
 
     /**
      * 根据日期范围查询统计数据

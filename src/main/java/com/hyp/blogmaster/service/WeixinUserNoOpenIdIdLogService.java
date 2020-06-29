@@ -1,11 +1,13 @@
 package com.hyp.blogmaster.service;
 
 
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinUserOptionConfig;
 import com.hyp.blogmaster.pojo.modal.WeixinUserOptionLog;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author 何亚培
@@ -42,5 +44,12 @@ public interface WeixinUserNoOpenIdIdLogService {
      */
     Integer getCountNumByOptionConfigAndTime(WeixinUserOptionConfig weixinUserOptionConfig, Date startTime, Date endTime);
 
+
+    /**
+     * 查询近一年的数据按天统计的数据 除了投票的数量
+     *
+     * @return
+     */
+    List<DashboardDataAnalysisDTO> getDashboardDataAnalysisWithoutVote();
 
 }

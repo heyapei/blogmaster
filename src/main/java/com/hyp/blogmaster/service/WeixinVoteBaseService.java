@@ -2,10 +2,12 @@ package com.hyp.blogmaster.service;
 
 
 import com.github.pagehelper.PageInfo;
+import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailByWorkIdVO;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author 何亚培
@@ -15,6 +17,13 @@ import java.util.Date;
  */
 public interface WeixinVoteBaseService {
 
+
+    /**
+     * 查询近一年的活动增量
+     *
+     * @return
+     */
+    public List<DashboardDataAnalysisDTO> getVoteDashboardDataAnalysis();
 
 
     /**

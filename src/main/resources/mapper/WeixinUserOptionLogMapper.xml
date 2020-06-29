@@ -29,4 +29,15 @@ FROM
 	and create_time between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
 GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
     </select>
+    <select id="getDashboardDataAnalysisWithoutVote"
+            resultType="com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO">
+        SELECT
+	COUNT(id) AS countNum,
+	DATE_FORMAT(create_time,'%Y-%m-%d') AS dateTime
+FROM
+	weixin_user_option_log
+	where option_type in (0,1,2)
+	and create_time between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
+GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
+    </select>
 </mapper>

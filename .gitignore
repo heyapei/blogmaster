@@ -38,3 +38,4 @@ build/
 /src/main/resources/amap-key.properties
 /src/main/resources/redis-key.properties
 /src/main/resources/secret-key.properties
+/generatorConfig.xml

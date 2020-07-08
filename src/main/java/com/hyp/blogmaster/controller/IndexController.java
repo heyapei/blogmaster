@@ -4,10 +4,7 @@ import com.hyp.blogmaster.exception.MyDefinitionException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,9 +20,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Api(value = "首页默认程序")
 public class IndexController {
 
+    /**
+     * 进入首页
+     *
+     * @return
+     */
+    @GetMapping("/admin/index")
+    public String goIndex() {
+        return "forward:/login/admin";
+    }
+
 
     @RequestMapping("/")
-    @ApiOperation(value="根据用户编号获取用户姓名")
+    @ApiOperation(value = "根据用户编号获取用户姓名")
     public String redirect() {
         log.info("用户请求默认首页被跳转到www.yapei.cool");
         return "redirect:http://www.yapei.cool";
@@ -33,9 +40,10 @@ public class IndexController {
 
     /**
      * shiro默认登录地址
+     *
      * @return
      */
-    @RequestMapping(value = "/login",method = {RequestMethod.GET})
+    @RequestMapping(value = "/login", method = {RequestMethod.GET})
     @ApiOperation(value = "默认进入登录页面")
     public String loginPage() {
         return "login/adminLogin";
@@ -44,6 +52,7 @@ public class IndexController {
 
     /**
      * shiro登录后默认首页
+     *
      * @return
      */
     @RequestMapping(value = {"/index", ""})
@@ -54,10 +63,11 @@ public class IndexController {
 
     /**
      * shiro没有权限页面
+     *
      * @return
      */
     @RequestMapping("/403")
-    public String forbidden(){
+    public String forbidden() {
         return "403";
     }
 

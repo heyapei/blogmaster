@@ -29,6 +29,15 @@ import javax.servlet.http.HttpServletRequest;
 @Api(value = "登录程序")
 public class LoginController {
 
+    @RequestMapping(value = "/logout")
+    public String  logout() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            subject.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
+        }
+        return "redirect:login";
+    }
+
 
     @RequestMapping(value = "/adminlogin", method = RequestMethod.POST)
     public String login(HttpServletRequest request, AdminUser user, Model model) {
@@ -60,10 +69,13 @@ public class LoginController {
 
 
     @RequestMapping(value = {"/admin", ""})
-    public String usersPage() {
+    public String usersPage(Model model, HttpServletRequest request) {
+
+        AdminUser adminUser = (AdminUser) request.getSession().getAttribute("userSession");
+        log.info("当前用户：{}", adminUser.toString());
+        model.addAttribute("userName", adminUser.getUserName());
         return "manage/dashboard";
     }
-
 
 
 }

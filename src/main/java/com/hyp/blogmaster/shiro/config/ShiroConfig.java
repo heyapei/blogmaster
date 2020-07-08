@@ -90,6 +90,7 @@ public class ShiroConfig {
         /*放过首页*/
         filterChainDefinitionMap.put("/", "anon");
         filterChainDefinitionMap.put("/login/adminlogin", "anon");
+        filterChainDefinitionMap.put("/login/logout", "anon");
         filterChainDefinitionMap.put("favicon.ico", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/img/**", "anon");

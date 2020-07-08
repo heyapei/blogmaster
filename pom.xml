@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hyp</groupId>
-    <artifactId>blogmaster</artifactId>
+    <artifactId>weixinmanager</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>blogmaster</name>
+    <name>weixinmanager</name>
     <description>后端管理程序 我想讲这个程序作为一个后端管理的小程序来做 前端暂时不想处理了 想做做后端的数据</description>
     <packaging>war</packaging>
 

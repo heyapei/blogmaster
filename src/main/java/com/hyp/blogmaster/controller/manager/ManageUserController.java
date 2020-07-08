@@ -1,13 +1,14 @@
 package com.hyp.blogmaster.controller.manager;
 
-import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
-import com.hyp.blogmaster.pojo.vo.result.Result;
+import com.hyp.blogmaster.shiro.pojo.modal.AdminUser;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author 何亚培
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManageUserController {
 
     @GetMapping
-    public String toMangerUserIndex() {
+    public String toMangerUserIndex(Model model, HttpServletRequest request) {
+        AdminUser adminUser = (AdminUser) request.getSession().getAttribute("userSession");
+        model.addAttribute("userName", adminUser.getUserName());
         return "manage/manageUser";
     }
 

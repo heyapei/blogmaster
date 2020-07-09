@@ -27,6 +27,16 @@ public class ManageUserRestfulController {
     @Autowired
     private WeixinVoteUserService weixinVoteUserService;
 
+
+
+
+
+    /**
+     * 根据userId来更改用户的状态值
+     *
+     * @param userId
+     * @return
+     */
     @PostMapping("changerUserStatus")
     public MyResultVO toMangerUserIndex(@NotNull Integer userId) {
         Integer changeUserEnable;

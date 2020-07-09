@@ -1,8 +1,11 @@
 package com.hyp.blogmaster.service;
 
 
+import com.github.pagehelper.PageInfo;
+import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
+import com.hyp.blogmaster.pojo.query.ManagerUserQuery;
 
 import java.util.Date;
 import java.util.List;
@@ -17,8 +20,21 @@ public interface WeixinVoteUserService {
 
 
     /**
-     * 查询近一年的用户按天统计的数据
+     * * 分页查询
+     * *
+     * * @param managerUserQuery 查询实体类
+     * * @return 分页信息
+     *
+     * @param managerUserQuery
+     * @return
+     * @throws MyDefinitionException
+     */
+    PageInfo getVoteUserByPage(ManagerUserQuery managerUserQuery) throws MyDefinitionException;
 
+
+    /**
+     * 查询近一年的用户按天统计的数据
+     *
      * @return
      */
     List<DashboardDataAnalysisDTO> getUserDashboardDataAnalysis();
@@ -26,8 +42,9 @@ public interface WeixinVoteUserService {
 
     /**
      * 获取总用户数据量根据日期范围
+     *
      * @param startTime 开始时间
-     * @param endTime 结束时间
+     * @param endTime   结束时间
      * @return
      */
     Integer getTotalUserByTime(Date startTime, Date endTime);
@@ -35,6 +52,7 @@ public interface WeixinVoteUserService {
 
     /**
      * 获取总用户数据量
+     *
      * @return
      */
     Integer getTotalUser();

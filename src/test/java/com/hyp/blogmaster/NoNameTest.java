@@ -2,8 +2,12 @@ package com.hyp.blogmaster;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.hyp.blogmaster.mapper.WeixinVoteBaseMapper;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.AreaCodeInfo;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
+import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -20,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -41,6 +46,38 @@ public class NoNameTest {
 
     @Autowired
     private MyHttpClientUtil httpClientUtil;
+
+
+    @Autowired
+    private WeixinVoteBaseMapper weixinVoteBaseMapper;
+
+    @Test
+    public void getVoteWorkByPage1() {
+
+        /*条件查询*/
+        Example example = new Example(WeixinVoteBase.class);
+        Example.Criteria criteria = example.createCriteria();
+        example.orderBy("createTime").desc();
+
+        PageHelper.startPage(1, 2);
+        //TODO　weixinVoteBase用于条件查询
+        List<WeixinVoteBase> weixinVoteBases = null;
+        try {
+            weixinVoteBases = weixinVoteBaseMapper.selectByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //log.info("这里呢？" + weixinVoteBases.toString());
+
+        //log.info("这里没有查询出来数据：" + weixinVoteBases.toString());
+        PageInfo<WeixinVoteBase> pageInfo = new PageInfo(weixinVoteBases);
+        log.info("这样查一下" + pageInfo.toString());
+    }
+
+
+
+
+
     SimpleAccountRealm simpleAccountRealm = new SimpleAccountRealm();
 
 

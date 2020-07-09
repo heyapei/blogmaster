@@ -1,12 +1,16 @@
 package com.hyp.blogmaster.service.impl;
 
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.mapper.WeixinVoteUserMapper;
 import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
+import com.hyp.blogmaster.pojo.query.ManagerUserQuery;
 import com.hyp.blogmaster.service.WeixinVoteUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +33,59 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
     @Autowired
     private WeixinVoteUserMapper weixinVoteUserMapper;
 
+    /**
+     * 分页查询
+     *
+     * @param managerUserQuery 查询实体类
+     * @return 分页信息
+     */
+    @Override
+    public PageInfo getVoteUserByPage(ManagerUserQuery managerUserQuery) throws MyDefinitionException {
+
+
+        Example example = new Example(WeixinVoteUser.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        /*按照openId查询*/
+        if (managerUserQuery.getOpenid() != null && StringUtils.isNotBlank(managerUserQuery.getOpenid())) {
+            criteria.andLike("openId",  "%"+managerUserQuery.getOpenid()+ "%");
+        }
+        /*昵称查询*/
+        if (managerUserQuery.getNickName() != null && StringUtils.isNotBlank(managerUserQuery.getNickName())) {
+            criteria.andLike("nickName",  "%"+managerUserQuery.getNickName()+ "%");
+        }
+        /*排序查询*/
+        if (managerUserQuery.getOrderColumn() != null && StringUtils.isNotBlank(managerUserQuery.getOrderColumn())) {
+            if (managerUserQuery.getOrderBy() != null
+                    && managerUserQuery.getOrderBy().equalsIgnoreCase("asc")) {
+                example.orderBy(managerUserQuery.getOrderColumn()).asc();
+            } else {
+                example.orderBy(managerUserQuery.getOrderColumn()).desc();
+            }
+        }
+
+        PageHelper.startPage(managerUserQuery.getPageNum(), managerUserQuery.getPageSize());
+        List<WeixinVoteUser> weixinVoteUsers = null;
+        try {
+            weixinVoteUsers = weixinVoteUserMapper.selectByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("用户信息分页查询错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("用户信息分页查询错误");
+        }
+
+        // 如果这里需要返回VO，那么这里一定先把查询值放进去，让分页信息存储成功。然后再setList加入VO信息
+        PageInfo<WeixinVoteUser> pageInfo = null;
+        try {
+            pageInfo = new PageInfo(weixinVoteUsers);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("用户信息分页查询结果处理错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("用户信息分页查询结果处理错误");
+        }
+
+        return pageInfo;
+    }
 
     /**
      * 查询近一年的用户按天统计的数据
@@ -42,7 +99,7 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
             userDashboardDataAnalysis = weixinVoteUserMapper.getUserDashboardDataAnalysis();
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("查询近一年的用户按天统计的数据错误，错误原因：{}",e.toString());
+            log.error("查询近一年的用户按天统计的数据错误，错误原因：{}", e.toString());
         }
 
         return userDashboardDataAnalysis;

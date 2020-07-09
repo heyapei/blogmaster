@@ -15,6 +15,7 @@
     <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
     <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
     <head th:include="/inc/commonutil/echarts :: echarts"></head>
+    <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
     <!--table内容居中-->
     <style>
         .table tbody tr td {
@@ -26,12 +27,208 @@
             text-align: center; /** 设置水平方向居中 */
             vertical-align: middle /** 设置垂直方向居中 */
         }
+
+
+        /*翻页*/
+        .jump {
+            margin: 0px 0;
+            float: right;
+        }
+
+        .jump_text {
+            float: right;
+            margin: 0 0 0 5px;
+            line-height: 33px;
+        }
+
+        .jump_text input {
+            width: 40px;
+            border: rgba(212, 212, 212, 1.00) 1px solid;
+            height: 30px;
+            line-height: 33px;
+            background: #fff;
+        }
+
+        /*取消number的样式*/
+        /* google、safari */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+
+        /* 火狐 */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
     </style>
+
+    <script>
+        /*模态框居中*/
+        function centerModals() {
+            $('#myModal').each(function (i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 0 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top);
+            });
+        };
+
+
+        function cp(ipage) {
+            $("#pageNum").val(ipage);
+            $("#userManagerInfo").append("<input type='hidden' name='pageNum' value='" + ipage + "' />");
+            $("#userManagerInfo").submit();
+        }
+
+
+        function goPage(maxPageNum) {
+            var jumpPage = document.getElementById("jumpPage").value;
+            var totalPage = maxPageNum;
+            if (isNaN(jumpPage)) {
+                toastr.error("请输入数字!");
+                return;
+            } else if (jumpPage.length == 0) {
+                toastr.error("请输入页码!");
+            } else if (jumpPage <= 0 || Number(jumpPage) > Number(totalPage)) {
+                toastr.error("非法的页码【" + jumpPage + "】!");
+                document.getElementById("jumpPage").value = "";
+                return;
+            } else {
+                var flag = $("input[name='pageNumber']");
+                flag.remove();
+                $("#userManagerInfo").append("<input type='hidden' name='pageNum' value='" + jumpPage + "' />");
+                $("#userManagerInfo").submit();
+            }
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        /**
+         * 一键粘贴
+         * @param  {String} id [需要粘贴的内容]
+         * @param  {String} attr [需要 copy 的属性，默认是 innerText，主要用途例如赋值 a 标签上的 href 链接]
+         *
+         * range + selection
+         *
+         * 1.创建一个 range
+         * 2.把内容放入 range
+         * 3.把 range 放入 selection
+         *
+         * 注意：参数 attr 不能是自定义属性
+         * 注意：对于 user-select: none 的元素无效
+         * 注意：当 id 为 false 且 attr 不会空，会直接复制 attr 的内容
+         */
+        function copy (id, attr) {
+            let target = null;
+
+            if (attr) {
+                target = document.createElement('div');
+                target.id = 'tempTarget';
+                target.style.opacity = '0';
+                if (id) {
+                    let curNode = document.querySelector('#' + id);
+                    target.innerText = curNode[attr];
+                } else {
+                    target.innerText = attr;
+                }
+                document.body.appendChild(target);
+            } else {
+                target = document.querySelector('#' + id);
+            }
+
+            try {
+                let range = document.createRange();
+                range.selectNode(target);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                //console.log('复制成功')
+                toastr.success("复制成功!");
+            } catch (e) {
+               // console.log('复制失败')
+                toastr.error("复制失败!");
+            }
+
+            if (attr) {
+                // remove temp target
+                target.parentElement.removeChild(target);
+            }
+        }
+    </script>
+
+
+
 </head>
 <body>
 <!--通用头部信息-->
 <div class="container">
     <div th:include="inc/head/simplehead :: header"></div>
+</div>
+
+<div class="container">
+    <div class="row clearfix">
+        <!--中间信息-->
+        <div class="col-md-12 column">
+            <form role="form" class="form-inline" action="/admin/manager/user"
+                  method="post" id="userManagerInfo">
+
+
+                <div class="form-group">
+                    <label for="query-nickName" title="微信昵称">微信昵称</label>
+                    <input class="form-control" id="query-nickName" placeholder="微信昵称" type="text"
+                           name="nickName" th:value="${managerUserQuery?.getNickName()}">
+                </div>
+
+                <div class="form-group">
+                    <label for="query-openid" title="微信唯一标识">微信唯一标识</label>
+                    <input class="form-control" id="query-openid" placeholder="微信唯一标识" type="text"
+                           name="openid" th:value="${managerUserQuery?.getOpenid()}">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="query-pageSize" title="每页所展示的条目数">每页条数</label>
+                    <select class="form-control" id="query-pageSize" name="pageSize">
+                        <option value="5" th:selected="${managerUserQuery?.getPageSize() == 5}">5</option>
+                        <option value="10" th:selected="${managerUserQuery?.getPageSize() == 10}">10</option>
+                        <option value="15" th:selected="${managerUserQuery?.getPageSize() == 15}">15</option>
+                        <option value="20" th:selected="${managerUserQuery?.getPageSize() == 20}">20</option>
+                        <option value="30" th:selected="${managerUserQuery?.getPageSize() == 30}">30</option>
+                        <option value="40" th:selected="${managerUserQuery?.getPageSize() == 40}">40</option>
+                        <option value="50" th:selected="${managerUserQuery?.getPageSize() == 50}">50</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="query-order-column" title="排序字段">排序字段</label>
+                    <select class="form-control" id="query-order-column" name="orderColumn">
+                        <option value="updateTime">最后操作时间</option>
+                        <option value="createTime">创建时间</option>
+                    </select>
+                </div>
+               <!-- <p th:text="${pageInfo}"></p>
+                <p th:text="${managerUserQuery}"></p>-->
+
+
+                <div class="form-group">
+                    <label for="query-order-by" title="排序方式">排序方式</label>
+                    <select class="form-control" id="query-order-by" name="orderBy">
+                        <option value="desc" th:selected="${managerUserQuery?.getOrderBy() == 'desc'}">倒叙</option>
+                        <option value="asc" th:selected="${managerUserQuery?.getOrderBy() == 'asc'}">正序</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">查询</button>
+            </form>
+            <br><br>
+        </div>
+    </div>
 </div>
 <!--用户显示页面-->
 <div class="container">
@@ -56,28 +253,120 @@
                         性别
                     </th>
                     <th>
+                        国家
+                    </th>
+                    <th>
+                        省份
+                    </th>
+                    <th>
                         城市
+                    </th>
+
+                    <th>
+                        创建时间
+                    </th>
+                    <th>
+                        最后上线时间
+                    </th>
+                    <th>
+                        状态
+                    </th>
+                    <th>
+
                     </th>
 
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>
-                        1
+                <tr th:each="weixinVoteUser,seqNum : ${pageInfo?.getList()}">
+                    <td th:text="${weixinVoteUser?.getId()}">
+                    </td>
+                    <td >
+                        <a th:href="|javascript:copy('nickName${weixinVoteUser?.getId()}','innerText')|"
+                           th:id="|nickName${weixinVoteUser?.getId()}|"
+                           th:text="${weixinVoteUser?.getNickName()}">
+                        </a>
                     </td>
                     <td>
-                        TB - Monthly
+                        <a th:href="|javascript:copy('openId${weixinVoteUser?.getOpenId()}','innerText')|"
+                           th:id="|openId${weixinVoteUser?.getOpenId()}|"
+                           th:text="${weixinVoteUser?.getOpenId()}">
+                        </a>
                     </td>
                     <td>
-                        01/04/2012
+                        <a th:href="@{${weixinVoteUser?.getAvatarUrl()}}" target="_blank" title="打开图片">
+                            <img th:src="${weixinVoteUser?.getAvatarUrl()}"
+                                 style="width: 30px;height: 30px">
+                        </a>
+                    </td>
+                    <td th:switch="${weixinVoteUser?.gender}">
+                        <span th:case="1">男</span>
+                        <span th:case="2">女</span>
+                        <span th:case="*">未知</span>
+                    </td>
+                    <td th:text="${weixinVoteUser?.country}">
+
+                    </td>
+                    <td th:text="${weixinVoteUser?.province}">
+                    </td>
+                    <td th:text="${weixinVoteUser?.city}">
+                    </td>
+
+                    <td th:text="${#dates.format(weixinVoteUser?.createTime, 'yyyy/MM/dd hh:mm:ss')}">
+
+                    </td>
+                    <td th:text="${#dates.format(weixinVoteUser?.updateTime, 'yyyy/MM/dd hh:mm:ss')}">
+
+                    </td>
+                    <td th:switch="${weixinVoteUser?.enable}">
+                        <span th:case="0">启用</span>
+                        <span th:case="1">禁用</span>
                     </td>
                     <td>
-                        Default
+                        <a href="javascript:" class='btn btn-xs green' title='修改鞋子信息'
+                        ><span class='glyphicon glyphicon-pencil'></span></a>
                     </td>
                 </tr>
                 </tbody>
             </table>
+
+            <nav>
+
+                <ul class="pagination">
+                    <li th:class="${!pageInfo?.isHasPreviousPage()}?'disabled' : ''"><a th:href="|javascript:cp(${pageInfo?.getPageNum()-1})|">上一页</a>
+                    </li>
+
+                    <li th:each="navigatepageNum : ${pageInfo?.getNavigatepageNums()}"
+                        th:class="${navigatepageNum == pageInfo?.getPageNum()}?'active' : ''">
+                        <a th:href="|javascript:cp(${navigatepageNum})|"
+                           th:text="${navigatepageNum}"></a>
+                    </li>
+
+                    <li th:class="${!pageInfo?.isHasNextPage()}?'disabled' : ''"><a th:href="|javascript:cp(${pageInfo?.getPageNum()+1})|">下一页</a>
+                    </li>
+                </ul>
+
+
+                <div class="jump">
+                            <span class="jump_text">
+                                当前<label th:title="'当前共有'+${pageInfo?.getSize()}+'条目录'"
+                                         th:text="${pageInfo?.getSize()}"></label>/<label
+                                    th:title="'每页显示'+${pageInfo?.getPageSize()}+'条目录'"
+                                    th:text="${pageInfo?.getPageSize()}"></label>条 | <label
+                                    th:title="'当前在第'+${pageInfo?.getPageNum()}+'页'"
+                                    th:text="${pageInfo?.getPageNum()}"></label>/<label
+                                    th:title="'总共'+${pageInfo?.getPages()}+'页'"
+                                    th:text="${pageInfo?.getPages()}"></label>页,跳到
+                                <input type="number" name="jumpPage"
+                                       id="jumpPage" th:value="${pageInfo?.getPageNum()}"
+                                       οnkeyup="this.value=this.value.replace(/[^0-9-]+/,'');">页
+                                <button type="button" class="btn btn-primary btn-sm"
+                                        th:onclick="|javascript:goPage(${pageInfo?.getTotal()})|">跳转</button>
+                            </span>
+                </div>
+
+
+            </nav>
         </div>
     </div>
 </div>

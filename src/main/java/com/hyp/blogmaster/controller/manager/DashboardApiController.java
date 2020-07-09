@@ -3,7 +3,7 @@ package com.hyp.blogmaster.controller.manager;
 import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
 import com.hyp.blogmaster.pojo.vo.page.dashboard.TotalQuantityVO;
-import com.hyp.blogmaster.pojo.vo.result.Result;
+import com.hyp.blogmaster.pojo.vo.result.MyResultVO;
 import com.hyp.blogmaster.service.DashboardService;
 import com.hyp.blogmaster.service.WeixinUserNoOpenIdIdLogService;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
@@ -51,10 +51,10 @@ public class DashboardApiController {
      * @return
      */
     @GetMapping(value = "get/weather")
-    public Result getWeather() {
+    public MyResultVO getWeather() {
         WeatherDTO weatherByIp = dashboardService.getWeatherByIp(httpServletRequest);
         log.info("查询数据{}", weatherByIp.toString());
-        return Result.buildResult(Result.Status.OK, weatherByIp);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, weatherByIp);
     }
 
     /**
@@ -65,9 +65,9 @@ public class DashboardApiController {
      */
     @Deprecated
     @GetMapping(value = "get/dailyWord")
-    public Result getDailyWord() {
+    public MyResultVO getDailyWord() {
         String dailyWordReturn = myHttpClientUtil.getParameter("http://api.hanximeng.com/hitokoto/api.php", null, null, 2000, 2000, 2000);
-        return Result.buildResult(Result.Status.OK, dailyWordReturn);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, dailyWordReturn);
     }
 
     /**
@@ -76,9 +76,9 @@ public class DashboardApiController {
      * @return
      */
     @GetMapping(value = "get/totalQuantity")
-    public Result getTotalQuantity() {
+    public MyResultVO getTotalQuantity() {
         TotalQuantityVO totalQuantityVO = dashboardService.getTotalQuantityVO();
-        return Result.buildResult(Result.Status.OK, totalQuantityVO);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, totalQuantityVO);
     }
 
 
@@ -88,7 +88,7 @@ public class DashboardApiController {
      * @return
      */
     @GetMapping(value = "get/nowDayQuantity")
-    public Result getNowDayQuantity() {
+    public MyResultVO getNowDayQuantity() {
         /*获取当前时间*/
         Calendar calendar = Calendar.getInstance();
         Date time = calendar.getTime();
@@ -99,7 +99,7 @@ public class DashboardApiController {
         Date endTime = MyDateUtil.StringToDate(endTimeString, DateStyle.YYYY_MM_DD_HH_MM_SS);
 
         TotalQuantityVO totalQuantityVO = dashboardService.getTotalQuantityVOByTime(startTime, endTime);
-        return Result.buildResult(Result.Status.OK, totalQuantityVO);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, totalQuantityVO);
     }
 
     /**
@@ -108,12 +108,12 @@ public class DashboardApiController {
      * @return
      */
     @GetMapping(value = "get/userViewDataAnalysis")
-    public Result getDashboardDataAnalysisUserView() {
+    public MyResultVO getDashboardDataAnalysisUserView() {
         List<DashboardDataAnalysisDTO> dashboardDataAnalysisByOptionType = weixinUserNoOpenIdIdLogService.getDashboardDataAnalysisWithoutVote();
         if (dashboardDataAnalysisByOptionType == null) {
-            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+            return MyResultVO.buildResult(MyResultVO.Status.RESULE_DATA_NONE);
         }
-        return Result.buildResult(Result.Status.OK, dashboardDataAnalysisByOptionType);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, dashboardDataAnalysisByOptionType);
     }
 
 
@@ -123,12 +123,12 @@ public class DashboardApiController {
      * @return
      */
     @GetMapping(value = "get/userWorkDataAnalysis")
-    public Result getUserWorkDashboardDataAnalysis() {
+    public MyResultVO getUserWorkDashboardDataAnalysis() {
         List<DashboardDataAnalysisDTO> userWorkDashboardDataAnalysis = dashboardService.getUserWorkDashboardDataAnalysis();
         if (userWorkDashboardDataAnalysis == null) {
-            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+            return MyResultVO.buildResult(MyResultVO.Status.RESULE_DATA_NONE);
         }
-        return Result.buildResult(Result.Status.OK, userWorkDashboardDataAnalysis);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, userWorkDashboardDataAnalysis);
     }
 
     /**
@@ -137,12 +137,12 @@ public class DashboardApiController {
      * @return
      */
     @GetMapping(value = "get/userDashboardDataAnalysis")
-    public Result getUserDashboardDataAnalysis() {
+    public MyResultVO getUserDashboardDataAnalysis() {
         List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = dashboardService.getUserDashboardDataAnalysis();
         if (userDashboardDataAnalysis == null) {
-            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+            return MyResultVO.buildResult(MyResultVO.Status.RESULE_DATA_NONE);
         }
-        return Result.buildResult(Result.Status.OK, userDashboardDataAnalysis);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, userDashboardDataAnalysis);
     }
 
 
@@ -152,12 +152,12 @@ public class DashboardApiController {
      * @return
      */
     @GetMapping(value = "get/workVoteDashboardDataAnalysis")
-    public Result getWorkVoteDashboardDataAnalysis() {
+    public MyResultVO getWorkVoteDashboardDataAnalysis() {
         List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = dashboardService.getWorkVoteDashboardDataAnalysis();
         if (userDashboardDataAnalysis == null) {
-            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+            return MyResultVO.buildResult(MyResultVO.Status.RESULE_DATA_NONE);
         }
-        return Result.buildResult(Result.Status.OK, userDashboardDataAnalysis);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, userDashboardDataAnalysis);
     }
 
 
@@ -167,12 +167,12 @@ public class DashboardApiController {
      * @return
      */
     @GetMapping(value = "get/voteDashboardDataAnalysis")
-    public Result getVoteDashboardDataAnalysis() {
+    public MyResultVO getVoteDashboardDataAnalysis() {
         List<DashboardDataAnalysisDTO> userDashboardDataAnalysis = dashboardService.getVoteDashboardDataAnalysis();
         if (userDashboardDataAnalysis == null) {
-            return Result.buildResult(Result.Status.RESULE_DATA_NONE);
+            return MyResultVO.buildResult(MyResultVO.Status.RESULE_DATA_NONE);
         }
-        return Result.buildResult(Result.Status.OK, userDashboardDataAnalysis);
+        return MyResultVO.buildResult(MyResultVO.Status.OK, userDashboardDataAnalysis);
     }
 
 

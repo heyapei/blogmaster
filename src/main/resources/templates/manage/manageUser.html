@@ -122,7 +122,7 @@
          * 注意：对于 user-select: none 的元素无效
          * 注意：当 id 为 false 且 attr 不会空，会直接复制 attr 的内容
          */
-        function copy (id, attr) {
+        function copy(id, attr) {
             let target = null;
 
             if (attr) {
@@ -150,7 +150,7 @@
                 //console.log('复制成功')
                 toastr.success("复制成功!");
             } catch (e) {
-               // console.log('复制失败')
+                // console.log('复制失败')
                 toastr.error("复制失败!");
             }
 
@@ -159,8 +159,36 @@
                 target.parentElement.removeChild(target);
             }
         }
-    </script>
 
+        function changeUserStatus(userId) {
+            if (confirm("该操作会切换当前用户的状态？")) {
+                $.ajax({
+                    url: "/api/admin/manager/user/changerUserStatus",
+                    data: {userId: userId},
+                    type: "POST",
+                    cache: false,
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success(response.message);
+                        if (response.status == '200') {
+
+                            var innerText = $("#enable" + userId).text();
+                            if (innerText == '禁用') {
+                                $("#enable" + userId).text('启用');
+                            } else {
+                                $("#enable" + userId).text('禁用');
+                            }
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    }
+                });
+
+            }
+        }
+
+
+    </script>
 
 
 </head>
@@ -212,8 +240,8 @@
                         <option value="createTime">创建时间</option>
                     </select>
                 </div>
-               <!-- <p th:text="${pageInfo}"></p>
-                <p th:text="${managerUserQuery}"></p>-->
+                <!-- <p th:text="${pageInfo}"></p>
+                 <p th:text="${managerUserQuery}"></p>-->
 
 
                 <div class="form-group">
@@ -281,7 +309,7 @@
                 <tr th:each="weixinVoteUser,seqNum : ${pageInfo?.getList()}">
                     <td th:text="${weixinVoteUser?.getId()}">
                     </td>
-                    <td >
+                    <td>
                         <a th:href="|javascript:copy('nickName${weixinVoteUser?.getId()}','innerText')|"
                            th:id="|nickName${weixinVoteUser?.getId()}|"
                            th:text="${weixinVoteUser?.getNickName()}">
@@ -318,12 +346,14 @@
                     <td th:text="${#dates.format(weixinVoteUser?.updateTime, 'yyyy/MM/dd hh:mm:ss')}">
 
                     </td>
-                    <td th:switch="${weixinVoteUser?.enable}">
+                    <td th:switch="${weixinVoteUser?.enable}"
+                        th:id="|enable${weixinVoteUser?.getId()}|">
                         <span th:case="0">启用</span>
                         <span th:case="1">禁用</span>
                     </td>
                     <td>
-                        <a href="javascript:" class='btn btn-xs green' title='修改鞋子信息'
+                        <a th:href="|javascript:changeUserStatus(${weixinVoteUser?.getId()})|" class='btn btn-xs green'
+                           title='切换用户状态'
                         ><span class='glyphicon glyphicon-pencil'></span></a>
                     </td>
                 </tr>
@@ -333,7 +363,8 @@
             <nav>
 
                 <ul class="pagination">
-                    <li th:class="${!pageInfo?.isHasPreviousPage()}?'disabled' : ''"><a th:href="|javascript:cp(${pageInfo?.getPageNum()-1})|">上一页</a>
+                    <li th:class="${!pageInfo?.isHasPreviousPage()}?'disabled' : ''"><a
+                            th:href="|javascript:cp(${pageInfo?.getPageNum()-1})|">上一页</a>
                     </li>
 
                     <li th:each="navigatepageNum : ${pageInfo?.getNavigatepageNums()}"
@@ -342,7 +373,8 @@
                            th:text="${navigatepageNum}"></a>
                     </li>
 
-                    <li th:class="${!pageInfo?.isHasNextPage()}?'disabled' : ''"><a th:href="|javascript:cp(${pageInfo?.getPageNum()+1})|">下一页</a>
+                    <li th:class="${!pageInfo?.isHasNextPage()}?'disabled' : ''"><a
+                            th:href="|javascript:cp(${pageInfo?.getPageNum()+1})|">下一页</a>
                     </li>
                 </ul>
 

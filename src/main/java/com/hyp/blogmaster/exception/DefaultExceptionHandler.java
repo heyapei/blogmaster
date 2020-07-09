@@ -11,7 +11,7 @@ package com.hyp.blogmaster.exception;
 
 import com.alibaba.fastjson.JSON;
 import com.hyp.blogmaster.pojo.vo.result.MyError;
-import com.hyp.blogmaster.pojo.vo.result.Result;
+import com.hyp.blogmaster.pojo.vo.result.MyResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -54,7 +54,7 @@ public class DefaultExceptionHandler implements HandlerExceptionResolver {
             log.info("ajax错误类型");
             try {
                 response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().print(JSON.toJSONString(Result.buildResult(Result.Status.INTERNAL_SERVER_ERROR, ret)));
+                response.getWriter().print(JSON.toJSONString(MyResultVO.buildResult(MyResultVO.Status.INTERNAL_SERVER_ERROR, ret)));
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -34,6 +34,63 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
     private WeixinVoteUserMapper weixinVoteUserMapper;
 
     /**
+     * 更新用户状态 如果是0 更新为1 如果是1更新为0
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    @Override
+    public Integer changeUserEnable(Integer userId) throws MyDefinitionException {
+        if (userId == null) {
+            throw new MyDefinitionException("用户ID为空");
+        }
+        WeixinVoteUser userById = getUserById(userId);
+        if (userById == null) {
+            throw new MyDefinitionException("未查找到当前用户");
+        }
+        if (userById.getEnable() == 0) {
+            userById.setEnable(1);
+        } else {
+            userById.setEnable(0);
+        }
+        Integer updateSelectiveWeixinUser = null;
+        try {
+            updateSelectiveWeixinUser = updateSelectiveWeixinUser(userById);
+        } catch (MyDefinitionException e) {
+            e.printStackTrace();
+            throw new MyDefinitionException(e.getMessage());
+        }
+        if (updateSelectiveWeixinUser == null || updateSelectiveWeixinUser <= 0) {
+            throw new MyDefinitionException("更新用户状态信息错误");
+        }
+        return updateSelectiveWeixinUser;
+    }
+
+
+    /**
+     * 根据ID更新用户信息只更新用户有效信息
+     *
+     * @param weixinVoteUser
+     * @return
+     * @throws MyDefinitionException
+     */
+    @Override
+    public Integer updateSelectiveWeixinUser(WeixinVoteUser weixinVoteUser) throws MyDefinitionException {
+        if (weixinVoteUser == null || weixinVoteUser.getId() == null) {
+            throw new MyDefinitionException("根据ID更新用户信息只更新用户有效信息错误，参数不正确");
+        }
+        Integer i = null;
+        try {
+            i = weixinVoteUserMapper.updateByPrimaryKey(weixinVoteUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("根据ID更新用户信息只更新用户有效信息，执行操作错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("根据ID更新用户信息只更新用户有效信息，执行操作错误");
+        }
+        return i;
+    }
+
+    /**
      * 分页查询
      *
      * @param managerUserQuery 查询实体类
@@ -48,11 +105,11 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
 
         /*按照openId查询*/
         if (managerUserQuery.getOpenid() != null && StringUtils.isNotBlank(managerUserQuery.getOpenid())) {
-            criteria.andLike("openId",  "%"+managerUserQuery.getOpenid()+ "%");
+            criteria.andLike("openId", "%" + managerUserQuery.getOpenid() + "%");
         }
         /*昵称查询*/
         if (managerUserQuery.getNickName() != null && StringUtils.isNotBlank(managerUserQuery.getNickName())) {
-            criteria.andLike("nickName",  "%"+managerUserQuery.getNickName()+ "%");
+            criteria.andLike("nickName", "%" + managerUserQuery.getNickName() + "%");
         }
         /*排序查询*/
         if (managerUserQuery.getOrderColumn() != null && StringUtils.isNotBlank(managerUserQuery.getOrderColumn())) {

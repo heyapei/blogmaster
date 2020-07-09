@@ -8,6 +8,8 @@ import com.hyp.blogmaster.mapper.WeixinVoteBaseMapper;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.AreaCodeInfo;
 import com.hyp.blogmaster.pojo.dto.weather.sojson.WeatherDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
+import com.hyp.blogmaster.pojo.vo.result.MyResultCode;
+import com.hyp.blogmaster.pojo.vo.result.MyResultVO;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -52,6 +54,30 @@ public class NoNameTest {
     private WeixinVoteBaseMapper weixinVoteBaseMapper;
 
     @Test
+    public void testResult() {
+        MyResultVO<Object> objectResult = MyResultVO.genFailResult("!2");
+        log.info("信息：{}", objectResult.toString());
+
+         objectResult = MyResultVO.genFailResult(MyResultCode.ERROR);
+        log.info("信息：{}", objectResult.toString());
+
+        objectResult = MyResultVO.genFailResult(MyResultCode.ERROR,"123");
+        log.info("信息：{}", objectResult.toString());
+
+        objectResult = MyResultVO.genFailResult("12312cuowu","123");
+        log.info("信息：{}", objectResult.toString());
+
+        objectResult = MyResultVO.genSuccessResult();
+        log.info("信息：{}", objectResult.toString());
+
+        objectResult = MyResultVO.genSuccessResult("123");
+        log.info("信息：{}", objectResult.toString());
+
+        objectResult = MyResultVO.genSuccessResult("123","123");
+        log.info("信息：{}", objectResult.toString());
+    }
+
+    @Test
     public void getVoteWorkByPage1() {
 
         /*条件查询*/
@@ -73,9 +99,6 @@ public class NoNameTest {
         PageInfo<WeixinVoteBase> pageInfo = new PageInfo(weixinVoteBases);
         log.info("这样查一下" + pageInfo.toString());
     }
-
-
-
 
 
     SimpleAccountRealm simpleAccountRealm = new SimpleAccountRealm();

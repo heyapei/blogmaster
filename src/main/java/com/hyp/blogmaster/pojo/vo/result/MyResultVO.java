@@ -15,7 +15,16 @@ package com.hyp.blogmaster.pojo.vo.result;
  *
  * @author heyapei
  */
-public class Result<T> {
+public class MyResultVO<T> {
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "status='" + status + '\'' +
+                ", message='" + message + '\'' +
+                ", data=" + data +
+                '}';
+    }
 
     /**
      * 状态码
@@ -59,18 +68,100 @@ public class Result<T> {
         return data;
     }
 
-    private Result(String status, String message, T data) {
+
+    /**
+     * 封装默认错误200 信息自定义
+     *
+     * @param message 自定义成功的信息
+     * @return
+     */
+    public static <T> MyResultVO<T> genSuccessResult(String message) {
+        return new MyResultVO(Status.OK.getCode(), message);
+    }
+
+    /**
+     * 封装带data的成功返回值 信息自定义
+     *
+     * @param data 返回的data数据
+     * @return
+     */
+    public static <T> MyResultVO<T> genSuccessResult(String message, T data) {
+        return new MyResultVO(Status.OK.getCode(), message, data);
+    }
+
+    /**
+     * 封装带data的成功返回值
+     *
+     * @param data 返回的data数据
+     * @return
+     */
+    public static <T> MyResultVO<T> genSuccessResult(T data) {
+        return new MyResultVO(Status.OK.getCode(), Status.OK.getReason(), data);
+    }
+
+    /**
+     * 封装不带data的成功返回值
+     *
+     * @return
+     */
+    public static <T> MyResultVO<T> genSuccessResult() {
+        return new MyResultVO(Status.OK.getCode(), Status.OK.getReason());
+    }
+
+    /**
+     * 封装不带data的错误返回示例
+     *
+     * @param status 状态值 枚举
+     * @return
+     */
+    public static <T> MyResultVO<T> genFailResult(MyResultCode status) {
+        return new MyResultVO(status.getCode(), status.getReason());
+    }
+
+    /**
+     * 封装默认错误500 信息自定义
+     *
+     * @param message 自定义错误的信息
+     * @return
+     */
+    public static <T> MyResultVO<T> genFailResult(String message) {
+        return new MyResultVO(Status.INTERNAL_SERVER_ERROR.getCode(), message);
+    }
+
+    /**
+     * 封装带有data的错误返回示例
+     *
+     * @param status 状态值 枚举
+     * @param data   返回的data数据
+     * @return
+     */
+    public static <T> MyResultVO<T> genFailResult(MyResultCode status, T data) {
+        return new MyResultVO(status.getCode(), status.getReason(), data);
+    }
+
+    /**
+     * 封装带有data的错误返回示例 默认500错误，带自定义信息
+     *
+     * @param message 自定义错误信息
+     * @param data    返回的data数据
+     * @return
+     */
+    public static <T> MyResultVO<T> genFailResult(String message, T data) {
+        return new MyResultVO(Status.INTERNAL_SERVER_ERROR.getCode(), message, data);
+    }
+
+    private MyResultVO(String status, String message, T data) {
         this.status = status;
         this.message = message;
         this.data = data;
     }
 
-    private Result(String status, String message) {
+    private MyResultVO(String status, String message) {
         this.status = status;
         this.message = message;
     }
 
-    private Result(String message) {
+    private MyResultVO(String message) {
         this.message = message;
     }
 
@@ -82,8 +173,8 @@ public class Result<T> {
      * @param data    数据
      * @return 结构数据
      */
-    public static <T> Result<T> buildResult(Status status, String message, T data) {
-        return new Result<T>(status.getCode(), message, data);
+    public static <T> MyResultVO<T> buildResult(Status status, String message, T data) {
+        return new MyResultVO<T>(status.getCode(), message, data);
     }
 
     /**
@@ -93,8 +184,8 @@ public class Result<T> {
      * @param message 消息内容
      * @return 结构数据
      */
-    public static <T> Result<T> buildResult(Status status, String message) {
-        return new Result<T>(status.getCode(), message);
+    public static <T> MyResultVO<T> buildResult(Status status, String message) {
+        return new MyResultVO<T>(status.getCode(), message);
     }
 
     /**
@@ -104,8 +195,8 @@ public class Result<T> {
      * @param data   数据
      * @return 结构数据
      */
-    public static <T> Result<T> buildResult(Status status, T data) {
-        return new Result<T>(status.getCode(), status.getReason(), data);
+    public static <T> MyResultVO<T> buildResult(Status status, T data) {
+        return new MyResultVO<T>(status.getCode(), status.getReason(), data);
     }
 
     /**
@@ -114,8 +205,8 @@ public class Result<T> {
      * @param status 状态
      * @return 结构数据
      */
-    public static <T> Result<T> buildResult(Status status) {
-        return new Result<T>(status.getCode(), status.getReason());
+    public static <T> MyResultVO<T> buildResult(Status status) {
+        return new MyResultVO<T>(status.getCode(), status.getReason());
     }
 
     /**

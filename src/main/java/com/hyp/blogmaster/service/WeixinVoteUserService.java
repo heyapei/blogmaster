@@ -20,6 +20,24 @@ public interface WeixinVoteUserService {
 
 
     /**
+     * 更新用户状态 如果是0 更新为1 如果是1更新为0
+     * @param userId
+     * @return
+     * @throws MyDefinitionException
+     */
+    Integer changeUserEnable(Integer userId) throws MyDefinitionException;
+
+
+    /**
+     * 根据ID更新用户信息只更新用户有效信息
+     * @param weixinVoteUser
+     * @return
+     * @throws MyDefinitionException
+     */
+    Integer updateSelectiveWeixinUser(WeixinVoteUser weixinVoteUser) throws MyDefinitionException;
+
+
+    /**
      * * 分页查询
      * *
      * * @param managerUserQuery 查询实体类

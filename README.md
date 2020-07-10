@@ -8,6 +8,16 @@
 Java代码12940行
 
 新增了活动管理的页面 目前只做了简单的页面展示以及创建人以及公司信息的展示
+
+JS中要是想要使用 thymeleaf的东西 需要两步走
+1.   <script th:inline="javascript"> 
+2.  /*<![CDATA[*/
+     let organisersImgUrl = [[#{weixin.organisers.img.url}]];
+   /*]]>*/
+这样就获得了 messages.properties中的weixin.organisers.img.url内容
+可以在下面的js中使用了
+ 
+还添加modal窗口展示图片的功能
 ```
 
 

@@ -242,13 +242,29 @@
 
         }
 
+        /**
+         * 时间戳转日期格式字符串
+         * @param timeStamp
+         * @returns {string}
+         */
+        function timeStampToDateString(timeStamp) {
+            let date = new Date(timeStamp + 8 * 3600 * 1000);
+            return date.toJSON().substr(0, 19).replace('T', ' ').replace(/-/g, '-');
+        }
+
+
+    </script>
+
+
+    <script th:inline="javascript">
+
+
         function getOrganisersInfoById(organisersId, organisersName) {
+
             if (organisersId == null) {
                 toastr.error("请确认你已选中了公司");
                 return;
             }
-
-            showMyCustomLoading("正在为您打开公司 '" + organisersName + "' 的信息");
 
 
             $.ajax({
@@ -261,18 +277,11 @@
                     hideMyCustomLoading();
 
                     if (response.status == '200') {
+
+                        /*<![CDATA[*/
+                        let organisersImgUrl = [[#{weixin.organisers.img.url}]];
+                        /*]]>*/
                         $('#organisersInfoByIdModal').modal("show");
-
-                        // 比如需要这样的格式 yyyy-MM-dd hh:mm:ss
-                        var date = new Date(1398250549490);
-                        Y = date.getFullYear() + '-';
-                        M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-                        D = date.getDate() + ' ';
-                        h = date.getHours() + ':';
-                        m = date.getMinutes() + ':';
-                        s = date.getSeconds();
-                        console.log(Y + M + D + h + m + s); //呀麻碟
-
 
                         let organisersInfoByIdModalBodyHtml = "<tr>" +
                             "<td><b>公司ID</b></td>" +
@@ -287,16 +296,20 @@
                         organisersInfoByIdModalBodyHtml = organisersInfoByIdModalBodyHtml + "<tr>" +
                             "<td><b>公司logo</b></td>" +
                             "<td>" +
-                            "<img src='" + response.data.logoImg
-                            + "' style='width: 30px;height: 30px'>"
+                            "<img  src='" + organisersImgUrl + response.data.logoImg
+                            + "' style='width: 30px;height: 30px;cursor:pointer'" +
+                            " onclick=\"javascript:showImage('" +
+                            organisersImgUrl + response.data.logoImg + "');\" >"
                             + "</td>" +
                             "</tr>";
 
                         organisersInfoByIdModalBodyHtml = organisersInfoByIdModalBodyHtml + "<tr>" +
                             "<td><b>公司微信</b></td>" +
                             "<td>" +
-                            "<img src='" + response.data.weixinQrCode
-                            + "' style='width: 30px;height: 30px'>"
+                            "<img src='" + organisersImgUrl + response.data.weixinQrCode
+                            + "' style='width: 30px;height: 30px;cursor:pointer'" +
+                            " onclick=\"javascript:showImage('" +
+                            organisersImgUrl + response.data.weixinQrCode + "');\" >"
                             + "</td>" +
                             "</tr>";
 
@@ -314,17 +327,11 @@
             });
         }
 
-
-        /**
-         * 时间戳转日期格式字符串
-         * @param timeStamp
-         * @returns {string}
-         */
-        function timeStampToDateString(timeStamp) {
-            let date = new Date(timeStamp + 8 * 3600 * 1000);
-            return date.toJSON().substr(0, 19).replace('T', ' ').replace(/-/g, '-');
+        //显示大图
+        function showImage(source) {
+            $("#ShowImage_Form").find("#img_show").html("<image src='" + source + "' class='carousel-inner img-responsive img-rounded'  />");
+            $("#ShowImage_Form").modal();
         }
-
 
     </script>
 
@@ -341,7 +348,7 @@
 
 
 <!--公司信息展示-->
-<div class="modal fade" id="organisersInfoByIdModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="organisersInfoByIdModal" role="dialog" aria-labelledby="organisersInfoByIdModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -378,8 +385,44 @@
     </div>
 </div>
 
+﻿
+<!--<div id="ShowImage_Form" class="modal">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button"></button>
+    </div>
+    <div class="modal-body">
+        <div id="img_show">
+        </div>
+    </div>
+</div>-->
+
+
+<!--<div class="modal fade" id="ShowImage_Form" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="img_show">
+                </div>
+            </div>
+</div>-->
+
+<div class="modal fade" id="ShowImage_Form" role="dialog" aria-labelledby="ShowImage_Form" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div id="img_show">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!--个人用户信息展示-->
-<div class="modal fade" id="voteUserInfoByIdModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="voteUserInfoByIdModal" role="dialog" aria-labelledby="voteUserInfoByIdModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -601,8 +644,9 @@
                         <td th:text="${activityManagerDTO?.activeName}">
                         </td>
                         <td>
-                            <a th:href="@{${activityManagerDTO?.activeImg}}" target="_blank" title="打开图片">
-                                <img th:src="${activityManagerDTO?.activeImg}"
+                            <a th:href=" @{ #{weixin.user.img.url} + ${activityManagerDTO?.activeImg}}" target="_blank"
+                               title="打开图片">
+                                <img th:src="#{weixin.user.img.url} + ${activityManagerDTO?.activeImg}"
                                      style="width: 30px;height: 30px">
                             </a>
                         </td>

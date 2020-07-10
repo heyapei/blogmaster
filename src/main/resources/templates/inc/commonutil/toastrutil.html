@@ -32,6 +32,73 @@
         };
     </script>
 
+
 </head>
+
+<div th:fragment="myCustomLoad">
+    <div class="modal fade" id="myCustomLoadingModal" backdrop="static" keyboard="false">
+        　　
+        <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+
+            <div class="progress progress-striped active" id="myCustomLoadProgressbarDiv">
+                <div class="progress-bar progress-bar-success" role="progressbar"
+                     aria-valuemin="0" aria-valuemax="150" id="myCustomLoadProgressbar"
+                     style="width: 0%;">
+                    <!-- <span></span>-->
+                </div>
+            </div>
+            　　　　<h5 id="myCustomLoadText"><b>loading...</b></h5>
+            　　
+        </div>
+    </div>
+
+    <style>
+        .myCustomLoading-rotate-180 {
+            -moz-transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+        }
+    </style>
+    <script type="text/javascript">
+        var showMyCustomLoadingTime;
+        function showMyCustomLoading(loadText) {
+            var value = 0;
+            showMyCustomLoadingTime =   setInterval(function (e) {
+                //console.log(value)
+                if (value != 150) {
+                    value = parseInt(value) + 10;
+                    /*$("#myCustomLoadProgressbar").css("width", value + "%").text(value + "%");*/
+                    $("#myCustomLoadProgressbar").css("width", value + "%");
+                    if (value >= 0 && value <= 30) {
+                        $("#myCustomLoadProgressbar").addClass("progress-bar-danger");
+                    } else if (value >= 30 && value <= 60) {
+                        $("#myCustomLoadProgressbar").removeClass("progress-bar-danger");
+                        $("#myCustomLoadProgressbar").addClass("progress-bar-warning");
+                    } else if (value >= 60 && value <= 90) {
+                        $("#myCustomLoadProgressbar").removeClass("progress-bar-warning");
+                        $("#myCustomLoadProgressbar").addClass("progress-bar-info");
+                    } else if (value >= 90) {
+                        $("#myCustomLoadProgressbar").removeClass("progress-bar-info");
+                        $("#myCustomLoadProgressbar").addClass("progress-bar-success");
+                    }
+                } else {
+                    $("#myCustomLoadProgressbarDiv").toggleClass("myCustomLoading-rotate-180");
+                    value = -100;
+                }
+            }, 100);
+
+            if (loadText != null) {
+                $("#myCustomLoadText").html(loadText);
+            }
+            $('#myCustomLoadingModal').modal({backdrop: 'static', keyboard: false});
+        }
+
+        function hideMyCustomLoading() {
+            $('#myCustomLoadingModal').modal('hide');
+            window.clearInterval(showMyCustomLoadingTime)
+        }
+    </script>
+</div>
 
 </html>

@@ -8,6 +8,10 @@ bootstrap中table如果太长了还真的没法自适应好像
 table的内容全在这个里面
 </div>
 
+
+自定义了一个等待弹窗 
+showMyCustomLoading
+
 ```
 
 

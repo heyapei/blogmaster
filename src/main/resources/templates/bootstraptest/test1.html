@@ -1,0 +1,103 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/7/10 18:07 
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
+    <head th:include="/inc/commonutil/echarts :: echarts"></head>
+    <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
+    <script>
+        function test1() {
+            showMyCustomLoading("你好我们在努力");
+            //showMyCustomLoading();
+            //hideMyCustomLoading();
+        }
+        function sleep(n) {
+            var start = new Date().getTime();
+            //  console.log('休眠前：' + start);
+            while (true) {
+                if (new Date().getTime() - start > n) {
+                    break;
+                }
+            }
+            // console.log('休眠后：' + new Date().getTime());
+        }
+    </script>
+</head>
+<body>
+<!--引入等待层-->
+<div th:include="/inc/commonutil/toastrutil :: myCustomLoad"></div>
+<a href="javascript:test1()">启动</a>
+
+<!--<div class="modal fade" id="myCustomLoadingModal" backdrop="static" keyboard="false">
+    　　
+    <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+
+        <div class="progress progress-striped active" id="myCustomLoadProgressbarDiv">
+            <div class="progress-bar progress-bar-success" role="progressbar"
+                 aria-valuemin="0" aria-valuemax="150" id="myCustomLoadProgressbar"
+                 style="width: 0%;">
+                &lt;!&ndash; <span></span>&ndash;&gt;
+            </div>
+        </div>
+        　　　　<h5 id="myCustomLoadText"><b>loading...</b></h5>
+        　　
+    </div>
+</div>
+
+<style>
+    .myCustomLoading-rotate-180 {
+        -moz-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+    }
+</style>
+<script type="text/javascript">
+    function showMyCustomLoading(loadText) {
+        var value = 0;
+        setInterval(function (e) {
+            console.log(value)
+            if (value != 150) {
+                value = parseInt(value) + 10;
+                /*$("#myCustomLoadProgressbar").css("width", value + "%").text(value + "%");*/
+                $("#myCustomLoadProgressbar").css("width", value + "%");
+                if (value >= 0 && value <= 30) {
+                    $("#myCustomLoadProgressbar").addClass("progress-bar-danger");
+                } else if (value >= 30 && value <= 60) {
+                    $("#myCustomLoadProgressbar").removeClass("progress-bar-danger");
+                    $("#myCustomLoadProgressbar").addClass("progress-bar-warning");
+                } else if (value >= 60 && value <= 90) {
+                    $("#myCustomLoadProgressbar").removeClass("progress-bar-warning");
+                    $("#myCustomLoadProgressbar").addClass("progress-bar-info");
+                } else if (value >= 90 ) {
+                    $("#myCustomLoadProgressbar").removeClass("progress-bar-info");
+                    $("#myCustomLoadProgressbar").addClass("progress-bar-success");
+                }
+            } else {
+                $("#myCustomLoadProgressbarDiv").toggleClass("myCustomLoading-rotate-180");
+                value = -100;
+            }
+        }, 100);
+
+        if (loadText != null) {
+            $("#myCustomLoadText").html(loadText);
+        }
+        $('#myCustomLoadingModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function hideMyCustomLoading() {
+        $('#myCustomLoadingModal').modal('hide');
+    }
+</script>-->
+</body>
+</html>

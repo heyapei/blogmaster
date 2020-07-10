@@ -1,5 +1,15 @@
 # 2020年5月31日 管理后台程序 开启
 
+```$xslt
+2020年7月10日
+bootstrap中table如果太长了还真的没法自适应好像
+需要用div加上标签包裹起来这样table才会自适应
+<div class="table-responsive">
+table的内容全在这个里面
+</div>
+
+```
+
 
 ```$xslt
 

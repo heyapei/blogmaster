@@ -111,6 +111,12 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
         if (managerUserQuery.getNickName() != null && StringUtils.isNotBlank(managerUserQuery.getNickName())) {
             criteria.andLike("nickName", "%" + managerUserQuery.getNickName() + "%");
         }
+
+        /*是否启用 按照用户状态*/
+        if (managerUserQuery.getEnable() != null) {
+            criteria.andEqualTo("enable", managerUserQuery.getEnable());
+        }
+
         /*排序查询*/
         if (managerUserQuery.getOrderColumn() != null && StringUtils.isNotBlank(managerUserQuery.getOrderColumn())) {
             if (managerUserQuery.getOrderBy() != null

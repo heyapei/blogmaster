@@ -209,26 +209,21 @@
                 <div class="form-group">
                     <label for="query-nickName" title="微信昵称">微信昵称</label>
                     <input class="form-control" id="query-nickName" placeholder="微信昵称" type="text"
-                           name="nickName" th:value="${managerUserQuery?.getNickName()}">
+                           name="nickName" th:value="${managerUserQuery?.getNickName()}" style="width: 100px">
                 </div>
 
                 <div class="form-group">
                     <label for="query-openid" title="微信唯一标识">微信唯一标识</label>
                     <input class="form-control" id="query-openid" placeholder="微信唯一标识" type="text"
-                           name="openid" th:value="${managerUserQuery?.getOpenid()}">
+                           name="openid" th:value="${managerUserQuery?.getOpenid()}" >
                 </div>
 
-
                 <div class="form-group">
-                    <label for="query-pageSize" title="每页所展示的条目数">每页条数</label>
-                    <select class="form-control" id="query-pageSize" name="pageSize">
-                        <option value="5" th:selected="${managerUserQuery?.getPageSize() == 5}">5</option>
-                        <option value="10" th:selected="${managerUserQuery?.getPageSize() == 10}">10</option>
-                        <option value="15" th:selected="${managerUserQuery?.getPageSize() == 15}">15</option>
-                        <option value="20" th:selected="${managerUserQuery?.getPageSize() == 20}">20</option>
-                        <option value="30" th:selected="${managerUserQuery?.getPageSize() == 30}">30</option>
-                        <option value="40" th:selected="${managerUserQuery?.getPageSize() == 40}">40</option>
-                        <option value="50" th:selected="${managerUserQuery?.getPageSize() == 50}">50</option>
+                    <label for="query-enable" title="用户状态">状态</label>
+                    <select class="form-control" id="query-enable" name="enable">
+                        <option value="">全部</option>
+                        <option value="0" th:selected="${managerUserQuery?.getEnable() == 0}">启用</option>
+                        <option value="1" th:selected="${managerUserQuery?.getEnable() == 1}">禁用</option>
                     </select>
                 </div>
 
@@ -236,8 +231,8 @@
                 <div class="form-group">
                     <label for="query-order-column" title="排序字段">排序字段</label>
                     <select class="form-control" id="query-order-column" name="orderColumn">
-                        <option value="updateTime">最后操作时间</option>
-                        <option value="createTime">创建时间</option>
+                        <option value="updateTime" th:selected="${managerUserQuery?.getOrderColumn() == 'updateTime'}">最后操作时间</option>
+                        <option value="createTime" th:selected="${managerUserQuery?.getOrderColumn() == 'createTime'}">创建时间</option>
                     </select>
                 </div>
                 <!-- <p th:text="${pageInfo}"></p>
@@ -252,7 +247,20 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn">查询</button>
+                <div class="form-group">
+                    <label for="query-pageSize" title="每页所展示的条目数">每页条数</label>
+                    <select class="form-control" id="query-pageSize" name="pageSize">
+                        <option value="5" th:selected="${managerUserQuery?.getPageSize() == 5}">5</option>
+                        <option value="10" th:selected="${managerUserQuery?.getPageSize() == 10}">10</option>
+                        <option value="15" th:selected="${managerUserQuery?.getPageSize() == 15}">15</option>
+                        <option value="20" th:selected="${managerUserQuery?.getPageSize() == 20}">20</option>
+                        <option value="30" th:selected="${managerUserQuery?.getPageSize() == 30}">30</option>
+                        <option value="40" th:selected="${managerUserQuery?.getPageSize() == 40}">40</option>
+                        <option value="50" th:selected="${managerUserQuery?.getPageSize() == 50}">50</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success">查询</button>
             </form>
             <br><br>
         </div>
@@ -262,103 +270,106 @@
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <table class="table table-hover table-bordered">
-                <thead>
-                <tr>
-                    <th>
-                        编号
-                    </th>
-                    <th>
-                        微信名
-                    </th>
-                    <th>
-                        OpenId
-                    </th>
-                    <th>
-                        头像
-                    </th>
-                    <th>
-                        性别
-                    </th>
-                    <th>
-                        国家
-                    </th>
-                    <th>
-                        省份
-                    </th>
-                    <th>
-                        城市
-                    </th>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>
+                            编号
+                        </th>
+                        <th>
+                            微信名
+                        </th>
+                        <th>
+                            OpenId
+                        </th>
+                        <th>
+                            头像
+                        </th>
+                        <th>
+                            性别
+                        </th>
+                        <th>
+                            国家
+                        </th>
+                        <th>
+                            省份
+                        </th>
+                        <th>
+                            城市
+                        </th>
 
-                    <th>
-                        创建时间
-                    </th>
-                    <th>
-                        最后上线时间
-                    </th>
-                    <th>
-                        状态
-                    </th>
-                    <th>
+                        <th>
+                            创建时间
+                        </th>
+                        <th>
+                            最后上线时间
+                        </th>
+                        <th>
+                            状态
+                        </th>
+                        <th>
 
-                    </th>
+                        </th>
 
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="weixinVoteUser,seqNum : ${pageInfo?.getList()}">
-                    <td th:text="${weixinVoteUser?.getId()}">
-                    </td>
-                    <td>
-                        <a th:href="|javascript:copy('nickName${weixinVoteUser?.getId()}','innerText')|"
-                           th:id="|nickName${weixinVoteUser?.getId()}|"
-                           th:text="${weixinVoteUser?.getNickName()}">
-                        </a>
-                    </td>
-                    <td>
-                        <a th:href="|javascript:copy('openId${weixinVoteUser?.getOpenId()}','innerText')|"
-                           th:id="|openId${weixinVoteUser?.getOpenId()}|"
-                           th:text="${weixinVoteUser?.getOpenId()}">
-                        </a>
-                    </td>
-                    <td>
-                        <a th:href="@{${weixinVoteUser?.getAvatarUrl()}}" target="_blank" title="打开图片">
-                            <img th:src="${weixinVoteUser?.getAvatarUrl()}"
-                                 style="width: 30px;height: 30px">
-                        </a>
-                    </td>
-                    <td th:switch="${weixinVoteUser?.gender}">
-                        <span th:case="1">男</span>
-                        <span th:case="2">女</span>
-                        <span th:case="*">未知</span>
-                    </td>
-                    <td th:text="${weixinVoteUser?.country}">
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="weixinVoteUser,seqNum : ${pageInfo?.getList()}">
+                        <td th:text="${weixinVoteUser?.getId()}">
+                        </td>
+                        <td>
+                            <a th:href="|javascript:copy('nickName${weixinVoteUser?.getId()}','innerText')|"
+                               th:id="|nickName${weixinVoteUser?.getId()}|"
+                               th:text="${weixinVoteUser?.getNickName()}">
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="|javascript:copy('openId${weixinVoteUser?.getOpenId()}','innerText')|"
+                               th:id="|openId${weixinVoteUser?.getOpenId()}|"
+                               th:text="${weixinVoteUser?.getOpenId()}">
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{${weixinVoteUser?.getAvatarUrl()}}" target="_blank" title="打开图片">
+                                <img th:src="${weixinVoteUser?.getAvatarUrl()}"
+                                     style="width: 30px;height: 30px">
+                            </a>
+                        </td>
+                        <td th:switch="${weixinVoteUser?.gender}">
+                            <span th:case="1">男</span>
+                            <span th:case="2">女</span>
+                            <span th:case="*">未知</span>
+                        </td>
+                        <td th:text="${weixinVoteUser?.country}">
 
-                    </td>
-                    <td th:text="${weixinVoteUser?.province}">
-                    </td>
-                    <td th:text="${weixinVoteUser?.city}">
-                    </td>
+                        </td>
+                        <td th:text="${weixinVoteUser?.province}">
+                        </td>
+                        <td th:text="${weixinVoteUser?.city}">
+                        </td>
 
-                    <td th:text="${#dates.format(weixinVoteUser?.createTime, 'yyyy/MM/dd hh:mm:ss')}">
+                        <td th:text="${#dates.format(weixinVoteUser?.createTime, 'yyyy/MM/dd hh:mm:ss')}">
 
-                    </td>
-                    <td th:text="${#dates.format(weixinVoteUser?.updateTime, 'yyyy/MM/dd hh:mm:ss')}">
+                        </td>
+                        <td th:text="${#dates.format(weixinVoteUser?.updateTime, 'yyyy/MM/dd hh:mm:ss')}">
 
-                    </td>
-                    <td th:switch="${weixinVoteUser?.enable}"
-                        th:id="|enable${weixinVoteUser?.getId()}|">
-                        <span th:case="0">启用</span>
-                        <span th:case="1">禁用</span>
-                    </td>
-                    <td>
-                        <a th:href="|javascript:changeUserStatus(${weixinVoteUser?.getId()})|" class='btn btn-xs green'
-                           title='切换用户状态'
-                        ><span class='glyphicon glyphicon-pencil'></span></a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                        </td>
+                        <td th:switch="${weixinVoteUser?.enable}"
+                            th:id="|enable${weixinVoteUser?.getId()}|">
+                            <span th:case="0">启用</span>
+                            <span th:case="1">禁用</span>
+                        </td>
+                        <td>
+                            <a th:href="|javascript:changeUserStatus(${weixinVoteUser?.getId()})|"
+                               class='btn btn-xs green'
+                               title='切换用户状态'
+                            ><span class='glyphicon glyphicon-pencil'></span></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <nav>
 

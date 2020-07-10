@@ -16,6 +16,12 @@ public class ManagerUserQuery {
      * 昵称
      */
     private String nickName;
+
+    /**
+     * 用户状态
+     */
+    private Integer enable;
+
     /**
      * 微信唯一标识
      */

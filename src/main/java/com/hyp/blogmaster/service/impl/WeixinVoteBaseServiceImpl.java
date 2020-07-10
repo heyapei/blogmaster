@@ -42,6 +42,26 @@ public class WeixinVoteBaseServiceImpl implements WeixinVoteBaseService {
     @Autowired
     private WeixinVoteWorkService weixinVoteWorkService;
 
+    /**
+     * 按照查询条件进行查询
+     *
+     * @param example 查询条件
+     * @return
+     * @throws MyDefinitionException
+     */
+    @Override
+    public List<WeixinVoteBase> getWeixinVoteBaseListByExample(Example example) throws MyDefinitionException {
+        List<WeixinVoteBase> weixinVoteBaseList = null;
+        try {
+            weixinVoteBaseList = weixinVoteBaseMapper.selectByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("按照查询条件，作品信息分页查询错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("按照查询条件，作品信息分页查询错误");
+        }
+
+        return weixinVoteBaseList;
+    }
 
     /**
      * 查询近一年的活动增量

@@ -2,9 +2,11 @@ package com.hyp.blogmaster.service;
 
 
 import com.github.pagehelper.PageInfo;
+import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailByWorkIdVO;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
 import java.util.List;
@@ -18,12 +20,25 @@ import java.util.List;
 public interface WeixinVoteBaseService {
 
 
+
+
+
+
+    /**
+     * 按照查询条件进行查询
+     * @param example 查询条件
+     * @return
+     * @throws MyDefinitionException
+     */
+    List<WeixinVoteBase> getWeixinVoteBaseListByExample(Example example) throws MyDefinitionException;
+
+
     /**
      * 查询近一年的活动增量
      *
      * @return
      */
-    public List<DashboardDataAnalysisDTO> getVoteDashboardDataAnalysis();
+    List<DashboardDataAnalysisDTO> getVoteDashboardDataAnalysis();
 
 
     /**

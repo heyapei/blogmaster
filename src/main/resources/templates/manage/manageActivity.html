@@ -1,0 +1,695 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/6/28 21:11 
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>活动管理</title>
+    <meta name="keywords" content="login"/>
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
+    <head th:include="/inc/commonutil/echarts :: echarts"></head>
+    <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
+    <!--table内容居中-->
+    <style>
+        .table tbody tr td {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+        .table th {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+
+        /*翻页*/
+        .jump {
+            margin: 0px 0;
+            float: right;
+        }
+
+        .jump_text {
+            float: right;
+            margin: 0 0 0 5px;
+            line-height: 33px;
+        }
+
+        .jump_text input {
+            width: 40px;
+            border: rgba(212, 212, 212, 1.00) 1px solid;
+            height: 30px;
+            line-height: 33px;
+            background: #fff;
+        }
+
+        /*取消number的样式*/
+        /* google、safari */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+
+        /* 火狐 */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+    </style>
+
+    <script>
+        /*模态框居中*/
+        function centerModals() {
+            $('#myModal').each(function (i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 0 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top);
+            });
+        };
+
+
+        function cp(ipage) {
+            $("#pageNum").val(ipage);
+            $("#userManagerInfo").append("<input type='hidden' name='pageNum' value='" + ipage + "' />");
+            $("#userManagerInfo").submit();
+        }
+
+
+        function goPage(maxPageNum) {
+            var jumpPage = document.getElementById("jumpPage").value;
+            var totalPage = maxPageNum;
+            if (isNaN(jumpPage)) {
+                toastr.error("请输入数字!");
+                return;
+            } else if (jumpPage.length == 0) {
+                toastr.error("请输入页码!");
+            } else if (jumpPage <= 0 || Number(jumpPage) > Number(totalPage)) {
+                toastr.error("非法的页码【" + jumpPage + "】!");
+                document.getElementById("jumpPage").value = "";
+                return;
+            } else {
+                var flag = $("input[name='pageNumber']");
+                flag.remove();
+                $("#userManagerInfo").append("<input type='hidden' name='pageNum' value='" + jumpPage + "' />");
+                $("#userManagerInfo").submit();
+            }
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        /**
+         * 一键粘贴
+         * @param  {String} id [需要粘贴的内容]
+         * @param  {String} attr [需要 copy 的属性，默认是 innerText，主要用途例如赋值 a 标签上的 href 链接]
+         *
+         * range + selection
+         *
+         * 1.创建一个 range
+         * 2.把内容放入 range
+         * 3.把 range 放入 selection
+         *
+         * 注意：参数 attr 不能是自定义属性
+         * 注意：对于 user-select: none 的元素无效
+         * 注意：当 id 为 false 且 attr 不会空，会直接复制 attr 的内容
+         */
+        function copy(id, attr) {
+            let target = null;
+
+            if (attr) {
+                target = document.createElement('div');
+                target.id = 'tempTarget';
+                target.style.opacity = '0';
+                if (id) {
+                    let curNode = document.querySelector('#' + id);
+                    target.innerText = curNode[attr];
+                } else {
+                    target.innerText = attr;
+                }
+                document.body.appendChild(target);
+            } else {
+                target = document.querySelector('#' + id);
+            }
+
+            try {
+                let range = document.createRange();
+                range.selectNode(target);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                //console.log('复制成功')
+                toastr.success("复制成功!");
+            } catch (e) {
+                // console.log('复制失败')
+                toastr.error("复制失败!");
+            }
+
+            if (attr) {
+                // remove temp target
+                target.parentElement.removeChild(target);
+            }
+        }
+
+        /**
+         * 查询用户的个人信息
+         * @param userId
+         * @param userName
+         */
+        function getVoteUserInfoById(userId, userName) {
+            if (userId == null) {
+                toastr.error("请确认你已选中了用户");
+                return;
+            }
+
+            showMyCustomLoading("正在为您打开用户 '" + userName + "' 的信息");
+
+
+            $.ajax({
+                url: "/api/admin/manager/user/getUserInfoById",
+                data: {userId: userId},
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                success: function (response) {
+                    hideMyCustomLoading();
+
+                    if (response.status == '200') {
+                        $('#voteUserInfoByIdModal').modal("show");
+                        let voteUserInfoByIdModalBodyHtml = "<tr>" +
+                            "<td><b>用户ID</b></td>" +
+                            "<td>" + response.data.id + "</td>" +
+                            "</tr>";
+                        voteUserInfoByIdModalBodyHtml = voteUserInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>昵称</b></td>" +
+                            "<td>" + response.data.nickName + "</td>" +
+                            "</tr>";
+                        voteUserInfoByIdModalBodyHtml = voteUserInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>头像</b></td>" +
+                            "<td>" +
+                            "<img src='" + response.data.avatarUrl
+                            + "' style='width: 30px;height: 30px'>"
+                            + "</td>" +
+                            "</tr>";
+
+
+                        voteUserInfoByIdModalBodyHtml = voteUserInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>用户OPENID</b></td>" +
+                            "<td>" + response.data.openId + "</td>" +
+                            "</tr>";
+
+                        voteUserInfoByIdModalBodyHtml = voteUserInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>加入时间</b></td>" +
+                            "<td>" + timeStampToDateString(response.data.createTime) + "</td>" +
+                            "</tr>";
+
+                        voteUserInfoByIdModalBodyHtml = voteUserInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>国家</b></td>" +
+                            "<td>" + response.data.country + "</td>" +
+                            "</tr>";
+
+                        voteUserInfoByIdModalBodyHtml = voteUserInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>省份</b></td>" +
+                            "<td>" + response.data.province + "</td>" +
+                            "</tr>";
+
+                        voteUserInfoByIdModalBodyHtml = voteUserInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>城市</b></td>" +
+                            "<td>" + response.data.country + "</td>" +
+                            "</tr>";
+                        $("#voteUserInfoByIdModalBody").html(voteUserInfoByIdModalBodyHtml);
+
+                    } else {
+                        toastr.error(response.message);
+                    }
+                }, error: function (data, type, err) {
+                    toastr.error("操作出现错误，请联系系统管理员");
+                    hideMyCustomLoading();
+                    // 以下依次是返回过来的数据，错误类型，错误码
+                    console.log("请求错误：" + data);
+                }
+            });
+
+
+        }
+
+        function getOrganisersInfoById(organisersId, organisersName) {
+            if (organisersId == null) {
+                toastr.error("请确认你已选中了公司");
+                return;
+            }
+
+            showMyCustomLoading("正在为您打开公司 '" + organisersName + "' 的信息");
+
+
+            $.ajax({
+                url: "/api/admin/manager/organisers/getOrganisersInfoById",
+                data: {organisersId: organisersId},
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                success: function (response) {
+                    hideMyCustomLoading();
+
+                    if (response.status == '200') {
+                        $('#organisersInfoByIdModal').modal("show");
+
+                        // 比如需要这样的格式 yyyy-MM-dd hh:mm:ss
+                        var date = new Date(1398250549490);
+                        Y = date.getFullYear() + '-';
+                        M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+                        D = date.getDate() + ' ';
+                        h = date.getHours() + ':';
+                        m = date.getMinutes() + ':';
+                        s = date.getSeconds();
+                        console.log(Y + M + D + h + m + s); //呀麻碟
+
+
+                        let organisersInfoByIdModalBodyHtml = "<tr>" +
+                            "<td><b>公司ID</b></td>" +
+                            "<td>" + response.data.id + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml = organisersInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>公司名称</b></td>" +
+                            "<td>" + response.data.name + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml = organisersInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>公司logo</b></td>" +
+                            "<td>" +
+                            "<img src='" + response.data.logoImg
+                            + "' style='width: 30px;height: 30px'>"
+                            + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml = organisersInfoByIdModalBodyHtml + "<tr>" +
+                            "<td><b>公司微信</b></td>" +
+                            "<td>" +
+                            "<img src='" + response.data.weixinQrCode
+                            + "' style='width: 30px;height: 30px'>"
+                            + "</td>" +
+                            "</tr>";
+
+                        $("#organisersInfoByIdModalBody").html(organisersInfoByIdModalBodyHtml);
+
+                    } else {
+                        toastr.error(response.message);
+                    }
+                }, error: function (data, type, err) {
+                    toastr.error("操作出现错误，请联系系统管理员");
+                    hideMyCustomLoading();
+                    // 以下依次是返回过来的数据，错误类型，错误码
+                    console.log("请求错误：" + data);
+                }
+            });
+        }
+
+
+        /**
+         * 时间戳转日期格式字符串
+         * @param timeStamp
+         * @returns {string}
+         */
+        function timeStampToDateString(timeStamp) {
+            let date = new Date(timeStamp + 8 * 3600 * 1000);
+            return date.toJSON().substr(0, 19).replace('T', ' ').replace(/-/g, '-');
+        }
+
+
+    </script>
+
+
+</head>
+<body>
+
+<!--引入等待层-->
+<div th:include="/inc/commonutil/toastrutil :: myCustomLoad"></div>
+<!--通用头部信息-->
+<div class="container">
+    <div th:include="inc/head/simplehead :: header"></div>
+</div>
+
+
+<!--公司信息展示-->
+<div class="modal fade" id="organisersInfoByIdModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="organisersInfoByIdModalLabel">
+
+                </h4>
+            </div>
+            <div class="modal-body">
+                <fieldset>
+                    <!--<legend>数据为用户最近365天的购买总结</legend>-->
+
+                    <div class="table-responsive">
+                        <table class="table  table-bordered table-condensed">
+                            <tbody id="organisersInfoByIdModalBody">
+
+                            <tr>
+                                <td>
+                                    这里追加公司信息内容
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
+                <!-- <button type="button" class="btn btn-primary">保存</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--个人用户信息展示-->
+<div class="modal fade" id="voteUserInfoByIdModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="voteUserInfoByIdModalLabel">
+
+                </h4>
+            </div>
+            <div class="modal-body">
+                <fieldset>
+                    <!--<legend>数据为用户最近365天的购买总结</legend>-->
+
+                    <div class="table-responsive">
+                        <table class="table  table-bordered table-condensed">
+                            <tbody id="voteUserInfoByIdModalBody">
+
+                            <tr>
+                                <td>
+                                    这里追加用户信息内容
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
+                <!-- <button type="button" class="btn btn-primary">保存</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row clearfix">
+        <!--中间信息-->
+        <div class="col-md-12 column">
+            <form role="form" class="form-inline" action="/admin/manager/activity"
+                  method="post" id="userManagerInfo">
+                <div class="form-group">
+                    <label for="query-openId" title="用户openId（非模糊查询）">用户OPENID</label>
+                    <input class="form-control" id="query-openId" placeholder="用户openId非模糊" type="text"
+                           name="openId" th:value="${manageActivity?.getOpenId()}">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="query-organisersName" title="公司名称（模糊查询）">公司名称</label>
+                    <input class="form-control" id="query-organisersName" placeholder="公司名称" type="text"
+                           name="organisersName" th:value="${manageActivity?.getOrganisersName()}">
+                </div>
+
+                <div class="form-group">
+                    <label for="query-activeName" title="活动名称（模糊查询）">活动名称</label>
+                    <input class="form-control" id="query-activeName" placeholder="活动名称" type="text"
+                           name="activeName" th:value="${manageActivity?.getActiveName()}">
+                </div>
+
+                <div class="form-group">
+                    <label for="query-activePublic" title="是否要在首页进行更新">首页公开</label>
+                    <select class="form-control" id="query-activePublic" name="activePublic">
+                        <option value="">全部</option>
+                        <option value="0" th:selected="${manageActivity?.getActivePublic() == 1}">公开</option>
+                        <option value="1" th:selected="${manageActivity?.getActivePublic() == 2}">不公开</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="query-status" title="活动状态">活动状态</label>
+                    <select class="form-control" id="query-status" name="status">
+                        <option value="">全部</option>
+                        <option value="0" th:selected="${manageActivity?.getStatus() == 0}">待审核</option>
+                        <option value="1" th:selected="${manageActivity?.getStatus() == 1}">上线</option>
+                        <option value="2" th:selected="${manageActivity?.getStatus() == 2}">未开始</option>
+                        <option value="3" th:selected="${manageActivity?.getStatus() == 3}">已结束</option>
+                        <option value="4" th:selected="${manageActivity?.getStatus() == 4}">未启动</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="query-order-column" title="排序字段">排序字段</label>
+                    <select class="form-control" id="query-order-column" name="orderColumn">
+                        <option value="viewCountNum"
+                                th:selected="${manageActivity?.getOrderColumn() == 'viewCountNum'}">
+                            总浏览
+                        </option>
+                        <option value="voteCountNum"
+                                th:selected="${manageActivity?.getOrderColumn() == 'voteCountNum'}">
+                            总投票
+                        </option>
+                        <option value="activeStartTime"
+                                th:selected="${manageActivity?.getOrderColumn() == 'activeStartTime'}">
+                            开始时间
+                        </option>
+                        <option value="activeEndTime"
+                                th:selected="${manageActivity?.getOrderColumn() == 'activeEndTime'}">
+                            结束时间
+                        </option>
+                        <option value="createTime" th:selected="${manageActivity?.getOrderColumn() == 'createTime'}">
+                            创建时间
+                        </option>
+                        <option value="updateTime" th:selected="${manageActivity?.getOrderColumn() == 'updateTime'}">
+                            更新时间
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="query-order-by" title="排序方式">排序方式</label>
+                    <select class="form-control" id="query-order-by" name="orderBy">
+                        <option value="desc" th:selected="${manageActivity?.getOrderBy() == 'desc'}">倒叙</option>
+                        <option value="asc" th:selected="${manageActivity?.getOrderBy() == 'asc'}">正序</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="query-pageSize" title="每页所展示的条目数">每页条数</label>
+                    <select class="form-control" id="query-pageSize" name="pageSize">
+                        <option value="5" th:selected="${manageActivity?.getPageSize() == 5}">5</option>
+                        <option value="10" th:selected="${manageActivity?.getPageSize() == 10}">10</option>
+                        <option value="15" th:selected="${manageActivity?.getPageSize() == 15}">15</option>
+                        <option value="20" th:selected="${manageActivity?.getPageSize() == 20}">20</option>
+                        <option value="30" th:selected="${manageActivity?.getPageSize() == 30}">30</option>
+                        <option value="40" th:selected="${manageActivity?.getPageSize() == 40}">40</option>
+                        <option value="50" th:selected="${manageActivity?.getPageSize() == 50}">50</option>
+                    </select>
+                </div>
+
+
+                <button type="submit" class="btn btn-success">查询</button>
+            </form>
+            <br><br>
+        </div>
+    </div>
+</div>
+<!--用户显示页面-->
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>
+                            编号
+                        </th>
+                        <th>
+                            用户昵称
+                        </th>
+                        <th>
+                            公司名称
+                        </th>
+                        <th>
+                            活动名称
+                        </th>
+                        <th>
+                            封面图片
+                        </th>
+                        <th>
+                            开始时间
+                        </th>
+                        <th>
+                            结束时间
+                        </th>
+                        <th>
+                            创建时间
+                        </th>
+                        <th>
+                            更新时间
+                        </th>
+                        <th>
+                            公开到首页
+                        </th>
+                        <th>
+                            活动状态
+                        </th>
+
+                        <th>
+                            总浏览
+                        </th>
+                        <th>
+                            总投票
+                        </th>
+
+                        <th>
+
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="activityManagerDTO,seqNum : ${pageInfo?.getList()}">
+                        <td th:text="${seqNum?.index+1}">
+                        </td>
+
+                        <td>
+                            <a href="javascript:;"
+                               th:onclick="'javascript:getVoteUserInfoById(\''+${activityManagerDTO?.voteUserId}+'\',\''+${activityManagerDTO?.voteUserNickName}+'\');'"
+                               title="查看用户数据详情"
+                               th:text="${activityManagerDTO?.voteUserNickName}">
+                            </a>
+                        </td>
+
+                        <td>
+                            <a href="javascript:;"
+                               th:onclick="'javascript:getOrganisersInfoById(\''+${activityManagerDTO?.organisersId}+'\',\''+${activityManagerDTO?.organisersName}+'\');'"
+                               title="查看公司数据详情"
+                               th:text="${activityManagerDTO?.organisersName}">
+                            </a>
+                        </td>
+
+                        <td th:text="${activityManagerDTO?.activeName}">
+                        </td>
+                        <td>
+                            <a th:href="@{${activityManagerDTO?.activeImg}}" target="_blank" title="打开图片">
+                                <img th:src="${activityManagerDTO?.activeImg}"
+                                     style="width: 30px;height: 30px">
+                            </a>
+                        </td>
+
+                        <td th:text="${#dates.format(activityManagerDTO?.activeStartTime, 'yyyy/MM/dd HH:mm:ss')}">
+                        </td>
+                        <td th:text="${#dates.format(activityManagerDTO?.activeEndTime, 'yyyy/MM/dd HH:mm:ss')}">
+                        </td>
+                        <td th:text="${#dates.format(activityManagerDTO?.createTime, 'yyyy/MM/dd HH:mm:ss')}">
+                        </td>
+                        <td th:text="${#dates.format(activityManagerDTO?.updateTime, 'yyyy/MM/dd HH:mm:ss')}">
+                        </td>
+
+
+                        <td th:switch="${activityManagerDTO?.activePublic}">
+                            <span th:case="0">公开</span>
+                            <span th:case="1">不公开</span>
+                        </td>
+
+                        <td th:switch="${activityManagerDTO?.status}">
+                            <span th:case="0">待审核</span>
+                            <span th:case="1">上线</span>
+                            <span th:case="2">未开始</span>
+                            <span th:case="3">已结束</span>
+                            <span th:case="4">未启用</span>
+                        </td>
+
+                        <td th:text="${activityManagerDTO?.viewCountNum}">
+                        </td>
+                        <td th:text="${activityManagerDTO?.voteCountNum}">
+                        </td>
+
+
+                        <td>
+                            <a th:href="|javascript:changeUserStatus(${weixinVoteUser?.getId()})|"
+                               class='btn btn-xs green'
+                               title='管理活动'
+                            ><span class='glyphicon glyphicon-th-large'></span></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <nav>
+
+                <ul class="pagination">
+                    <li th:class="${pageInfo?.isHasPreviousPage() == false }?'disabled' : ''"><a
+                            th:href="|javascript:cp(${pageInfo?.getPageNum()-1})|">上一页</a>
+                    </li>
+
+                    <li th:each="navigatepageNum : ${pageInfo?.getNavigatepageNums()}"
+                        th:class="${navigatepageNum == pageInfo?.getPageNum()}?'active' : ''">
+                        <a th:href="|javascript:cp(${navigatepageNum})|"
+                           th:text="${navigatepageNum}"></a>
+                    </li>
+
+                    <li th:class="${!pageInfo?.isHasNextPage()}?'disabled' : ''"><a
+                            th:href="|javascript:cp(${pageInfo?.getPageNum()+1})|">下一页</a>
+                    </li>
+                </ul>
+
+
+                <div class="jump">
+                            <span class="jump_text">
+                                当前<label th:title="'当前共有'+${pageInfo?.getSize()}+'条目录'"
+                                         th:text="${pageInfo?.getSize()}"></label>/<label
+                                    th:title="'每页显示'+${pageInfo?.getPageSize()}+'条目录'"
+                                    th:text="${pageInfo?.getPageSize()}"></label>条 | <label
+                                    th:title="'当前在第'+${pageInfo?.getPageNum()}+'页'"
+                                    th:text="${pageInfo?.getPageNum()}"></label>/<label
+                                    th:title="'总共'+${pageInfo?.getPages()}+'页'"
+                                    th:text="${pageInfo?.getPages()}"></label>页,跳到
+                                <input type="number" name="jumpPage"
+                                       id="jumpPage" th:value="${pageInfo?.getPageNum()}"
+                                       οnkeyup="this.value=this.value.replace(/[^0-9-]+/,'');">页
+                                <button type="button" class="btn btn-primary btn-sm"
+                                        th:onclick="|javascript:goPage(${pageInfo?.getTotal()})|">跳转</button>
+                            </span>
+                </div>
+
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

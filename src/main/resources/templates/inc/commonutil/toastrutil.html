@@ -47,7 +47,7 @@
                     <!-- <span></span>-->
                 </div>
             </div>
-            　　　　<h5 id="myCustomLoadText"><b>loading...</b></h5>
+            　　　　<h5><b style="color: #FFFFFF" id="myCustomLoadText">loading...</b></h5>
             　　
         </div>
     </div>
@@ -62,23 +62,24 @@
     </style>
     <script type="text/javascript">
         var showMyCustomLoadingTime;
+
         function showMyCustomLoading(loadText) {
             var value = 0;
-            showMyCustomLoadingTime =   setInterval(function (e) {
+            showMyCustomLoadingTime = setInterval(function (e) {
                 //console.log(value)
                 if (value != 150) {
                     value = parseInt(value) + 10;
                     /*$("#myCustomLoadProgressbar").css("width", value + "%").text(value + "%");*/
                     $("#myCustomLoadProgressbar").css("width", value + "%");
-                    if (value >= 0 && value <= 30) {
+                    if (value >= 0 && value <= 70) {
                         $("#myCustomLoadProgressbar").addClass("progress-bar-danger");
-                    } else if (value >= 30 && value <= 60) {
+                    } else if (value >= 70 && value <= 100) {
                         $("#myCustomLoadProgressbar").removeClass("progress-bar-danger");
                         $("#myCustomLoadProgressbar").addClass("progress-bar-warning");
-                    } else if (value >= 60 && value <= 90) {
+                    } else if (value >= 100 && value <= 130) {
                         $("#myCustomLoadProgressbar").removeClass("progress-bar-warning");
                         $("#myCustomLoadProgressbar").addClass("progress-bar-info");
-                    } else if (value >= 90) {
+                    } else if (value >= 130) {
                         $("#myCustomLoadProgressbar").removeClass("progress-bar-info");
                         $("#myCustomLoadProgressbar").addClass("progress-bar-success");
                     }

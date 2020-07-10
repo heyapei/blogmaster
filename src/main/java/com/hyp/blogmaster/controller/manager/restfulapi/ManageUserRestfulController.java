@@ -1,6 +1,7 @@
 package com.hyp.blogmaster.controller.manager.restfulapi;
 
 import com.hyp.blogmaster.exception.MyDefinitionException;
+import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.vo.result.MyResultVO;
 import com.hyp.blogmaster.service.WeixinVoteUserService;
 import io.swagger.annotations.Api;
@@ -28,7 +29,26 @@ public class ManageUserRestfulController {
     private WeixinVoteUserService weixinVoteUserService;
 
 
-
+    /**
+     * 根据用户ID查询用户的数据
+     *
+     * @param userId
+     * @return
+     */
+    @PostMapping("getUserInfoById")
+    public MyResultVO getUserInfoById(@NotNull Integer userId) {
+        WeixinVoteUser weixinVoteUser = null;
+        try {
+            weixinVoteUser = weixinVoteUserService.getUserById(userId);
+        } catch (MyDefinitionException e) {
+            e.printStackTrace();
+            return MyResultVO.genFailResult(e.getMessage());
+        }
+        if (weixinVoteUser == null) {
+            return MyResultVO.genFailResult("没有查询到用户的信息，请重试");
+        }
+        return MyResultVO.genSuccessResult(weixinVoteUser);
+    }
 
 
     /**

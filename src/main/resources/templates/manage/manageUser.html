@@ -161,6 +161,11 @@
         }
 
         function changeUserStatus(userId) {
+            if (userId == null) {
+                toastr.error("请确认你已选中了用户");
+                return;
+            }
+
             if (confirm("该操作会切换当前用户的状态？")) {
                 showMyCustomLoading();
                 $.ajax({
@@ -171,6 +176,7 @@
                     dataType: "json",
                     success: function (response) {
                         hideMyCustomLoading();
+
                         if (response.status == '200') {
                             toastr.success(response.message);
                             var innerText = $("#enable" + userId).text();
@@ -182,11 +188,11 @@
                         } else {
                             toastr.error(response.message);
                         }
-                    }, error:function(data,type, err){
+                    }, error: function (data, type, err) {
                         toastr.error("操作出现错误，请联系系统管理员");
                         hideMyCustomLoading();
                         // 以下依次是返回过来的数据，错误类型，错误码
-                        console.log("请求错误："+data);
+                        console.log("请求错误：" + data);
                     }
                 });
 
@@ -363,10 +369,10 @@
                         <td th:text="${weixinVoteUser?.city}">
                         </td>
 
-                        <td th:text="${#dates.format(weixinVoteUser?.createTime, 'yyyy/MM/dd hh:mm:ss')}">
+                        <td th:text="${#dates.format(weixinVoteUser?.createTime, 'yyyy/MM/dd HH:mm:ss')}">
 
                         </td>
-                        <td th:text="${#dates.format(weixinVoteUser?.updateTime, 'yyyy/MM/dd hh:mm:ss')}">
+                        <td th:text="${#dates.format(weixinVoteUser?.updateTime, 'yyyy/MM/dd HH:mm:ss')}">
 
                         </td>
                         <td th:switch="${weixinVoteUser?.enable}"

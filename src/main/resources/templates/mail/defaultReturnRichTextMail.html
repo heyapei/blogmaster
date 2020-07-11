@@ -1,0 +1,104 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/5/27 20:26 
+-->
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>默认发送邮件-富文本内容</title>
+    <meta name="keywords" content="login"/>
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
+    <head th:include="/inc/commonutil/echarts :: echarts"></head>
+    <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
+    <!--table内容居中-->
+    <style>
+        .table tbody tr td {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+        .table th {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+
+        /*翻页*/
+        .jump {
+            margin: 0px 0;
+            float: right;
+        }
+
+        .jump_text {
+            float: right;
+            margin: 0 0 0 5px;
+            line-height: 33px;
+        }
+
+        .jump_text input {
+            width: 40px;
+            border: rgba(212, 212, 212, 1.00) 1px solid;
+            height: 30px;
+            line-height: 33px;
+            background: #fff;
+        }
+
+        /*取消number的样式*/
+        /* google、safari */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+
+        /* 火狐 */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+    </style>
+</head>
+<body>
+<!--标准富文本邮件模板-->
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+            <div class="thumbnail">
+
+                <img style="width: 50%" class='carousel-inner img-responsive img-rounded'
+                     src="http://115.29.178.227:8082/static/page/mail/overwatch.png"/>
+
+                <div class="caption">
+                    <div th:utext="${emailContent == null}?'':${emailContent}">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <p>该邮件不支持回复，如果当前邮件没有满足您的要求，请返回主页（<a target="_blank" href="http://www.yapei.cool#contact" title="感谢您访问我们的主站">www.yapei.cool</a>）再次向我们发送反馈！
+            </p>
+        </div>
+        <div class="col-md-12 column">
+            <p>再次感谢您对我们的关注</p>
+            <p>©yapei.cool</p>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

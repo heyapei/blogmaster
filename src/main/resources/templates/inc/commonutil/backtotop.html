@@ -1,0 +1,61 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/7/11 10:24 
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="backtotop">
+    <script src="/static/res/jquery/jquery.scrollUp.min.js"></script>
+    <style type="text/css">
+        #scrollUp {
+            background-color: #454545;
+            border-radius: 30px;
+            bottom: 20px;
+            right: 20px;
+            width: 38px;
+            height: 38px;
+        }
+    </style>
+    <script>
+        $(function () {
+            $.scrollUp({
+                scrollName: 'scrollUp',      // Element ID
+                scrollDistance: 1080,         // Distance from top/bottom before showing element (px)
+                scrollFrom: 'top',           // 'top' or 'bottom'
+                scrollSpeed: 300,            // Speed back to top (ms)
+                easingType: 'linear',        // Scroll to top easing (see http://easings.net/)
+                animation: 'fade',           // Fade, slide, none
+                animationSpeed: 200,         // Animation speed (ms)
+                scrollTrigger: false,        // Set a custom triggering element. Can be an HTML string or jQuery object
+                scrollTarget: false,         // Set a custom target element for scrolling to. Can be element or number
+                scrollText: '<canvas id="cvs" width="38px;" height="38px;" ></canvas>', // Text for element, can contain HTML
+                scrollTitle: "返回顶部",          // Set a custom <a> title if required.
+                scrollImg: false,            // Set true to use image
+                activeOverlay: false,        // Set CSS color to display scrollUp active point, e.g '#00FFFF'
+                zIndex: 2147483647           // Z-Index for the overlay
+
+            });
+
+            var canvas = document.getElementById('cvs');
+            cxt = canvas.getContext('2d');
+            cxt.beginPath();
+            cxt.lineCap = 'round';//圆线头
+            cxt.moveTo(13, 22);
+            cxt.lineTo(19, 14);
+            cxt.lineTo(25, 22);
+            cxt.strokeStyle = "#FBFBFB";
+            cxt.lineWidth = 3;
+            cxt.stroke();
+        });
+    </script>
+</div>
+</body>
+</html>

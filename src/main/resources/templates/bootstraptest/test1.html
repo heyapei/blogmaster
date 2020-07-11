@@ -15,28 +15,20 @@
     <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
     <head th:include="/inc/commonutil/echarts :: echarts"></head>
     <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
-    <script>
-        function test1() {
-            showMyCustomLoading("你好我们在努力");
-            //showMyCustomLoading();
-            //hideMyCustomLoading();
-        }
-        function sleep(n) {
-            var start = new Date().getTime();
-            //  console.log('休眠前：' + start);
-            while (true) {
-                if (new Date().getTime() - start > n) {
-                    break;
-                }
-            }
-            // console.log('休眠后：' + new Date().getTime());
-        }
-    </script>
+
+
+    <script src="/static/res/holder/holder.js"></script>
+
+
 </head>
 <body>
 <!--引入等待层-->
 <div th:include="/inc/commonutil/toastrutil :: myCustomLoad"></div>
+<!--引入返回顶部按钮-->
+<div th:include="/inc/commonutil/backtotop :: backtotop"></div>
 <a href="javascript:test1()">启动</a>
+<br>
+<img src="holder.js/300x5000">
 
 <!--<div class="modal fade" id="myCustomLoadingModal" backdrop="static" keyboard="false">
     　　

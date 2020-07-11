@@ -89,6 +89,17 @@ public class MyResultVO<T> {
         return new MyResultVO(Status.OK.getCode(), message, data);
     }
 
+
+    /**
+     * 封装带data的成功返回值 data自定义
+     *
+     * @param data 返回的data数据
+     * @return
+     */
+    public static <T> MyResultVO<T> genSuccessResult(MyResultCode status, T data) {
+        return new MyResultVO(status.getCode(), status.getReason(), data);
+    }
+
     /**
      * 封装带data的成功返回值
      *

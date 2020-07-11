@@ -64,6 +64,129 @@
 
     </style>
 
+    <script>
+        /*div显示关闭*/
+        function showCrontabTime() {
+            $("#crontabTime").show();
+        }
+
+        function hideCrontabTime() {
+            $("#crontabTime").hide();
+            $("#crontab_send_time_start").val("");
+            $("#crontab_send_time_end").val("");
+        }
+    </script>
+
+    <script>
+        function submitEmail() {
+
+            let article = document.getElementById("submitArticleContent");
+            article.value = editor.txt.html();
+
+
+
+            let sendTo = $("#sendTo").val();
+            let sendType = $("input[name=sendType]:checked").val()
+            let submitArticleContent = $("#submitArticleContent").val();
+            let crontabSendTimeStart = $("#crontab_send_time_start").val();
+            let crontabSendTimeEnd = $("#crontab_send_time_end").val();
+            let adminUserId = $("#adminUserId").val();
+
+            //alert(submitArticleContent)
+
+            if (sendTo == null || sendTo == undefined || sendTo == "") {
+                toastr.error("必须输入邮件接收人");
+                return;
+            }
+
+            if (!checkEmail(sendTo)) {
+                //toastr.error("邮件格式不正确");
+                return;
+            }
+
+
+            if (sendType == null || sendType == undefined || sendType == "") {
+                toastr.error("发送类型必选");
+                return;
+            }
+
+            if (sendType == 1) {
+                if (crontabSendTimeStart == null || crontabSendTimeStart == undefined || crontabSendTimeStart == "") {
+                    toastr.error("当前模式下，定时用开始时间必填");
+                    return;
+                }else {
+                    crontabSendTimeStart = crontabSendTimeStart.replace("T", " ");
+                }
+
+                if (crontabSendTimeEnd == null || crontabSendTimeEnd == undefined || crontabSendTimeEnd == "") {
+                    toastr.error("当前模式下，定时用结束时间必填");
+                    return;
+                }else {
+                    crontabSendTimeEnd = crontabSendTimeEnd.replace("T", " ");
+                }
+            }
+
+            if (submitArticleContent == null || submitArticleContent == undefined || submitArticleContent == "") {
+                toastr.error("邮件内容必填，还请输入邮件内容");
+                return;
+            }
+
+            showMyCustomLoading();
+            $.ajax({
+                url: "/api/admin/manager/email/saveManagerEmailSend",
+                data: {
+                    sendTo: sendTo,
+                    sendType: sendType,
+                    emailContent: submitArticleContent,
+                    crontabSendTimeStart: crontabSendTimeStart,
+                    crontabSendTimeEnd: crontabSendTimeEnd,
+                    adminUserId: adminUserId
+                },
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                success: function (response) {
+
+                    hideMyCustomLoading();
+
+                    if (response.status == '200') {
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                }, error: function (data, type, err) {
+                    toastr.error("操作出现错误，请联系系统管理员");
+                    hideMyCustomLoading();
+                    // 以下依次是返回过来的数据，错误类型，错误码
+                    console.log("请求错误：" + data);
+                }
+            });
+
+
+        }
+
+        /**
+         * 判断是否为email格式
+         * @param email
+         * @returns {boolean}
+         */
+        function checkEmail(email) {
+            if (email == '') {
+                toastr.error("请输入您的邮箱");
+                return false;
+            } else if (email != "") {
+                let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+                let isok = reg.test(email);
+                if (!isok) {
+                    toastr.error("邮箱格式不正确，请重新输入！");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    </script>
+
 
 </head>
 <body>
@@ -71,13 +194,73 @@
 
 <!--引入等待层-->
 <div th:include="/inc/commonutil/toastrutil :: myCustomLoad"></div>
-
 <!--引入富文本编辑器-->
 <div th:include="/inc/wangeditor :: wangeditor"></div>
 <!--通用头部信息-->
 <div class="container">
     <div th:include="inc/head/simplehead :: header"></div>
 </div>
+
+
+<div class="container" style="margin-bottom: 30px">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+            <!--编辑器内容-->
+            <input id="submitArticleContent"
+                   th:value="${managerEmailSendQuery?.getArticleContent()}"
+                   name="emailContext"
+                   type="hidden" required>
+
+            <input id="adminUserId"
+                   th:value="${adminUserId != null } ?${adminUserId}:'' "
+                   name="adminUserId"
+                   type="hidden" required>
+
+
+            <div class="form-group">
+                <label for="sendTo">邮件地址</label>
+                <input type="email" name="sendTo" class="form-control"
+                       id="sendTo" required/>
+            </div>
+            <div class="form-group">
+                <label>发送类型</label>
+                <div>
+                    <label class="radio-inline">
+                        <input type="radio" name="sendType" id="optionsRadios3"
+                               onclick="hideCrontabTime()"
+                               value="0"
+                               checked> 立即发送
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="sendType" id="optionsRadios4"
+                               onclick="showCrontabTime()"
+                               value="1">定时发送
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" id="crontabTime" style="display: none;">
+
+                <div class="form-inline">
+                    <label for="crontab_send_time_start" title="开始发送">开始发送</label>
+                    <input class="form-control" id="crontab_send_time_start" placeholder="开始发送"
+                           type="datetime-local"
+                           name="crontabSendTimeStart">
+
+                    <label for="crontab_send_time_end" title="结束发送">结束发送</label>
+                    <input class="form-control" id="crontab_send_time_end" placeholder="结束发送"
+                           type="datetime-local"
+                           name="crontabSendTimeEnd">
+                </div>
+            </div>
+
+            <button class="btn btn-default" onclick="submitEmail()">提交邮件</button>
+
+        </div>
+    </div>
+</div>
+
 
 <div class="container">
     <div class="row clearfix">

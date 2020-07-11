@@ -84,6 +84,131 @@ public class WeixinManagerEmail {
 
 
     /**
+     * 发送类型
+     */
+    public enum SendTypeEnum {
+
+        IMMEDIATELY_SEND(0, "即刻发送"),
+        CRONTAB_SEND(1, "定时发送");
+        private Integer code;
+        private String desc;
+
+        SendTypeEnum(Integer code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        @Override
+        public String toString() {
+            return "SendTypeEnum{" +
+                    "code=" + code +
+                    ", desc='" + desc + '\'' +
+                    '}';
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public void setCode(Integer code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
+
+
+    /**
+     * 邮件类型 0默认
+     */
+    public enum EmailTypeEnum {
+        OWNER_SEND(0, "我方发送");
+
+        private Integer code;
+        private String desc;
+
+        EmailTypeEnum(Integer code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+
+        @Override
+        public String toString() {
+            return "EmailTypeEnum{" +
+                    "code=" + code +
+                    ", desc='" + desc + '\'' +
+                    '}';
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public void setCode(Integer code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
+
+
+    /**
+     * 当前邮件状态
+     */
+    public enum SendStatusEnum {
+
+        UN_SEND(0, "未发送"),
+        SENT(0, "已发送");
+
+
+        private Integer code;
+        private String desc;
+
+        @Override
+        public String toString() {
+            return "SendStatusEnum{" +
+                    "code=" + code +
+                    ", desc='" + desc + '\'' +
+                    '}';
+        }
+
+        SendStatusEnum(Integer code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public void setCode(Integer code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
+
+
+    /**
      * 创建默认值 不包含ID主键
      *
      * @return 默认实体类

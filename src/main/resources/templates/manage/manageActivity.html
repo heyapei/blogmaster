@@ -646,9 +646,9 @@
                         <td th:text="${activityManagerDTO?.activeName}">
                         </td>
                         <td>
-                            <a th:href=" @{ #{weixin.user.img.url} + ${activityManagerDTO?.activeImg}}" target="_blank"
+                            <a th:href=" @{ #{weixin.user.img.url} + ${#strings.replace(activityManagerDTO?.activeImg,';','')}}" target="_blank"
                                title="打开图片">
-                                <img th:src="#{weixin.user.img.url} + ${activityManagerDTO?.activeImg}"
+                                <img th:src="#{weixin.user.img.url} + ${#strings.replace(activityManagerDTO?.activeImg,';','')}"
                                      style="width: 30px;height: 30px">
                             </a>
                         </td>

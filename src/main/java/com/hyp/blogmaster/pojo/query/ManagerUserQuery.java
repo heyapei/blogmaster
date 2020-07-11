@@ -38,7 +38,7 @@ public class ManagerUserQuery {
     /**
      * 排序用字段
      */
-    private String orderColumn;
+    private String orderColumn = "updateTime";
     /**
      * 排序方式
      */

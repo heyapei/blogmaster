@@ -124,7 +124,7 @@ public class ResourceServiceImpl implements ResourceService {
             e.printStackTrace();
         }
         //String dataSavePath = File.separator + realSavePath.substring(realSavePath.indexOf(imgVideResConfig.getActiveImgBasePath()));
-        String dataSavePath = "//" + httpServletRequest.getServerName().replace("/", "") + ":" + httpServletRequest.getServerPort() + "/" + realSavePath.substring(realSavePath.indexOf(resourceBasePath));
+        String dataSavePath = "http://" + httpServletRequest.getServerName().replace("/", "") + ":" + httpServletRequest.getServerPort() + "/" + realSavePath.substring(realSavePath.indexOf(resourceBasePath));
         // 拼接图片url
         String fileUrl = dataSavePath + "/" + saveFilename;
         resourceSimpleDTO.setFileUrl(fileUrl);

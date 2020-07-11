@@ -82,6 +82,18 @@ public class WeixinManagerEmail {
     @Column(name = "email_content")
     private String emailContent;
 
+    /**
+     * 邮件标题
+     */
+    @Column(name = "email_title")
+    private String emailTitle;
+
+    /**
+     * 邮件收件人姓名
+     */
+    @Column(name = "send_to_name")
+    private String sendToName;
+
 
     /**
      * 发送类型
@@ -226,6 +238,8 @@ public class WeixinManagerEmail {
         weixinManagerEmail.setSendType(0);
         weixinManagerEmail.setEmailContent("");
         weixinManagerEmail.setSendStatus(0);
+        weixinManagerEmail.setEmailTitle("");
+        weixinManagerEmail.setSendToName("");
         return weixinManagerEmail;
     }
 }

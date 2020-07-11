@@ -8,6 +8,8 @@
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="send_to" property="sendTo" jdbcType="VARCHAR"/>
         <result column="send_from" property="sendFrom" jdbcType="VARCHAR"/>
+        <result column="email_title" property="emailTitle" jdbcType="VARCHAR"/>
+        <result column="send_to_name" property="sendToName" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="email_type" property="emailType" jdbcType="INTEGER"/>

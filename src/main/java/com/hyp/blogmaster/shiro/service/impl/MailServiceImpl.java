@@ -11,12 +11,14 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.util.Map;
@@ -39,6 +41,23 @@ public class MailServiceImpl implements MailService {
 
     @Value("${mail.fromMail.addr}")
     private String from;
+
+
+    /**
+     * 发送模板邮件 使用thymeleaf模板 异步处理
+     * 若果使用freemarker模板
+     * Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
+     * configuration.setClassForTemplateLoading(this.getClass(), "/templates");
+     * String emailContent = FreeMarkerTemplateUtils.processTemplateIntoString(configuration.getTemplate("mail.ftl"), params);
+     *
+     * @param mailVO
+     */
+    @Async("threadPoolTaskExecutor")
+    @Override
+    public void sendTemplateMailAsync(MailDTO mailVO) {
+
+        sendTemplateMail(mailVO);
+    }
 
     /**
      * 纯文本邮件
@@ -112,11 +131,12 @@ public class MailServiceImpl implements MailService {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-            messageHelper.setFrom(from);// 发送人的邮箱
+           // messageHelper.setFrom(from);// 发送人的邮箱
+            messageHelper.setFrom(new InternetAddress(from));
             messageHelper.setTo(mailVO.getEmail());//发给谁  对方邮箱
             messageHelper.setSubject(mailVO.getTitle()); //标题
             /*判断传过来的数据有没有指定页面数据*/
-            String pageName = "defaultReturnMsg";
+            String pageName = "defaultReturnRichTextMail";
             String pageNameKey = "pageName";
             Map<String, Object> attachment = mailVO.getAttachment();
             if (attachment != null) {

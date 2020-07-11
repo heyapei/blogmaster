@@ -54,7 +54,7 @@ public class MailController {
             mailDO.setAttachment(map);
             mailService.sendHtmlMail(mailDO, false);
         } catch (Exception e) {
-            log.info("发送富文本邮件失败：{}，附件参数：{}，错误信息：{}", mailDO.toString(), map, e.toString());
+            log.error("发送富文本邮件失败：{}，附件参数：{}，错误信息：{}", mailDO.toString(), map, e.toString());
             return MyResultVO.buildResult(MyResultVO.Status.UNAUTHORIZED);
         }
         log.info("发送富文本邮件成功：{}，附件参数：{}", mailDO.toString(), map);
@@ -80,13 +80,13 @@ public class MailController {
             mailDO.setAttachment(map1);
             mailService.sendTemplateMail(mailDO);
         } catch (Exception e) {
-            log.info("发送网页模板邮件失败：{}，用户名：{}，用户发送的信息：{}，网页模板参数：{}，错误信息：{}", name, message, mailDO.toString(), map, e.toString());
+            log.error("发送网页模板邮件失败：{}，用户名：{}，用户发送的信息：{}，网页模板参数：{}，错误信息：{}", name, message, mailDO.toString(), map, e.toString());
             //return MyResultVO.buildResult(MyResultVO.Status.UNAUTHORIZED);
             MyError myError = new MyError(500, "发送失败了", "请检查您的邮箱地址是否正确，我们需要它用于及时回复您");
             map.put("myError", myError);
             return "error/error";
         }
-        log.info("发送网页模板邮件成功：{}，用户名：{}，用户主题：{}，用户发送的信息：{}，网页模板参数：{}", name, subject, message, mailDO.toString(), map);
+        log.error("发送网页模板邮件成功：{}，用户名：{}，用户主题：{}，用户发送的信息：{}，网页模板参数：{}", name, subject, message, mailDO.toString(), map);
         map.put("message", true);
         return "index/index";
     }

@@ -31,12 +31,12 @@ import java.util.Date;
 
 @Service
 @Slf4j
-@PropertySource("classpath:imgvideo-res.properties")
+@PropertySource("classpath:email-imgvideo-res.properties")
 public class ResourceServiceImpl implements ResourceService {
 
     @Value("${manager.resource.base.path}")
     private String resourceBasePath;
-    @Value("${manager.resource.img.path}")
+    @Value("${manager.resource.email.img.path}")
     private String resourceImgPath;
 
 
@@ -124,7 +124,7 @@ public class ResourceServiceImpl implements ResourceService {
             e.printStackTrace();
         }
         //String dataSavePath = File.separator + realSavePath.substring(realSavePath.indexOf(imgVideResConfig.getActiveImgBasePath()));
-        String dataSavePath = "/" + realSavePath.substring(realSavePath.indexOf(resourceBasePath));
+        String dataSavePath = "//" + httpServletRequest.getServerName().replace("/", "") + ":" + httpServletRequest.getServerPort() + "/" + realSavePath.substring(realSavePath.indexOf(resourceBasePath));
         // 拼接图片url
         String fileUrl = dataSavePath + "/" + saveFilename;
         resourceSimpleDTO.setFileUrl(fileUrl);

@@ -94,6 +94,10 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("favicon.ico", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/img/**", "anon");
+
+        /*图片资源放开*/
+        filterChainDefinitionMap.put("/upload/**", "anon");
+        filterChainDefinitionMap.put("/upload/**", "anon");
         /*放过静态资源*/
         filterChainDefinitionMap.put("/static/**", "anon");
         /*放过网页图标*/

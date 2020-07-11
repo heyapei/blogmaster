@@ -2,8 +2,12 @@ package com.hyp.blogmaster;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import tk.mybatis.spring.annotation.MapperScan;
+
+import java.util.concurrent.Executor;
 
 /**
  * 2020年5月31日
@@ -22,4 +26,13 @@ public class BlogMasterApplication {
     public static void main(String[] args) {
         SpringApplication.run(BlogMasterApplication.class, args);
     }
+
+
+
+    @Bean(name = "threadPoolTaskExecutor")
+    public Executor threadPoolTaskExecutor() {
+        return new ThreadPoolTaskExecutor();
+    }
+
+
 }

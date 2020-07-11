@@ -1,15 +1,18 @@
 package com.hyp.blogmaster.controller.manager.restfulapi;
 
 import com.hyp.blogmaster.exception.MyDefinitionException;
+import com.hyp.blogmaster.pojo.dto.mail.MailDTO;
 import com.hyp.blogmaster.pojo.dto.resource.ResourceSimpleDTO;
 import com.hyp.blogmaster.pojo.query.ManagerEmailSendQuery;
 import com.hyp.blogmaster.pojo.vo.result.MyResultVO;
 import com.hyp.blogmaster.service.ResourceService;
 import com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmail;
+import com.hyp.blogmaster.shiro.service.MailService;
 import com.hyp.blogmaster.shiro.service.WeixinManagerEmailService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +42,13 @@ public class ManagerEmailRestfulController {
 
     @Autowired
     private WeixinManagerEmailService weixinManagerEmailService;
+
+    @Autowired
+    private MailService mailService;
+
+    @Value("${spring.mail.username}")
+    private String sendFrom;
+
 
     /**
      * 创建新的需要发送的邮件
@@ -71,6 +81,22 @@ public class ManagerEmailRestfulController {
         weixinManagerEmail.setSendTo(managerEmailSendQuery.getSendTo());
         weixinManagerEmail.setEmailContent(managerEmailSendQuery.getEmailContent());
         weixinManagerEmail.setSendType(managerEmailSendQuery.getSendType());
+        weixinManagerEmail.setSendFrom(sendFrom);
+
+        if (managerEmailSendQuery.getSendType().equals(WeixinManagerEmail.SendTypeEnum.IMMEDIATELY_SEND.getCode())) {
+            MailDTO mailDTO = new MailDTO();
+            mailDTO.setTitle("问题反馈");
+            mailDTO.setContent("");
+            mailDTO.setEmail(managerEmailSendQuery.getSendTo());
+            //mailDTO.setEmail("heyapei@hotmail.com");
+            Map<String, Object> map = new HashMap<>(1);
+            map.put("emailContent", managerEmailSendQuery.getEmailContent());
+            mailDTO.setAttachment(map);
+            log.info("邮件值：" + mailDTO.toString());
+            mailService.sendTemplateMailAsync(mailDTO);
+            weixinManagerEmail.setSendStatus(WeixinManagerEmail.SendStatusEnum.SENT.getCode());
+        }
+
 
         log.info("组装参数：{}", weixinManagerEmail.toString());
 
@@ -87,6 +113,12 @@ public class ManagerEmailRestfulController {
     }
 
 
+    /**
+     * 邮件用资源上传
+     *
+     * @param file
+     * @return
+     */
     @PostMapping("upload")
     public Map<String, String> fileUpload(@RequestParam("file") MultipartFile file) {
         MyResultVO myResultVO = null;

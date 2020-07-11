@@ -171,7 +171,7 @@ public class WeixinManagerEmail {
     public enum SendStatusEnum {
 
         UN_SEND(0, "未发送"),
-        SENT(0, "已发送");
+        SENT(1, "已发送");
 
 
         private Integer code;

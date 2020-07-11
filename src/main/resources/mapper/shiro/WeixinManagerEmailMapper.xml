@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hyp.blogmaster.shiro.mapper.WeixinManagerEmailMapper">
+    <resultMap id="BaseResultMap" type="com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="send_to" property="sendTo" jdbcType="VARCHAR"/>
+        <result column="send_from" property="sendFrom" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="email_type" property="emailType" jdbcType="INTEGER"/>
+        <result column="send_time" property="sendTime" jdbcType="TIMESTAMP"/>
+        <result column="crontab_send_time_start" property="crontabSendTimeStart" jdbcType="TIMESTAMP"/>
+        <result column="crontab_send_time_end" property="crontabSendTimeEnd" jdbcType="TIMESTAMP"/>
+        <result column="send_type" property="sendType" jdbcType="INTEGER"/>
+        <result column="send_status" property="sendStatus" jdbcType="INTEGER"/>
+        <result column="email_content" property="emailContent" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+</mapper>

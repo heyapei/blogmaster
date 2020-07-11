@@ -84,7 +84,6 @@
             article.value = editor.txt.html();
 
 
-
             let sendTo = $("#sendTo").val();
             let sendType = $("input[name=sendType]:checked").val()
             let submitArticleContent = $("#submitArticleContent").val();
@@ -114,14 +113,14 @@
                 if (crontabSendTimeStart == null || crontabSendTimeStart == undefined || crontabSendTimeStart == "") {
                     toastr.error("当前模式下，定时用开始时间必填");
                     return;
-                }else {
+                } else {
                     crontabSendTimeStart = crontabSendTimeStart.replace("T", " ");
                 }
 
                 if (crontabSendTimeEnd == null || crontabSendTimeEnd == undefined || crontabSendTimeEnd == "") {
                     toastr.error("当前模式下，定时用结束时间必填");
                     return;
-                }else {
+                } else {
                     crontabSendTimeEnd = crontabSendTimeEnd.replace("T", " ");
                 }
             }
@@ -130,6 +129,12 @@
                 toastr.error("邮件内容必填，还请输入邮件内容");
                 return;
             }
+
+            if (!funcChinese(submitArticleContent)) {
+                toastr.error("请输入邮件内容！");
+                return;
+            }
+
 
             showMyCustomLoading();
             $.ajax({
@@ -183,6 +188,33 @@
                 }
             }
             return true;
+        }
+
+
+        /**
+         * 检测是否包含中文，true表示包含中文，false表示不包含中文
+         * @param str
+         * @returns {boolean}
+         */
+        function funcChinese(str) {
+            if (/.*[\u4e00-\u9fa5]+.*$/.test(str)) {
+                return true;
+            }
+            return false;
+        }
+
+
+        /**
+         * 检测是否为中文，true表示是中文，false表示非中文
+         * @param str
+         * @returns {boolean}
+         */
+        function isChinese(str) {
+            if (/^[\u3220-\uFA29]+$/.test(str)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
     </script>

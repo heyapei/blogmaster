@@ -89,6 +89,57 @@ public class WeixinManagerEmailReceive {
      */
     @Column(name = "receive_email_priority")
     private Integer receiveEmailPriority;
+    /**
+     * 当前邮件是否回复了 0 未回复 1已回复 2放弃回复
+     */
+    @Column(name = "receive_reply_status")
+    private Integer receiveReplyStatus;
+
+    public enum ReceiveReplyStatusEnum {
+
+        NO_REPLY(0, "未回复"),
+        ABANDON(2, "放弃回复"),
+        HAS_REPLY(1, "已回复");
+
+        /**
+         * 状态码
+         */
+        private Integer code;
+        /**
+         * 状态描述
+         */
+        private String msg;
+
+        ReceiveReplyStatusEnum(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+
+        @Override
+        public String toString() {
+            return "ReceiveEmailHasDeleteEnum{" +
+                    "code=" + code +
+                    ", msg='" + msg + '\'' +
+                    '}';
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public void setCode(Integer code) {
+            this.code = code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+    }
+
 
     /**
      * 是否需要回执

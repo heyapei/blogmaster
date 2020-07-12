@@ -19,6 +19,7 @@
     <result column="receive_email_attach_url" property="receiveEmailAttachUrl" jdbcType="VARCHAR" />
     <result column="receive_email_from_name" property="receiveEmailFromName" jdbcType="VARCHAR" />
     <result column="receive_email_has_delete" property="receiveEmailHasDelete" jdbcType="INTEGER" />
+    <result column="receive_reply_status" property="receiveReplyStatus" jdbcType="INTEGER" />
     <result column="receive_email_remark" property="receiveEmailRemark" jdbcType="VARCHAR" />
     <result column="receive_email_status" property="receiveEmailStatus" jdbcType="INTEGER" />
     <result column="receive_email_ext1" property="receiveEmailExt1" jdbcType="VARCHAR" />

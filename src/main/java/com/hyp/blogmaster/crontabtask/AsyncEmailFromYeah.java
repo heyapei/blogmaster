@@ -45,11 +45,18 @@ public class AsyncEmailFromYeah {
     @Value("${spring.mail.password}")
     private String password;
 
+
+    /**
+     * 没隔多少天删除一次 当前收件箱内容的邮件
+     */
+    private static int deleteDay = 365;
+
+
     /**
      * 从weixin数据库中同步数据到weixin_admin_manager数据库中
      * 每两个小时执行一次
      * 每28天删除一次邮箱服务器上的内容
-     * if (day % 28 == 0)
+     * if (day % deleteDay == 0)
      */
     @Scheduled(cron = "${crontab.task.loop.hour.two}")
     public void getResceiveEmailFromYEAH() {
@@ -162,7 +169,7 @@ public class AsyncEmailFromYeah {
                 weixinManagerEmailReceive = weixinManagerEmailReceiveList.get(0);
                 if (weixinManagerEmailReceive.getReceiveEmailHasDelete().equals(WeixinManagerEmailReceive.ReceiveEmailHasDeleteEnum.NO_DELETE.getCode())) {
                     //得到收件箱中的所有邮件并且删除邮件 每28天删除一批数据
-                    if (day % 28 == 0) {
+                    if (day % deleteDay == 0) {
                         if (getFrom(msg).contains("weixinteam") || msg.getMessageID().contains("weixinteam@qq.com")) {
                             log.info("微信团队的邮件不做删除处理");
                             continue;

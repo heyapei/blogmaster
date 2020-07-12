@@ -38,6 +38,7 @@ public class WeixinManagerEmailReceive {
         weixinManagerEmailReceive.setReceiveEmailExt4("");
         weixinManagerEmailReceive.setReceiveEmailExt5("");
         weixinManagerEmailReceive.setReceiveEmailContent("");
+        weixinManagerEmailReceive.setReceiveReplyStatus(0);
         return weixinManagerEmailReceive;
 
     }

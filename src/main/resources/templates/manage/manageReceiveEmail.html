@@ -196,9 +196,9 @@
                     <label for="query-receiveReplyStatus" title="用户状态">状态</label>
                     <select class="form-control" id="query-receiveReplyStatus" name="receiveReplyStatus">
                         <option value="">全部</option>
-                        <option value="0" th:selected="${manageReceiveEmailQuery?.getReceiveReplyStatus() == 0}">已回复
+                        <option value="0" th:selected="${manageReceiveEmailQuery?.getReceiveReplyStatus() == 0}">未回复
                         </option>
-                        <option value="1" th:selected="${manageReceiveEmailQuery?.getReceiveReplyStatus() == 1}">未回复
+                        <option value="1" th:selected="${manageReceiveEmailQuery?.getReceiveReplyStatus() == 1}">已回复
                         </option>
                         <option value="2" th:selected="${manageReceiveEmailQuery?.getReceiveReplyStatus() == 2}">放弃
                         </option>

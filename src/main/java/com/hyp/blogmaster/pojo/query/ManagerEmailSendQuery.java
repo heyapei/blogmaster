@@ -50,4 +50,10 @@ public class ManagerEmailSendQuery {
     private String emailContent;
 
 
+    /**
+     * 反馈邮件ID
+     */
+    private Integer receiveEmailId;
+
+
 }

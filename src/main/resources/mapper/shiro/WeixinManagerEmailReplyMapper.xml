@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hyp.blogmaster.shiro.mapper.WeixinManagerEmailReplyMapper" >
-  <resultMap id="BaseResultMap" type="com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReply" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="reply_email_from" property="replyEmailFrom" jdbcType="VARCHAR" />
-    <result column="reply_email_admin_user_id" property="replyEmailAdminUserId" jdbcType="INTEGER" />
-    <result column="reply_email_title" property="replyEmailTitle" jdbcType="VARCHAR" />
-    <result column="reply_email_create_date" property="replyEmailCreateDate" jdbcType="TIMESTAMP" />
-    <result column="reply_email_update_date" property="replyEmailUpdateDate" jdbcType="TIMESTAMP" />
-    <result column="reply_email_send_date" property="replyEmailSendDate" jdbcType="TIMESTAMP" />
-    <result column="reply_email_crontab_start_time" property="replyEmailCrontabStartTime" jdbcType="TIMESTAMP" />
-    <result column="reply_email_crontab_end_time" property="replyEmailCrontabEndTime" jdbcType="TIMESTAMP" />
-    <result column="reply_email_from_name" property="replyEmailFromName" jdbcType="VARCHAR" />
-    <result column="reply_email_status" property="replyEmailStatus" jdbcType="INTEGER" />
-    <result column="reply_email_send_status" property="replyEmailSendStatus" jdbcType="INTEGER" />
-    <result column="reply_email_remark" property="replyEmailRemark" jdbcType="VARCHAR" />
-    <result column="reply_email_ext1" property="replyEmailExt1" jdbcType="VARCHAR" />
-    <result column="reply_email_ext2" property="replyEmailExt2" jdbcType="VARCHAR" />
-    <result column="reply_email_ext3" property="replyEmailExt3" jdbcType="VARCHAR" />
-    <result column="reply_email_ext4" property="replyEmailExt4" jdbcType="VARCHAR" />
-    <result column="reply_email_ext5" property="replyEmailExt5" jdbcType="VARCHAR" />
-    <result column="reply_email_has_attach" property="replyEmailHasAttach" jdbcType="INTEGER" />
-    <result column="reply_email_attach_url" property="replyEmailAttachUrl" jdbcType="VARCHAR" />
-    <result column="reply_email_priority" property="replyEmailPriority" jdbcType="INTEGER" />
-    <result column="reply_email_content" property="replyEmailContent" jdbcType="LONGVARCHAR" />
-  </resultMap>
+<mapper namespace="com.hyp.blogmaster.shiro.mapper.WeixinManagerEmailReplyMapper">
+    <resultMap id="BaseResultMap" type="com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReply">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="reply_email_from" property="replyEmailFrom" jdbcType="VARCHAR"/>
+        <result column="reply_email_admin_user_id" property="replyEmailAdminUserId" jdbcType="INTEGER"/>
+        <result column="reply_email_title" property="replyEmailTitle" jdbcType="VARCHAR"/>
+        <result column="reply_email_create_date" property="replyEmailCreateDate" jdbcType="TIMESTAMP"/>
+        <result column="reply_email_update_date" property="replyEmailUpdateDate" jdbcType="TIMESTAMP"/>
+        <result column="reply_email_send_date" property="replyEmailSendDate" jdbcType="TIMESTAMP"/>
+        <result column="reply_email_crontab_start_time" property="replyEmailCrontabStartTime" jdbcType="TIMESTAMP"/>
+        <result column="reply_email_crontab_end_time" property="replyEmailCrontabEndTime" jdbcType="TIMESTAMP"/>
+        <result column="reply_email_from_name" property="replyEmailFromName" jdbcType="VARCHAR"/>
+        <result column="reply_email_status" property="replyEmailStatus" jdbcType="INTEGER"/>
+        <result column="reply_email_send_status" property="replyEmailSendStatus" jdbcType="INTEGER"/>
+        <result column="reply_email_remark" property="replyEmailRemark" jdbcType="VARCHAR"/>
+        <result column="reply_email_ext1" property="replyEmailExt1" jdbcType="VARCHAR"/>
+        <result column="reply_email_ext2" property="replyEmailExt2" jdbcType="VARCHAR"/>
+        <result column="reply_email_ext3" property="replyEmailExt3" jdbcType="VARCHAR"/>
+        <result column="reply_email_ext4" property="replyEmailExt4" jdbcType="VARCHAR"/>
+        <result column="reply_email_ext5" property="replyEmailExt5" jdbcType="VARCHAR"/>
+        <result column="reply_email_has_attach" property="replyEmailHasAttach" jdbcType="INTEGER"/>
+        <result column="reply_email_attach_url" property="replyEmailAttachUrl" jdbcType="VARCHAR"/>
+        <result column="reply_email_priority" property="replyEmailPriority" jdbcType="INTEGER"/>
+        <result column="reply_email_send_to" property="replyEmailSendTo" jdbcType="INTEGER"/>
+        <result column="reply_email_content" property="replyEmailContent" jdbcType="LONGVARCHAR"/>
+    </resultMap>
 </mapper>

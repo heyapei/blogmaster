@@ -90,6 +90,7 @@
             let crontabSendTimeStart = $("#crontab_send_time_start").val();
             let crontabSendTimeEnd = $("#crontab_send_time_end").val();
             let adminUserId = $("#adminUserId").val();
+            let receiveEmailId = $("#receiveEmailId").val();
 
             //alert(submitArticleContent)
 
@@ -134,6 +135,16 @@
                 toastr.error("请输入邮件内容！");
                 return;
             }
+            /*判断是否存在反馈邮件数据*/
+            if (receiveEmailId == null || receiveEmailId == undefined || receiveEmailId == "") {
+                receiveEmailId = -1;
+            } else {
+                if (receiveEmailId === 'number' && isFinite(receiveEmailId)) {
+                    receiveEmailId = -1;
+                }
+            }
+
+
 
 
             showMyCustomLoading();
@@ -145,7 +156,8 @@
                     emailContent: submitArticleContent,
                     crontabSendTimeStart: crontabSendTimeStart,
                     crontabSendTimeEnd: crontabSendTimeEnd,
-                    adminUserId: adminUserId
+                    adminUserId: adminUserId,
+                    receiveEmailId: receiveEmailId
                 },
                 type: "POST",
                 cache: false,
@@ -217,6 +229,13 @@
             }
         }
 
+        function showReceiveEmailContent(receiveEmailId) {
+            toastr.info('准备邮件内容....', '努力中');
+            $('#receiveEmailContentShowModalBody').html($("#" + receiveEmailId).val());
+            $('#receiveEmailContentShow').modal("show");
+            centerModals("receiveEmailContentShow");
+        }
+
     </script>
 
 
@@ -234,6 +253,28 @@
 </div>
 
 
+<!--邮件信息展示-->
+<div class="modal fade" id="receiveEmailContentShow"
+     role="dialog"
+     aria-labelledby="organisersInfoByIdModal"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width: 95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body" id="receiveEmailContentShowModalBody"
+                 style="width:100%; height:300px;overflow:auto;">
+                显示邮件内容中。。。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container" style="margin-bottom: 30px">
     <div class="row clearfix">
         <div class="col-md-12 column">
@@ -242,6 +283,12 @@
             <input id="submitArticleContent"
                    th:value="${managerEmailSendQuery?.getArticleContent()}"
                    name="emailContext"
+                   type="hidden" required>
+
+            <!--反馈邮件ID-->
+            <input id="receiveEmailId"
+                   th:value="${receiveMailForReplyAppointDTO?.receiveEmailId != null } ?${receiveMailForReplyAppointDTO?.receiveEmailId}:'' "
+                   name="receiveEmailId"
                    type="hidden" required>
 
             <input id="adminUserId"
@@ -253,7 +300,7 @@
             <div class="form-group">
                 <label for="sendTo">邮件地址</label>
                 <input type="email" name="sendTo" class="form-control"
-                       id="sendTo" required/>
+                       id="sendTo" required th:value="${receiveMailForReplyAppointDTO?.receiveEmailFrom}"/>
             </div>
             <div class="form-group">
                 <label>发送类型</label>
@@ -289,6 +336,46 @@
 
             <button class="btn btn-default" onclick="submitEmail()">提交邮件</button>
 
+        </div>
+    </div>
+</div>
+
+
+<div class="container" th:if="${receiveMailForReplyAppointDTO !=null}">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <tbody>
+                    <tr>
+                        <td>
+                            邮件人
+                        </td>
+                        <td th:text="${receiveMailForReplyAppointDTO?.receiveEmailFrom}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            邮件标题
+                        </td>
+                        <td th:text="${receiveMailForReplyAppointDTO?.receiveEmailTitle}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            邮件内容
+                        </td>
+                        <td>
+                            <a th:href="|javascript:showReceiveEmailContent('emailContent${receiveMailForReplyAppointDTO?.receiveEmailId}')|">
+                                点击查看邮件内容
+                            </a>
+                            <input type="hidden" th:value="${receiveMailForReplyAppointDTO?.receiveEmailContent}"
+                                   th:id="|emailContent${receiveMailForReplyAppointDTO?.receiveEmailId}|">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -359,6 +446,14 @@
     }
 </script>
 
-
+<!--底部信息-->
+<div class="container" style="margin-bottom: 30px">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="btn-group">
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

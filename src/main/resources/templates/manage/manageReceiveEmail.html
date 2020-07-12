@@ -321,10 +321,17 @@
                         </td>
 
 
-                        <td>
+                        <td nowrap="true">
+                            <a class='btn btn-xs green'
+                               title='查看信息'
+                            ><span class='glyphicon glyphicon-pencil'></span></a>
+
                             <a class='btn btn-xs green'
                                title='回复邮件'
-                            ><span class='glyphicon glyphicon-pencil'></span></a>
+                               th:href="@{/admin/manager/email/replyAppoint(receiveEmailId=${weixinManagerEmailReceive?.getId()})}"
+                               target="view_window_reply_appoint_email"
+                            ><span class='glyphicon glyphicon-send'></span></a>
+
                         </td>
                     </tr>
                     </tbody>
@@ -373,5 +380,17 @@
         </div>
     </div>
 </div>
+
+
+<!--底部信息-->
+<div class="container" style="margin-bottom: 30px">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="btn-group">
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

@@ -3,7 +3,6 @@ package com.hyp.blogmaster.shiro.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
-import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.query.ManageReceiveEmailQuery;
 import com.hyp.blogmaster.shiro.mapper.WeixinManagerEmailReceiveMapper;
 import com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReceive;
@@ -30,6 +29,30 @@ public class WeixinManagerEmailReceiveServiceImpl implements WeixinManagerEmailR
     @Autowired
     private WeixinManagerEmailReceiveMapper weixinManagerEmailReceiveMapper;
 
+
+    /**
+     * 通过主键查询数据
+     *
+     * @param pk 主键
+     * @return 实体类
+     * @throws MyDefinitionException
+     */
+    @Override
+    public WeixinManagerEmailReceive getWeixinManagerEmailReceiveByPK(Integer pk) throws MyDefinitionException {
+        if (pk == null) {
+            throw new MyDefinitionException("通过查询用户反馈邮件的数据参数不能为空");
+        }
+
+        WeixinManagerEmailReceive weixinManagerEmailReceive = null;
+        try {
+            weixinManagerEmailReceive = weixinManagerEmailReceiveMapper.selectByPrimaryKey(pk);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("通过查询用户反馈邮件的数据操作过程错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("通过查询用户反馈邮件的数据操作过程错误");
+        }
+        return weixinManagerEmailReceive;
+    }
 
     /**
      * 通过查询条件进行分页数据查询

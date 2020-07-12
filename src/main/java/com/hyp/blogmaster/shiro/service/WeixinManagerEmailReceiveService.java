@@ -29,6 +29,15 @@ public interface WeixinManagerEmailReceiveService {
 
     /*通用*/
 
+
+    /**
+     * 通过主键查询数据
+     * @param pk 主键
+     * @return 实体类
+     * @throws MyDefinitionException
+     */
+    WeixinManagerEmailReceive getWeixinManagerEmailReceiveByPK(Integer pk) throws MyDefinitionException;
+
     /**
      * 保存从邮件服务商拉取的邮件信息
      *

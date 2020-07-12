@@ -110,7 +110,89 @@ public class WeixinManagerEmailReply {
     private Integer replyEmailStatus;
 
     /**
-     * 回复邮件发送状态 0未发送 1已发送
+     * 回复邮件状态
+     */
+    public enum ReplyEmailStatusEnum {
+
+        UN_SEND(0, "未发送"),
+        SENT(1, "已发送");
+
+
+        private Integer code;
+        private String desc;
+
+        @Override
+        public String toString() {
+            return "SendStatusEnum{" +
+                    "code=" + code +
+                    ", desc='" + desc + '\'' +
+                    '}';
+        }
+
+        ReplyEmailStatusEnum(Integer code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public void setCode(Integer code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
+
+    /**
+     * 发送类型
+     */
+    public enum ReplyEmailSendStatusEnum {
+
+        IMMEDIATELY_SEND(0, "即刻发送"),
+        CRONTAB_SEND(1, "定时发送");
+        private Integer code;
+        private String msg;
+
+        ReplyEmailSendStatusEnum(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+
+        @Override
+        public String toString() {
+            return "SendTypeEnum{" +
+                    "code=" + code +
+                    ", desc='" + msg + '\'' +
+                    '}';
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public void setCode(Integer code) {
+            this.code = code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+    }
+
+    /**
+     * 回复邮件发送状态 0即刻发送 1定时发送
      */
     @Column(name = "reply_email_send_status")
     private Integer replyEmailSendStatus;
@@ -170,10 +252,15 @@ public class WeixinManagerEmailReply {
     private Integer replyEmailPriority;
 
     /**
-     * 回复邮件的
+     * 回复邮件的内容
      */
     @Column(name = "reply_email_content")
     private String replyEmailContent;
+    /**
+     * 邮件接收方地址
+     */
+    @Column(name = "reply_email_send_to")
+    private String replyEmailSendTo;
 
     /**
      * 获取主键

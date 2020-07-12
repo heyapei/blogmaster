@@ -34,6 +34,11 @@ ReceiveEmailHasDeleteEnum).getEnumMsg(weixinManagerEmailReceive?.
 receiveEmailHasDelete)}">
                         </td>
 
+
+thymeleaf真好用
+这样的赋值方式也挺好
+th:href="@{/admin/manager/email/replyAppoint(receiveEmailId=${weixinManagerEmailReceive?.getId()})}"
+
 ```
 
 

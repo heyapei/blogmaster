@@ -1,6 +1,7 @@
 package com.hyp.blogmaster.controller.manager;
 
 import com.github.pagehelper.PageInfo;
+import com.hyp.blogmaster.pojo.dto.mail.ReceiveMailForReplyAppointDTO;
 import com.hyp.blogmaster.pojo.query.ManageReceiveEmailQuery;
 import com.hyp.blogmaster.shiro.pojo.modal.AdminUser;
 import com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReceive;
@@ -10,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,9 +45,22 @@ public class ManagerEmailController {
 
 
     @RequestMapping("/replyAppoint")
-    public String toEmailToAppoint(Model model, HttpServletRequest request) {
+    public String toEmailToAppoint(Integer receiveEmailId, Model model, HttpServletRequest request) {
         AdminUser adminUser = (AdminUser) request.getSession().getAttribute("userSession");
         model.addAttribute("adminUserId", adminUser.getId());
+        ReceiveMailForReplyAppointDTO receiveMailForReplyAppointDTO = null;
+        if (receiveEmailId != null) {
+            WeixinManagerEmailReceive weixinManagerEmailReceiveByPK = weixinManagerEmailReceiveService.getWeixinManagerEmailReceiveByPK(receiveEmailId);
+            if (weixinManagerEmailReceiveByPK != null) {
+                receiveMailForReplyAppointDTO = new ReceiveMailForReplyAppointDTO();
+                receiveMailForReplyAppointDTO.setReceiveEmailContent(weixinManagerEmailReceiveByPK.getReceiveEmailContent());
+                receiveMailForReplyAppointDTO.setReceiveEmailFrom(weixinManagerEmailReceiveByPK.getReceiveEmailFrom());
+                receiveMailForReplyAppointDTO.setReceiveEmailId(receiveEmailId);
+                receiveMailForReplyAppointDTO.setReceiveEmailTitle(weixinManagerEmailReceiveByPK.getReceiveEmailTitle());
+                receiveMailForReplyAppointDTO.setReceiveEmailFromName(weixinManagerEmailReceiveByPK.getReceiveEmailFromName());
+            }
+        }
+        model.addAttribute("receiveMailForReplyAppointDTO", receiveMailForReplyAppointDTO);
         return "manage/sendEmail";
     }
 

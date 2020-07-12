@@ -298,6 +298,9 @@
                             编号
                         </th>
                         <th>
+                            用户ID
+                        </th>
+                        <th>
                             微信名
                         </th>
                         <th>
@@ -336,6 +339,8 @@
                     </thead>
                     <tbody>
                     <tr th:each="weixinVoteUser,seqNum : ${pageInfo?.getList()}">
+                        <td th:text="${seqNum?.index+1}">
+                        </td>
                         <td th:text="${weixinVoteUser?.getId()}">
                         </td>
                         <td>

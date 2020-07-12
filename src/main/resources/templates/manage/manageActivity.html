@@ -579,6 +579,9 @@
                             编号
                         </th>
                         <th>
+                            活动ID
+                        </th>
+                        <th>
                             用户昵称
                         </th>
                         <th>
@@ -625,6 +628,10 @@
                     <tbody>
                     <tr th:each="activityManagerDTO,seqNum : ${pageInfo?.getList()}">
                         <td th:text="${seqNum?.index+1}">
+                        </td>
+
+
+                        <td th:text="${activityManagerDTO?.activeId}">
                         </td>
 
                         <td>

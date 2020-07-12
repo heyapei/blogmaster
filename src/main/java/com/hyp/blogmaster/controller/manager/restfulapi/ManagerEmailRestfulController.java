@@ -92,7 +92,7 @@ public class ManagerEmailRestfulController {
             Map<String, Object> map = new HashMap<>(1);
             map.put("emailContent", managerEmailSendQuery.getEmailContent());
             mailDTO.setAttachment(map);
-            log.info("邮件值：" + mailDTO.toString());
+            //log.info("邮件值：" + mailDTO.toString());
             mailService.sendTemplateMailAsync(mailDTO);
             weixinManagerEmail.setSendStatus(WeixinManagerEmail.SendStatusEnum.SENT.getCode());
         }

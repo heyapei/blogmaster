@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hyp.blogmaster.shiro.mapper.WeixinManagerEmailReceiveMapper" >
+  <resultMap id="BaseResultMap" type="com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReceive" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="receive_email_id" property="receiveEmailId" jdbcType="VARCHAR" />
+    <result column="receive_email_title" property="receiveEmailTitle" jdbcType="VARCHAR" />
+    <result column="receive_email_from" property="receiveEmailFrom" jdbcType="VARCHAR" />
+    <result column="receive_email_get_date" property="receiveEmailGetDate" jdbcType="TIMESTAMP" />
+    <result column="receive_email_date" property="receiveEmailDate" jdbcType="VARCHAR" />
+    <result column="receive_email_has_readed" property="receiveEmailHasReaded" jdbcType="INTEGER" />
+    <result column="receive_email_priority" property="receiveEmailPriority" jdbcType="INTEGER" />
+    <result column="receive_email_need_return" property="receiveEmailNeedReturn" jdbcType="INTEGER" />
+    <result column="receive_email_size" property="receiveEmailSize" jdbcType="BIGINT" />
+    <result column="receive_email_has_attach" property="receiveEmailHasAttach" jdbcType="INTEGER" />
+    <result column="receive_email_attach_url" property="receiveEmailAttachUrl" jdbcType="VARCHAR" />
+    <result column="receive_email_from_name" property="receiveEmailFromName" jdbcType="VARCHAR" />
+    <result column="receive_email_has_delete" property="receiveEmailHasDelete" jdbcType="INTEGER" />
+    <result column="receive_email_remark" property="receiveEmailRemark" jdbcType="VARCHAR" />
+    <result column="receive_email_status" property="receiveEmailStatus" jdbcType="INTEGER" />
+    <result column="receive_email_ext1" property="receiveEmailExt1" jdbcType="VARCHAR" />
+    <result column="receive_email_ext2" property="receiveEmailExt2" jdbcType="VARCHAR" />
+    <result column="receive_email_ext3" property="receiveEmailExt3" jdbcType="VARCHAR" />
+    <result column="receive_email_ext4" property="receiveEmailExt4" jdbcType="VARCHAR" />
+    <result column="receive_email_ext5" property="receiveEmailExt5" jdbcType="VARCHAR" />
+    <result column="receive_email_content" property="receiveEmailContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+</mapper>

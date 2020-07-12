@@ -1,5 +1,18 @@
 # 2020年5月31日 管理后台程序 开启
 
+```$xslt
+2020年7月12日
+因为spring的定时任务执行是在Autowired之前的，所以需要ApplicationContextForTaskUtil对上下文进行处理
+WeixinManagerEmailReceiveService weixinManagerEmailReceiveService = 
+(WeixinManagerEmailReceiveService) ApplicationContextForTaskUtil.getBean("weixinManagerEmailReceiveService");
+其中getBean方法给的值是@Service("weixinManagerEmailReceiveService")
+通过名字进行查找
+
+不知道是我不会还是怎么回事 我没法使用imap拉取邮件
+
+```
+
+
 
 ```$xslt
 2020年7月12日01点21分

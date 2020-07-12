@@ -96,11 +96,23 @@ public class WeixinManagerEmailReceive {
     @Column(name = "receive_reply_status")
     private Integer receiveReplyStatus;
 
+    /**
+     * 邮件的状态
+     */
     public enum ReceiveReplyStatusEnum {
 
         NO_REPLY(0, "未回复"),
         ABANDON(2, "放弃回复"),
         HAS_REPLY(1, "已回复");
+
+        public static String getEnumMsg(Integer code) {
+            for (ReceiveReplyStatusEnum receiveEmailHasDeleteEnum : ReceiveReplyStatusEnum.values()) {
+                if (code.equals(receiveEmailHasDeleteEnum.getCode())) {
+                    return receiveEmailHasDeleteEnum.getMsg();
+                }
+            }
+            return "未定义";
+        }
 
         /**
          * 状态码
@@ -470,10 +482,23 @@ public class WeixinManagerEmailReceive {
     }
 
 
+    /**
+     * 是否从邮件服务商列表中删除了该邮件
+     */
     public enum ReceiveEmailHasDeleteEnum {
 
-        NO_DELETE(0, "未从服务器中删除"),
-        HAS_DELETE(1, "从服务器已删除");
+        NO_DELETE(0, "未删除"),
+        HAS_DELETE(1, "已删除");
+
+        public static String getEnumMsg(Integer code) {
+            for (ReceiveEmailHasDeleteEnum receiveEmailHasDeleteEnum : ReceiveEmailHasDeleteEnum.values()) {
+                if (code.equals(receiveEmailHasDeleteEnum.getCode())) {
+                    return receiveEmailHasDeleteEnum.getMsg();
+                }
+            }
+            return "未定义";
+        }
+
 
         /**
          * 状态码

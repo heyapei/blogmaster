@@ -1,0 +1,377 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/6/28 21:11 
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>反馈邮件管理</title>
+    <meta name="keywords" content="login"/>
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
+    <head th:include="/inc/commonutil/echarts :: echarts"></head>
+    <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
+    <!--table内容居中-->
+    <style>
+        .table tbody tr td {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+        .table th {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+
+        /*翻页*/
+        .jump {
+            margin: 0px 0;
+            float: right;
+        }
+
+        .jump_text {
+            float: right;
+            margin: 0 0 0 5px;
+            line-height: 33px;
+        }
+
+        .jump_text input {
+            width: 40px;
+            border: rgba(212, 212, 212, 1.00) 1px solid;
+            height: 30px;
+            line-height: 33px;
+            background: #fff;
+        }
+
+        /*取消number的样式*/
+        /* google、safari */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+
+        /* 火狐 */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+    </style>
+
+    <script>
+        /*模态框居中*/
+        function centerModals(myModelID) {
+            $('#' + myModelID).each(function (i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 0 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top);
+            });
+
+        };
+
+
+        function cp(ipage) {
+            $("#pageNum").val(ipage);
+            $("#userManagerInfo").append("<input type='hidden' name='pageNum' value='" + ipage + "' />");
+            $("#userManagerInfo").submit();
+        }
+
+
+        function goPage(maxPageNum) {
+            var jumpPage = document.getElementById("jumpPage").value;
+            var totalPage = maxPageNum;
+            if (isNaN(jumpPage)) {
+                toastr.error("请输入数字!");
+                return;
+            } else if (jumpPage.length == 0) {
+                toastr.error("请输入页码!");
+            } else if (jumpPage <= 0 || Number(jumpPage) > Number(totalPage)) {
+                toastr.error("非法的页码【" + jumpPage + "】!");
+                document.getElementById("jumpPage").value = "";
+                return;
+            } else {
+                var flag = $("input[name='pageNumber']");
+                flag.remove();
+                $("#userManagerInfo").append("<input type='hidden' name='pageNum' value='" + jumpPage + "' />");
+                $("#userManagerInfo").submit();
+            }
+        }
+    </script>
+
+
+    <script>
+
+        function showReceiveEmailContent(receiveEmailId, from, date) {
+            toastr.info('准备邮件内容....', '努力中');
+            let title = "当前查看邮件是：<b>" + from + "</b>，在  <b>" + date + "</b>  提交的邮件";
+            $('#receiveEmailContentShowModalLabel').html(title);
+            $('#receiveEmailContentShowModalBody').html($("#" + receiveEmailId).val());
+            $('#receiveEmailContentShow').modal("show");
+            centerModals("receiveEmailContentShow");
+        }
+
+    </script>
+
+
+</head>
+<body>
+
+<!--引入等待层-->
+<div th:include="/inc/commonutil/toastrutil :: myCustomLoad"></div>
+
+<!--通用头部信息-->
+<div class="container">
+    <div th:include="inc/head/simplehead :: header"></div>
+</div>
+
+<!--使用模态框-->
+
+<!--邮件信息展示-->
+<div class="modal fade" id="receiveEmailContentShow"
+     role="dialog"
+     aria-labelledby="organisersInfoByIdModal"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width: 95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="receiveEmailContentShowModalLabel">
+
+                </h4>
+            </div>
+            <div class="modal-body" id="receiveEmailContentShowModalBody"
+                 style="width:100%; height:300px;overflow:auto;">
+                显示邮件内容中。。。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">保存</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-bottom: 30px">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="btn-group">
+                <button class="btn btn-default" type="button"
+                onclick="javascript:window.open('email/replyAppoint');">
+                   向指定用户发送邮件
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row clearfix">
+        <!--中间信息-->
+        <div class="col-md-12 column">
+            <form role="form" class="form-inline" action="/admin/manager/email"
+                  method="post" id="userManagerInfo">
+
+
+                <div class="form-group">
+                    <label for="query-receiveEmailFrom" title="邮件发件人">发件人</label>
+                    <input class="form-control" id="query-receiveEmailFrom" placeholder="邮件发件人" type="text"
+                           name="receiveEmailFrom" th:value="${manageReceiveEmailQuery?.getReceiveEmailFrom()}">
+                </div>
+
+                <div class="form-group">
+                    <label for="query-receiveEmailTitle" title="邮件标题">标题</label>
+                    <input class="form-control" id="query-receiveEmailTitle" placeholder="邮件标题" type="text"
+                           name="receiveEmailTitle" th:value="${manageReceiveEmailQuery?.getReceiveEmailTitle()}">
+                </div>
+
+                <div class="form-group">
+                    <label for="query-receiveReplyStatus" title="用户状态">状态</label>
+                    <select class="form-control" id="query-receiveReplyStatus" name="receiveReplyStatus">
+                        <option value="">全部</option>
+                        <option value="0" th:selected="${manageReceiveEmailQuery?.getReceiveReplyStatus() == 0}">已回复
+                        </option>
+                        <option value="1" th:selected="${manageReceiveEmailQuery?.getReceiveReplyStatus() == 1}">未回复
+                        </option>
+                        <option value="2" th:selected="${manageReceiveEmailQuery?.getReceiveReplyStatus() == 2}">放弃
+                        </option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="query-order-column" title="排序字段">排序字段</label>
+                    <select class="form-control" id="query-order-column" name="orderColumn">
+                        <option value="receiveEmailGetDate"
+                                th:selected="${manageReceiveEmailQuery?.getOrderColumn() == 'receiveEmailGetDate'}">
+                            拉取时间
+                        </option>
+                        <option value="receiveEmailDate"
+                                th:selected="${manageReceiveEmailQuery?.getOrderColumn() == 'receiveEmailDate'}">
+                            发送时间
+                        </option>
+                    </select>
+                </div>
+                <!-- <p th:text="${pageInfo}"></p>
+                 <p th:text="${managerUserQuery}"></p>-->
+
+
+                <div class="form-group">
+                    <label for="query-order-by" title="排序方式">排序方式</label>
+                    <select class="form-control" id="query-order-by" name="orderBy">
+                        <option value="desc" th:selected="${manageReceiveEmailQuery?.getOrderBy() == 'desc'}">倒叙
+                        </option>
+                        <option value="asc" th:selected="${manageReceiveEmailQuery?.getOrderBy() == 'asc'}">正序</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="query-pageSize" title="每页所展示的条目数">每页条数</label>
+                    <select class="form-control" id="query-pageSize" name="pageSize">
+                        <option value="5" th:selected="${manageReceiveEmailQuery?.getPageSize() == 5}">5</option>
+                        <option value="10" th:selected="${manageReceiveEmailQuery?.getPageSize() == 10}">10</option>
+                        <option value="15" th:selected="${manageReceiveEmailQuery?.getPageSize() == 15}">15</option>
+                        <option value="20" th:selected="${manageReceiveEmailQuery?.getPageSize() == 20}">20</option>
+                        <option value="30" th:selected="${manageReceiveEmailQuery?.getPageSize() == 30}">30</option>
+                        <option value="40" th:selected="${manageReceiveEmailQuery?.getPageSize() == 40}">40</option>
+                        <option value="50" th:selected="${manageReceiveEmailQuery?.getPageSize() == 50}">50</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success">查询</button>
+            </form>
+            <br><br>
+        </div>
+    </div>
+</div>
+<!--用户显示页面-->
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>
+                            编号
+                        </th>
+                        <th>
+                            发件人
+                        </th>
+                        <th>
+                            标题
+                        </th>
+                        <th>
+                            内容
+                        </th>
+                        <th>
+                            发送时间
+                        </th>
+                        <th>
+                            拉取时间
+                        </th>
+                        <th>
+                            邮件商状态
+                        </th>
+                        <th>
+                            邮件状态
+                        </th>
+                        <th>
+
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="weixinManagerEmailReceive,seqNum : ${pageInfo?.getList()}">
+                        <td th:text="${seqNum?.index+1}">
+                        </td>
+
+                        <td th:text="${weixinManagerEmailReceive?.receiveEmailFrom}">
+                        </td>
+
+                        <td th:text="${weixinManagerEmailReceive?.receiveEmailTitle}">
+                        </td>
+
+                        <td>
+                            <a th:href="|javascript:showReceiveEmailContent('emailContent${weixinManagerEmailReceive?.getId()}','${weixinManagerEmailReceive?.receiveEmailFrom}','${weixinManagerEmailReceive?.receiveEmailDate}')|">
+                                点击查看邮件内容
+                            </a>
+                            <input type="hidden" th:value="${weixinManagerEmailReceive?.receiveEmailContent}"
+                                   th:id="|emailContent${weixinManagerEmailReceive?.getId()}|">
+                        </td>
+                        <td th:text="${weixinManagerEmailReceive?.receiveEmailDate}">
+
+                        </td>
+
+                        <td th:text="${#dates.format(weixinManagerEmailReceive?.receiveEmailGetDate, 'yyyy/MM/dd HH:mm:ss')}">
+                        </td>
+
+                        <td th:text="${T(com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReceive.ReceiveEmailHasDeleteEnum).getEnumMsg(weixinManagerEmailReceive?.receiveEmailHasDelete)}">
+                        </td>
+
+                        <td th:text="${T(com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReceive.ReceiveReplyStatusEnum).getEnumMsg(weixinManagerEmailReceive?.receiveReplyStatus)}">
+                        </td>
+
+
+                        <td>
+                            <a class='btn btn-xs green'
+                               title='回复邮件'
+                            ><span class='glyphicon glyphicon-pencil'></span></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <nav>
+
+                <ul class="pagination">
+                    <li th:class="${!pageInfo?.isHasPreviousPage()}?'disabled' : ''"><a
+                            th:href="|javascript:cp(${pageInfo?.getPageNum()-1})|">上一页</a>
+                    </li>
+
+                    <li th:each="navigatepageNum : ${pageInfo?.getNavigatepageNums()}"
+                        th:class="${navigatepageNum == pageInfo?.getPageNum()}?'active' : ''">
+                        <a th:href="|javascript:cp(${navigatepageNum})|"
+                           th:text="${navigatepageNum}"></a>
+                    </li>
+
+                    <li th:class="${!pageInfo?.isHasNextPage()}?'disabled' : ''"><a
+                            th:href="|javascript:cp(${pageInfo?.getPageNum()+1})|">下一页</a>
+                    </li>
+                </ul>
+
+
+                <div class="jump">
+                            <span class="jump_text">
+                                当前<label th:title="'当前共有'+${pageInfo?.getSize()}+'条目录'"
+                                         th:text="${pageInfo?.getSize()}"></label>/<label
+                                    th:title="'每页显示'+${pageInfo?.getPageSize()}+'条目录'"
+                                    th:text="${pageInfo?.getPageSize()}"></label>条 | <label
+                                    th:title="'当前在第'+${pageInfo?.getPageNum()}+'页'"
+                                    th:text="${pageInfo?.getPageNum()}"></label>/<label
+                                    th:title="'总共'+${pageInfo?.getPages()}+'页'"
+                                    th:text="${pageInfo?.getPages()}"></label>页,跳到
+                                <input type="number" name="jumpPage"
+                                       id="jumpPage" th:value="${pageInfo?.getPageNum()}"
+                                       οnkeyup="this.value=this.value.replace(/[^0-9-]+/,'');">页
+                                <button type="button" class="btn btn-primary btn-sm"
+                                        th:onclick="|javascript:goPage(${pageInfo?.getTotal()})|">跳转</button>
+                            </span>
+                </div>
+
+
+            </nav>
+        </div>
+    </div>
+</div>
+</body>
+</html>

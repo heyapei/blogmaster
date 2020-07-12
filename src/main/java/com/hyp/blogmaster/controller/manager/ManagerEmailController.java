@@ -1,10 +1,16 @@
 package com.hyp.blogmaster.controller.manager;
 
+import com.github.pagehelper.PageInfo;
+import com.hyp.blogmaster.pojo.query.ManageReceiveEmailQuery;
 import com.hyp.blogmaster.shiro.pojo.modal.AdminUser;
+import com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReceive;
+import com.hyp.blogmaster.shiro.service.WeixinManagerEmailReceiveService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +28,28 @@ import javax.servlet.http.HttpServletRequest;
 public class ManagerEmailController {
 
 
+    @Autowired
+    private WeixinManagerEmailReceiveService weixinManagerEmailReceiveService;
+
+
     @RequestMapping
-    public String toMangerUserIndex(Model model, HttpServletRequest request) {
+    public String toMangerEmailIndex(ManageReceiveEmailQuery manageReceiveEmailQuery,
+                                     Model model) {
+        PageInfo<WeixinManagerEmailReceive> weixinManagerEmailReceivePageInfo =
+                weixinManagerEmailReceiveService.getWeixinManagerEmailReceiveByManageReceiveEmailQueryPage(manageReceiveEmailQuery);
+
+        model.addAttribute("pageInfo", weixinManagerEmailReceivePageInfo);
+        model.addAttribute("manageReceiveEmailQuery", manageReceiveEmailQuery);
+        return "manage/manageReceiveEmail";
+    }
+
+
+    @RequestMapping("/replyAppoint")
+    public String toEmailToAppoint(Model model, HttpServletRequest request) {
         AdminUser adminUser = (AdminUser) request.getSession().getAttribute("userSession");
         model.addAttribute("adminUserId", adminUser.getId());
         return "manage/sendEmail";
     }
-
 
 
 }

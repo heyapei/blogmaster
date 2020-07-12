@@ -1,7 +1,10 @@
 package com.hyp.blogmaster.shiro.service;
 
+import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
+import com.hyp.blogmaster.pojo.query.ManageReceiveEmailQuery;
 import com.hyp.blogmaster.shiro.pojo.modal.WeixinManagerEmailReceive;
+
 import java.util.List;
 
 /**
@@ -11,6 +14,17 @@ import java.util.List;
  * @Description: TODO
  */
 public interface WeixinManagerEmailReceiveService {
+
+    /*自定义*/
+
+    /**
+     * 通过查询条件进行分页数据查询
+     *
+     * @param manageReceiveEmailQuery
+     * @return 分页查询出来的数据
+     * @throws MyDefinitionException
+     */
+    PageInfo<WeixinManagerEmailReceive> getWeixinManagerEmailReceiveByManageReceiveEmailQueryPage(ManageReceiveEmailQuery manageReceiveEmailQuery) throws MyDefinitionException;
 
 
     /*通用*/
@@ -47,6 +61,7 @@ public interface WeixinManagerEmailReceiveService {
 
     /**
      * 按照主键进行删除
+     *
      * @param pk
      * @return 影响行数
      * @throws MyDefinitionException

@@ -10,6 +10,30 @@ WeixinManagerEmailReceiveService weixinManagerEmailReceiveService =
 
 不知道是我不会还是怎么回事 我没法使用imap拉取邮件
 
+原来thymeleaf还可以直接读取枚举类型的数据
+我的实体类是：
+这个是直接写在WeixinManagerEmailReceive这个类里面的 然后这个枚举有个方法获取msg
+ public enum ReceiveEmailHasDeleteEnum {
+
+        NO_DELETE(0, "未删除"),
+        HAS_DELETE(1, "已删除");
+
+        public static String getEnumMsg(Integer code) {
+            for (ReceiveEmailHasDeleteEnum receiveEmailHasDeleteEnum : ReceiveEmailHasDeleteEnum.values()) {
+                if (code.equals(receiveEmailHasDeleteEnum.getCode())) {
+                    return receiveEmailHasDeleteEnum.getMsg();
+                }
+            }
+            return "未定义";
+        }
+}
+在前端模板引擎中直接就可以使用了
+ <td th:text="${T(com.hyp.blogmaster.shiro.
+pojo.modal.WeixinManagerEmailReceive.
+ReceiveEmailHasDeleteEnum).getEnumMsg(weixinManagerEmailReceive?.
+receiveEmailHasDelete)}">
+                        </td>
+
 ```
 
 

@@ -420,7 +420,8 @@
                                 当前<label th:title="'当前共有'+${pageInfo?.getSize()}+'条目录'"
                                          th:text="${pageInfo?.getSize()}"></label>/<label
                                     th:title="'每页显示'+${pageInfo?.getPageSize()}+'条目录'"
-                                    th:text="${pageInfo?.getPageSize()}"></label>条 | <label
+                                    th:text="${pageInfo?.getPageSize()}"></label>/<label th:title="'共有'+${pageInfo?.getTotal()}+'条目录'"
+                                                                                         th:text="${pageInfo?.getTotal()}"></label> | <label
                                     th:title="'当前在第'+${pageInfo?.getPageNum()}+'页'"
                                     th:text="${pageInfo?.getPageNum()}"></label>/<label
                                     th:title="'总共'+${pageInfo?.getPages()}+'页'"

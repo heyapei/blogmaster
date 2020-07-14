@@ -1,6 +1,26 @@
 # 2020年5月31日 管理后台程序 开启
 
 ```$xslt
+2020年7月14日
+bootstrap的模态框弹出来 如果关闭了aria-hidden="false" 这样就不会有那个外部的y轴的进度条了
+好像也解决了页面抖动的问题 但是好像页面缩小了后还是会出现抖动问题 但是解决一点是一点吧
+
+如果向模态框modal-body中添加该内容 就会出现y轴的进度条 前提是先指定模态框高度
+  <div class="modal-body" style="height: 500px;overflow-y: scroll;">
+下面这行代码可以出现x轴和y轴两个轴的进度条
+ style="width:100%; height:300px;overflow:auto;"
+
+jquery遍历数组
+let activeDescImgS = response.data.activeDescImgS;
+// activeDescImgS的格式是： [1,2,3,4,5,6,7,8,9];
+// index 是数组下标 value是具体值
+                        $.each(activeDescImgS, function (index, value) {
+                            alert(index + "..." + value);
+                        });
+
+```
+
+```$xslt
 2020年7月12日
 因为spring的定时任务执行是在Autowired之前的，所以需要ApplicationContextForTaskUtil对上下文进行处理
 WeixinManagerEmailReceiveService weixinManagerEmailReceiveService = 

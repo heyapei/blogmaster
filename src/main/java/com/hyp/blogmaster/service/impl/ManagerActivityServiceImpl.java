@@ -3,12 +3,12 @@ package com.hyp.blogmaster.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
-import com.hyp.blogmaster.mapper.WeixinVoteBaseMapper;
 import com.hyp.blogmaster.pojo.dto.manager.ActivityManagerDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteOrganisers;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.query.ManageActivityQuery;
+import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailVO;
 import com.hyp.blogmaster.service.ManagerActivityService;
 import com.hyp.blogmaster.service.WeixinVoteBaseService;
 import com.hyp.blogmaster.service.WeixinVoteOrganisersService;
@@ -34,8 +34,6 @@ import java.util.List;
 @Service
 public class ManagerActivityServiceImpl implements ManagerActivityService {
 
-    @Autowired
-    private WeixinVoteBaseMapper weixinVoteBaseMapper;
 
     @Autowired
     private WeixinVoteUserService weixinVoteUserService;
@@ -47,6 +45,42 @@ public class ManagerActivityServiceImpl implements ManagerActivityService {
     private MyErrorList myErrorList;
     @Autowired
     private WeixinVoteBaseService weixinVoteBaseService;
+
+    private String SEPARATOR = ";";
+
+
+    /**
+     * 根据活动ID查询活动配置等相关的信息
+     *
+     * @param activeId 活动ID
+     * @return 活动配置等相关的视图信息
+     * @throws MyDefinitionException
+     */
+    @Override
+    public ActiveDetailVO getActiveDetailVOByActiveId(Integer activeId) throws MyDefinitionException {
+        if (activeId == null) {
+            throw new MyDefinitionException("根据活动ID查询活动配置等相关的信息参数不能为空");
+        }
+
+        WeixinVoteBase weixinVoteBaseByPK = weixinVoteBaseService.getWeixinVoteBaseByPK(activeId);
+        if (weixinVoteBaseByPK == null) {
+            throw new MyDefinitionException("没有找到该活动，活动ID：" + activeId);
+        }
+
+        ActiveDetailVO activeDetailVO = new ActiveDetailVO();
+        activeDetailVO.setActiveDesc(weixinVoteBaseByPK.getActiveDesc());
+        String activeDescImg = weixinVoteBaseByPK.getActiveDescImg();
+        if (StringUtils.isNotBlank(activeDescImg) && activeDescImg.contains(SEPARATOR)) {
+            activeDetailVO.setActiveDescImgS(activeDescImg.split(SEPARATOR));
+        }
+        activeDetailVO.setActiveName(weixinVoteBaseByPK.getActiveName());
+        activeDetailVO.setActiveReward(weixinVoteBaseByPK.getActiveReward());
+        String rewardImg = weixinVoteBaseByPK.getActiveRewardImg();
+        if (StringUtils.isNotBlank(rewardImg) && rewardImg.contains(SEPARATOR)) {
+            activeDetailVO.setActiveRewardImgS(rewardImg.split(SEPARATOR));
+        }
+        return activeDetailVO;
+    }
 
     /**
      * 根据查询条件进行数据分页查询

@@ -19,13 +19,19 @@ import java.util.List;
  */
 public interface WeixinVoteBaseService {
 
-
-
-
+    /**
+     * 通过活动的ID 即主键 查询活动的详情信息
+     *
+     * @param activeId 活动ID 主键
+     * @return 全部信息
+     * @throws MyDefinitionException
+     */
+    WeixinVoteBase getWeixinVoteBaseByPK(Integer activeId) throws MyDefinitionException;
 
 
     /**
      * 按照查询条件进行查询
+     *
      * @param example 查询条件
      * @return
      * @throws MyDefinitionException
@@ -45,10 +51,10 @@ public interface WeixinVoteBaseService {
      * 根据日期范围查询统计数据
      *
      * @param startTime 开始时间
-     * @param endTime 结束时间
+     * @param endTime   结束时间
      * @return
      */
-    Integer getTotalActiveNumByTime(Date startTime,Date endTime);
+    Integer getTotalActiveNumByTime(Date startTime, Date endTime);
 
 
     /**
@@ -57,7 +63,6 @@ public interface WeixinVoteBaseService {
      * @return
      */
     Integer getTotalActiveNum();
-
 
 
     /**
@@ -71,7 +76,7 @@ public interface WeixinVoteBaseService {
 
 
     /**
-     * 通过活动的ID查询活动的详情
+     * 通过活动的ID 即主键 查询活动的详情视图
      *
      * @param workId 活动ID
      * @return

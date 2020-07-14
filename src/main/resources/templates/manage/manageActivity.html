@@ -19,6 +19,17 @@
     <head th:include="/inc/commonutil/lazyImgLoading :: lazyImgLoading"></head>
     <!--table内容居中-->
     <style>
+
+
+        /*解决页面抖动问题*/
+        /*说是有y轴超出时候使用*/
+        /*.modal-open{
+            overflow-y: scroll;
+        }*/
+        /*.container{
+            padding-right:15px!important;
+        }*/
+
         .table tbody tr td {
             text-align: center; /** 设置水平方向居中 */
             vertical-align: middle /** 设置垂直方向居中 */
@@ -340,6 +351,180 @@
             $('#activeDetailByIdModal').modal("show");
         }
 
+
+        function showActiveConfDetail(activeId, activeName) {
+            if (activeId == null) {
+                toastr.error("请确认你已经选中的活动");
+                return;
+            }
+
+            showMyCustomLoading("努力加载活动名动名称 '" + activeName + "' 的配置");
+
+
+            $.ajax({
+                url: "/api/admin/manager/activity/getActiveConfDetail",
+                data: {activeId: activeId},
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                timeout: 10000,
+                success: function (response) {
+                    hideMyCustomLoading();
+                    if (response.status == "200") {
+
+                        console.log(response);
+
+
+                        /*数据的组装*/
+                        /*先拿到微信程序图片地址*/
+                        /*<![CDATA[*/
+                        let organisersImgUrl = [[#{weixin.organisers.img.url}]];
+                        /*]]>*/
+                        let organisersInfoByIdModalBodyHtml = "<tr>" +
+                            "<td><b>活动名称</b></td>" +
+                            "<td>" + response.data.activeName + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>活动描述</b></td>" +
+                            "<td>" + response.data.activeDesc + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>活动奖励</b></td>" +
+                            "<td>" + response.data.activeReward + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>活动规则</b></td>" +
+                            "<td>" + response.data.activeReward + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>允许上传</b></td>" +
+                            "<td>" + response.data.activeReward + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>开始上传</b></td>" +
+                            "<td>" + response.data.activeReward + "</td>" +
+                            "</tr>";
+
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>结束上传</b></td>" +
+                            "<td>" + response.data.activeReward + "</td>" +
+                            "</tr>";
+
+
+                        let activeDescImgHtmlCarousel = "";
+                        let activeDescImgHtmlInner = "";
+                        let activeDescImgS = response.data.activeDescImgS;
+                        console.log()
+                        if (activeDescImgS != null) {
+                            $.each(activeDescImgS, function (index, value) {
+                                //alert(index + "..." + value);
+                                // if (i )
+                                if (index == 0) {
+                                    activeDescImgHtmlCarousel += "<li class=\"active\" data-slide-to=\"0\" data-target=\"#carousel-63096\">" +
+                                        "</li>";
+
+                                    activeDescImgHtmlInner += "<div class=\"item active\">" +
+                                        "<img style='height: 300px' alt=\"\" src=\"" + organisersImgUrl + value + "\" />" +
+                                        "<div class=\"carousel-caption\"><p>活动描述图" + (index + 1) + "</p></div>" +
+                                        "</div>";
+
+                                } else {
+                                    activeDescImgHtmlCarousel += "<li data-slide-to='" + index + "' data-target=\"#carousel-63096\">" +
+                                        "</li>";
+                                    activeDescImgHtmlInner += "<div class=\"item\">" +
+                                        "<img style='height: 300px' alt=\"\" src=\"" + organisersImgUrl + value + "\" />" +
+                                        "<div class=\"carousel-caption\"><p>活动描述图" + (index + 1) + "</p></div>" +
+                                        "</div>";
+                                }
+                            });
+                            organisersInfoByIdModalBodyHtml += "<tr>" +
+                                "<td colspan='2'>" +
+                                "<div class=\"container\">" +
+                                "<div class=\"row clearfix\">" +
+                                "<div class=\"col-md-12 column\">" +
+                                "<div class=\"carousel slide\" id=\"carousel-63096\">" +
+                                "<ol class=\"carousel-indicators\">" +
+                                activeDescImgHtmlCarousel +
+                                "</ol>" +
+                                "<div class=\"carousel-inner\">" +
+                                activeDescImgHtmlInner +
+                                "</div> <a class=\"left carousel-control\" href=\"#carousel-63096\" data-slide=\"prev\"><span class=\"glyphicon glyphicon-chevron-left\"></span></a> <a class=\"right carousel-control\" href=\"#carousel-63096\" data-slide=\"next\"><span class=\"glyphicon glyphicon-chevron-right\"></span></a>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</td>" +
+                                "</tr>";
+                        }
+
+
+                        let activeRewardImgHtmlCarousel = "";
+                        let activeRewardImgHtmlInner = "";
+                        let activeRewardImgS = response.data.activeRewardImgS;
+                        if (activeRewardImgS != null) {
+                            $.each(activeRewardImgS, function (index, value) {
+                                //alert(index + "..." + value);
+                                // if (i )
+                                if (index == 0) {
+                                    activeRewardImgHtmlCarousel += "<li class=\"active\" data-slide-to=\"0\" data-target=\"#carousel-63097\">" +
+                                        "</li>";
+
+                                    activeRewardImgHtmlInner += "<div class=\"item active\">" +
+                                        "<img style='height: 300px' alt=\"\" src=\"" + organisersImgUrl + value + "\" />" +
+                                        "<div class=\"carousel-caption\"><p>活动奖励图" + (index + 1) + "</p></div>" +
+                                        "</div>";
+
+                                } else {
+                                    activeRewardImgHtmlCarousel += "<li data-slide-to='" + index + "' data-target=\"#carousel-63097\">" +
+                                        "</li>";
+                                    activeRewardImgHtmlInner += "<div class=\"item\">" +
+                                        "<img style='height: 300px' alt=\"\" src=\"" + organisersImgUrl + value + "\" />" +
+                                        "<div class=\"carousel-caption\"><p>活动奖励图" + (index + 1) + "</p></div>" +
+                                        "</div>";
+                                }
+                            });
+                            organisersInfoByIdModalBodyHtml += "<tr>" +
+                                "<td colspan='2'>" +
+                                "<div class=\"container\">" +
+                                "<div class=\"row clearfix\">" +
+                                "<div class=\"col-md-12 column\">" +
+                                "<div class=\"carousel slide\" id=\"carousel-63097\">" +
+                                "<ol class=\"carousel-indicators\">" +
+                                activeRewardImgHtmlCarousel +
+                                "</ol>" +
+                                "<div class=\"carousel-inner\">" +
+                                activeRewardImgHtmlInner +
+                                "</div> <a class=\"left carousel-control\" href=\"#carousel-63097\" data-slide=\"prev\"><span class=\"glyphicon glyphicon-chevron-left\"></span></a> <a class=\"right carousel-control\" href=\"#carousel-63097\" data-slide=\"next\"><span class=\"glyphicon glyphicon-chevron-right\"></span></a>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</td>" +
+                                "</tr>";
+                        }
+
+
+                        $("#showActiveConfDetailByIdModalLabel").html(activeName);
+                        $("#showActiveConfDetailModalBody").html(organisersInfoByIdModalBodyHtml);
+                        $('#showActiveConfDetailByIdModal').modal("show");
+                    } else {
+                        toastr.error(response.message, "错误");
+                    }
+                }, error: function (data, type, err) {
+                    toastr.error("操作出现错误，请联系系统管理员");
+                    hideMyCustomLoading();
+                    // 以下依次是返回过来的数据，错误类型，错误码
+                    console.log("请求错误：" + data);
+                }
+            });
+
+        }
+
     </script>
 
 
@@ -354,15 +539,51 @@
 </div>
 
 
+<!--公司信息展示-->
+<div class="modal fade" id="showActiveConfDetailByIdModal" role="dialog" aria-labelledby="showActiveConfDetailByIdModal"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="showActiveConfDetailByIdModalLabel">
 
-<div class="modal fade" id="activeDetailByIdModal" role="dialog" aria-labelledby="activeDetailByIdModal" aria-hidden="true">
+                </h4>
+            </div>
+            <div class="modal-body" style="height: 500px;overflow-y: scroll;">
+                <fieldset>
+                    <div class="table-responsive">
+                        <table class="table  table-bordered table-condensed">
+                            <tbody id="showActiveConfDetailModalBody">
+                            <tr>
+                                <td>
+                                    正在打开活动配置详细信息。。。
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">保存</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="activeDetailByIdModal" role="dialog"
+     aria-labelledby="activeDetailByIdModal"
+     aria-hidden="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
-               活动详细信息加载中。。。
+                活动详细信息加载中。。。
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -374,7 +595,8 @@
 
 
 <!--公司信息展示-->
-<div class="modal fade" id="organisersInfoByIdModal" role="dialog" aria-labelledby="organisersInfoByIdModal" aria-hidden="true">
+<div class="modal fade" id="organisersInfoByIdModal" role="dialog" aria-labelledby="organisersInfoByIdModal"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -450,7 +672,8 @@
 </div>
 
 <!--个人用户信息展示-->
-<div class="modal fade" id="voteUserInfoByIdModal" role="dialog" aria-labelledby="voteUserInfoByIdModal" aria-hidden="true">
+<div class="modal fade" id="voteUserInfoByIdModal" role="dialog" aria-labelledby="voteUserInfoByIdModal"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -676,7 +899,14 @@
                             </a>
                         </td>
 
-                        <td th:text="${activityManagerDTO?.activeName}">
+                        <!--活动名称-->
+                        <td>
+                            <a href="javascript:;"
+                               th:onclick="'javascript:showActiveConfDetail(\''+${activityManagerDTO?.activeId}+'\',\''+${activityManagerDTO?.activeName}+'\');'"
+                               title="查看活动配置"
+                               th:text="${activityManagerDTO?.activeName}">
+                            </a>
+
                         </td>
                         <td>
 
@@ -737,8 +967,6 @@
             </div>
 
 
-
-
             <nav>
 
                 <ul class="pagination">
@@ -763,8 +991,9 @@
                                 当前<label th:title="'当前共有'+${pageInfo?.getSize()}+'条目录'"
                                          th:text="${pageInfo?.getSize()}"></label>/<label
                                     th:title="'每页显示'+${pageInfo?.getPageSize()}+'条目录'"
-                                    th:text="${pageInfo?.getPageSize()}"></label>/<label th:title="'共有'+${pageInfo?.getTotal()}+'条目录'"
-                                                                                           th:text="${pageInfo?.getTotal()}"></label>条 | <label
+                                    th:text="${pageInfo?.getPageSize()}"></label>/<label
+                                    th:title="'共有'+${pageInfo?.getTotal()}+'条目录'"
+                                    th:text="${pageInfo?.getTotal()}"></label>条 | <label
                                     th:title="'当前在第'+${pageInfo?.getPageNum()}+'页'"
                                     th:text="${pageInfo?.getPageNum()}"></label>/<label
                                     th:title="'总共'+${pageInfo?.getPages()}+'页'"

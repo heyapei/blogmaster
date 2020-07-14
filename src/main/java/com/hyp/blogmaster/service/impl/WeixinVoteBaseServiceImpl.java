@@ -43,6 +43,28 @@ public class WeixinVoteBaseServiceImpl implements WeixinVoteBaseService {
     private WeixinVoteWorkService weixinVoteWorkService;
 
     /**
+     * 通过活动的ID 即主键 查询活动的详情信息
+     *
+     * @param activeId 活动ID 主键
+     * @return 全部信息
+     * @throws MyDefinitionException
+     */
+    @Override
+    public WeixinVoteBase getWeixinVoteBaseByPK(Integer activeId) throws MyDefinitionException {
+        if (activeId == null) {
+            throw new MyDefinitionException("通过活动的ID查询活动的详情信息参数不能为空");
+        }
+        WeixinVoteBase weixinVoteBase = null;
+        try {
+            weixinVoteBase = weixinVoteBaseMapper.selectByPrimaryKey(activeId);
+        } catch (Exception e) {
+            log.error("通过活动的ID查询活动的详情信息操作过程错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("通过活动的ID查询活动的详情信息操作过程错误");
+        }
+        return weixinVoteBase;
+    }
+
+    /**
      * 按照查询条件进行查询
      *
      * @param example 查询条件

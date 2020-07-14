@@ -16,6 +16,7 @@
     <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
     <head th:include="/inc/commonutil/echarts :: echarts"></head>
     <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
+    <head th:include="/inc/commonutil/lazyImgLoading :: lazyImgLoading"></head>
     <!--table内容居中-->
     <style>
         .table tbody tr td {
@@ -356,10 +357,26 @@
                             </a>
                         </td>
                         <td>
-                            <a th:href="@{${weixinVoteUser?.getAvatarUrl()}}" target="_blank" title="打开图片">
+                           <!-- <a th:href="@{${weixinVoteUser?.getAvatarUrl()}}" target="_blank" title="打开图片">
                                 <img th:src="${weixinVoteUser?.getAvatarUrl()}"
                                      style="width: 30px;height: 30px">
+                            </a>-->
+
+                            <!--通过if判断是否显示具体的图片-->
+                            <a th:if="${!#strings.isEmpty(weixinVoteUser?.getAvatarUrl())}"
+                               th:href="${weixinVoteUser?.getAvatarUrl()}"
+                               target="_blank"
+                               title="打开图片">
+                                <img src="/static/res/lazyImgLoading/imglazyloadingtype1.gif"
+                                     th:data-lazy="${weixinVoteUser?.getAvatarUrl()}"
+                                     style="width: 30px;height: 30px">
                             </a>
+                            <img th:if="${#strings.isEmpty(weixinVoteUser?.getAvatarUrl())}"
+                                 src="/static/res/lazyImgLoading/imglazyloadingtype1.gif"
+                                 th:data-lazy="@{/static/res/lazyImgLoading/noimgtype1.png}"
+                                 style="width: 30px;height: 30px">
+
+
                         </td>
                         <td th:switch="${weixinVoteUser?.gender}">
                             <span th:case="1">男</span>

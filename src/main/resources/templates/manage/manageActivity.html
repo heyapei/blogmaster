@@ -16,6 +16,7 @@
     <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
     <head th:include="/inc/commonutil/echarts :: echarts"></head>
     <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
+    <head th:include="/inc/commonutil/lazyImgLoading :: lazyImgLoading"></head>
     <!--table内容居中-->
     <style>
         .table tbody tr td {
@@ -333,6 +334,12 @@
             $("#ShowImage_Form").modal();
         }
 
+
+        function showActiveDetail(activeId) {
+            showMyCustomLoading("努力加载活动ID '" + activeId + "' 的数据");
+            $('#activeDetailByIdModal').modal("show");
+        }
+
     </script>
 
 
@@ -344,6 +351,25 @@
 <!--通用头部信息-->
 <div class="container">
     <div th:include="inc/head/simplehead :: header"></div>
+</div>
+
+
+
+<div class="modal fade" id="activeDetailByIdModal" role="dialog" aria-labelledby="activeDetailByIdModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+               活动详细信息加载中。。。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">保存</button>-->
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -653,11 +679,21 @@
                         <td th:text="${activityManagerDTO?.activeName}">
                         </td>
                         <td>
-                            <a th:href=" @{ #{weixin.user.img.url} + ${#strings.replace(activityManagerDTO?.activeImg,';','')}}" target="_blank"
+
+                            <!--通过if判断是否显示具体的图片-->
+                            <a th:if="${!#strings.isEmpty(activityManagerDTO?.activeImg)}"
+                               th:href=" @{ #{weixin.user.img.url} + ${#strings.replace(activityManagerDTO?.activeImg,';','')}}"
+                               target="_blank"
                                title="打开图片">
-                                <img th:src="#{weixin.user.img.url} + ${#strings.replace(activityManagerDTO?.activeImg,';','')}"
+                                <img src="/static/res/lazyImgLoading/imglazyloadingtype1.gif"
+                                     th:data-lazy="#{weixin.user.img.url} + ${#strings.replace(activityManagerDTO?.activeImg,';','')}"
                                      style="width: 30px;height: 30px">
                             </a>
+                            <img th:if="${#strings.isEmpty(activityManagerDTO?.activeImg)}"
+                                 src="/static/res/lazyImgLoading/imglazyloadingtype1.gif"
+                                 th:data-lazy="@{/static/res/lazyImgLoading/noimgtype1.png}"
+                                 style="width: 30px;height: 30px">
+
                         </td>
 
                         <td th:text="${#dates.format(activityManagerDTO?.activeStartTime, 'yyyy/MM/dd HH:mm:ss')}">
@@ -690,7 +726,7 @@
 
 
                         <td>
-                            <a th:href="|javascript:changeUserStatus(${weixinVoteUser?.getId()})|"
+                            <a th:href="|javascript:showActiveDetail(${activityManagerDTO?.activeId})|"
                                class='btn btn-xs green'
                                title='管理活动'
                             ><span class='glyphicon glyphicon-th-large'></span></a>

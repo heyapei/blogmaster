@@ -19,6 +19,17 @@ import java.util.List;
  */
 public interface WeixinVoteBaseService {
 
+
+    /**
+     * 通过活动的ID获取活动投票规则
+     *
+     * @param activeId 活动ID 主键
+     * @return 活动规则
+     * @throws MyDefinitionException
+     */
+    String getWeixinVoteRuleByPK(Integer activeId) throws MyDefinitionException;
+
+
     /**
      * 通过活动的ID 即主键 查询活动的详情信息
      *

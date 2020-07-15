@@ -54,5 +54,20 @@ public class ActiveDetailVO {
      */
     private Date allowUploadEndTime;
 
+    /**
+     * 活动分享图
+     */
+    private String activeConfShareImg;
+
+    /**
+     * 是否需要手机号
+     */
+    private Integer activeConfNeedPhone;
+
+    /**
+     * 是否需要手机号
+     */
+    private Integer activeConfNeedWeixin;
+
 
 }

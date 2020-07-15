@@ -46,4 +46,21 @@ public class ManagerActivityRestfulController {
         }
         return MyResultVO.genSuccessResult(activeDetailVOByActiveId);
     }
+
+
+    @ApiOperation("通过活动ID获取活动的所有能编辑的信息")
+    @PostMapping("getActiveConfDetail1111")
+    public MyResultVO getWeixinActiveConfDetail(
+            @ApiParam(name = "活动ID", value = "", required = true)
+            @NotNull Integer activeId) {
+
+        ActiveDetailVO activeDetailVOByActiveId = null;
+        try {
+            activeDetailVOByActiveId = managerActivityService.getActiveDetailVOByActiveId(activeId);
+        } catch (MyDefinitionException e) {
+            return MyResultVO.genFailResult(e.getMessage());
+        }
+        return MyResultVO.genSuccessResult(activeDetailVOByActiveId);
+    }
+
 }

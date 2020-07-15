@@ -16,6 +16,7 @@ import com.hyp.blogmaster.pojo.modal.WeixinVoteOrganisers;
 import com.hyp.blogmaster.pojo.vo.page.weixin.IndexWorksVO;
 import com.hyp.blogmaster.pojo.vo.page.weixin.VoteDetailByWorkIdVO;
 import com.hyp.blogmaster.service.WeixinVoteBaseService;
+import com.hyp.blogmaster.service.WeixinVoteConfService;
 import com.hyp.blogmaster.service.WeixinVoteWorkService;
 import com.hyp.blogmaster.utils.MyEntityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,57 @@ public class WeixinVoteBaseServiceImpl implements WeixinVoteBaseService {
     private WeixinVoteBaseMapper weixinVoteBaseMapper;
     @Autowired
     private WeixinVoteWorkService weixinVoteWorkService;
+
+    @Autowired
+    private WeixinVoteConfService weixinVoteConfService;
+
+    /**
+     * 通过活动的ID获取活动投票规则
+     *
+     * @param activeId 活动ID 主键
+     * @return 活动规则
+     * @throws MyDefinitionException
+     */
+    @Override
+    public String getWeixinVoteRuleByPK(Integer activeId) throws MyDefinitionException {
+
+        if (activeId == null) {
+            throw new MyDefinitionException("查询活动规则的参数不能为空");
+        }
+
+        WeixinVoteConf weixinVoteConfByVoteWorkId = weixinVoteConfService.getWeixinVoteConfByVoteWorkId(activeId);
+        if (weixinVoteConfByVoteWorkId == null) {
+            throw new MyDefinitionException("未能查询到活动配置信息");
+        }
+
+        StringBuilder voteRule = new StringBuilder();
+
+
+            /*如果activeConfRepeatVote为0标识只允许投票一次
+            等于别的标识可以投票多次 具体多少次 按照activeConfVoteType判断*/
+        Integer activeConfRepeatVote = weixinVoteConfByVoteWorkId.getActiveConfRepeatVote();
+        String activeConfVoteType = weixinVoteConfByVoteWorkId.getActiveConfVoteType();
+        String[] split = activeConfVoteType.split(";");
+        Integer activeVoteType = Integer.parseInt(split[0]);
+        Integer activeConfVoteTypeNum = Integer.parseInt(split[1]);
+
+        if (activeConfRepeatVote == 0) {
+            voteRule.append("不允许重复投票");
+            if (activeVoteType == 1) {
+                voteRule.append("，每天投票限制").append(activeConfVoteTypeNum).append("票");
+            } else if (activeVoteType == 2) {
+                voteRule.append("，总投票限制").append(activeConfVoteTypeNum).append("票");
+            }
+        } else if (activeConfRepeatVote == 1) {
+            voteRule.append("允许重复投票");
+            if (activeVoteType == 1) {
+                voteRule.append("，每天投票限制").append(activeConfVoteTypeNum).append("票");
+            } else if (activeVoteType == 2) {
+                voteRule.append("，总投票限制").append(activeConfVoteTypeNum).append("票");
+            }
+        }
+        return voteRule.toString();
+    }
 
     /**
      * 通过活动的ID 即主键 查询活动的详情信息

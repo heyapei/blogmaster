@@ -1,0 +1,34 @@
+<!--
+  @Description: TODO js工具集合
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/7/15 20:25 
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<div th:fragment="timestampToDateString">
+    <script>
+        /**
+         * 时间戳转时间类型 转换回来的字符串类型为 yyyy-MM-dd HH:mm:ss
+         * @param timeStamp
+         * @returns {string} yyyy-MM-dd HH:mm:ss
+         */
+        function timestampToDateStringDateStyleOne(timeStamp) {
+            timeStamp = new Date(timeStamp);
+            let Y = timeStamp.getFullYear() + '-';
+            let M = (timeStamp.getMonth() + 1 < 10 ? '0' + (timeStamp.getMonth() + 1) : timeStamp.getMonth() + 1) + '-';
+            let D = (timeStamp.getDate() < 10 ? '0' + (timeStamp.getDate()) : timeStamp.getDate())+" ";
+            let h = (timeStamp.getHours() < 10 ? '0' + (timeStamp.getHours()) : timeStamp.getHours()) + ':';
+            let m = (timeStamp.getMinutes() < 10 ? '0' + (timeStamp.getMinutes()) : timeStamp.getMinutes()) + ':';
+            let s = (timeStamp.getSeconds() < 10 ? '0' + (timeStamp.getSeconds()) : timeStamp.getSeconds());
+            return Y + M + D + h + m + s;
+        }
+    </script>
+</div>
+
+</body>
+</html>

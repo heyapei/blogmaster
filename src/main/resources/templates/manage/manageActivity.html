@@ -307,8 +307,8 @@
 
                         organisersInfoByIdModalBodyHtml = organisersInfoByIdModalBodyHtml + "<tr>" +
                             "<td><b>公司logo</b></td>" +
-                            "<td>" +
-                            "<img  src='" + organisersImgUrl + response.data.logoImg
+                            "<td title='点击查看大图'>" +
+                            "<img alt='点击查看大图'  src='" + organisersImgUrl + response.data.logoImg
                             + "' style='width: 30px;height: 30px;cursor:pointer'" +
                             " onclick=\"javascript:showImage('" +
                             organisersImgUrl + response.data.logoImg + "');\" >"
@@ -348,7 +348,39 @@
 
         function showActiveDetail(activeId) {
             showMyCustomLoading("努力加载活动ID '" + activeId + "' 的数据");
-            $('#activeDetailByIdModal').modal("show");
+
+            $.ajax({
+                url: "/api/admin/manager/activity/getActiveConfDetail",
+                data: {activeId: activeId},
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                timeout: 10000,
+                success: function (response) {
+                    hideMyCustomLoading();
+                    if (response.status == "200") {
+                        console.log(response);
+                        /*数据的组装*/
+                        /*先拿到微信程序图片地址*/
+                        /*<![CDATA[*/
+                        let organisersImgUrl = [[#{weixin.organisers.img.url}]];
+                        /*]]>*/
+
+
+                        $("#activeDetailByIdModalBody").html(organisersImgUrl);
+                        $('#activeDetailByIdModal').modal("show");
+                    } else {
+                        toastr.error(response.message, "错误");
+                    }
+                }, error: function (data, type, err) {
+                    toastr.error("操作出现错误，请联系系统管理员");
+                    hideMyCustomLoading();
+                    // 以下依次是返回过来的数据，错误类型，错误码
+                    console.log("请求错误：" + data);
+                }
+            });
+
+
         }
 
 
@@ -395,26 +427,68 @@
                             "<td>" + response.data.activeReward + "</td>" +
                             "</tr>";
 
+
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>活动分享图</b></td>" +
+                            "<td title='点击查看大图'>" +
+                            "<img alt='未能显示活动分享图' src='" + organisersImgUrl + response.data.activeConfShareImg
+                            + "' style='width: 30px;height: 30px;cursor:pointer'" +
+                            " onclick=\"javascript:showImage('" +
+                            organisersImgUrl + response.data.activeConfShareImg + "');\" >"
+                            + "</td>" +
+                            "</tr>";
+
+                        let activeConfNeedPhone = response.data.activeConfNeedPhone;
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>需要手机号</b></td>" +
+                            "<td>";
+                        if (activeConfNeedPhone == 0) {
+                            organisersInfoByIdModalBodyHtml += "需要";
+                        } else if (activeConfNeedPhone == 1) {
+                            organisersInfoByIdModalBodyHtml += "不需要";
+                        }
+                        organisersInfoByIdModalBodyHtml += "</td>" +
+                            "</tr>";
+
+                        let activeConfNeedWeixin = response.data.activeConfNeedWeixin;
+                        organisersInfoByIdModalBodyHtml += "<tr>" +
+                            "<td><b>需要微信号</b></td>" +
+                            "<td>";
+                        if (activeConfNeedWeixin == 0) {
+                            organisersInfoByIdModalBodyHtml += "需要";
+                        } else if (activeConfNeedWeixin == 1) {
+                            organisersInfoByIdModalBodyHtml += "不需要";
+                        }
+                        organisersInfoByIdModalBodyHtml += "</td>" +
+                            "</tr>";
+
+
                         organisersInfoByIdModalBodyHtml += "<tr>" +
                             "<td><b>活动规则</b></td>" +
-                            "<td>" + response.data.activeReward + "</td>" +
+                            "<td>" + response.data.activeRule + "</td>" +
                             "</tr>";
 
-                        organisersInfoByIdModalBodyHtml += "<tr>" +
-                            "<td><b>允许上传</b></td>" +
-                            "<td>" + response.data.activeReward + "</td>" +
-                            "</tr>";
+                        if (response.data.allowUserUpload) {
+                            organisersInfoByIdModalBodyHtml += "<tr>" +
+                                "<td><b>允许上传</b></td>" +
+                                "<td style='color: green'>允许个人用户上传</td>" +
+                                "</tr>";
+                            organisersInfoByIdModalBodyHtml += "<tr>" +
+                                "<td><b>开始上传</b></td>" +
+                                "<td>" + timestampToDateStringDateStyleOne(response.data.allowUploadStartTime) + "</td>" +
+                                "</tr>";
 
-                        organisersInfoByIdModalBodyHtml += "<tr>" +
-                            "<td><b>开始上传</b></td>" +
-                            "<td>" + response.data.activeReward + "</td>" +
-                            "</tr>";
+                            organisersInfoByIdModalBodyHtml += "<tr>" +
+                                "<td><b>结束上传</b></td>" +
+                                "<td>" + timestampToDateStringDateStyleOne(response.data.allowUploadEndTime) + "</td>" +
+                                "</tr>";
+                        } else {
 
-                        organisersInfoByIdModalBodyHtml += "<tr>" +
-                            "<td><b>结束上传</b></td>" +
-                            "<td>" + response.data.activeReward + "</td>" +
-                            "</tr>";
-
+                            organisersInfoByIdModalBodyHtml += "<tr>" +
+                                "<td><b>允许上传</b></td>" +
+                                "<td style='color: red'>不允许个人用户上传</td>" +
+                                "</tr>";
+                        }
 
                         let activeDescImgHtmlCarousel = "";
                         let activeDescImgHtmlInner = "";
@@ -428,7 +502,7 @@
                                     activeDescImgHtmlCarousel += "<li class=\"active\" data-slide-to=\"0\" data-target=\"#carousel-63096\">" +
                                         "</li>";
 
-                                    activeDescImgHtmlInner += "<div class=\"item active\">" +
+                                    activeDescImgHtmlInner += "<div class=\"item active\" style='background-color: #a8a8a8;'>" +
                                         "<img style='height: 300px' alt=\"\" src=\"" + organisersImgUrl + value + "\" />" +
                                         "<div class=\"carousel-caption\"><p>活动描述图" + (index + 1) + "</p></div>" +
                                         "</div>";
@@ -436,7 +510,7 @@
                                 } else {
                                     activeDescImgHtmlCarousel += "<li data-slide-to='" + index + "' data-target=\"#carousel-63096\">" +
                                         "</li>";
-                                    activeDescImgHtmlInner += "<div class=\"item\">" +
+                                    activeDescImgHtmlInner += "<div class=\"item\" style='background-color: #a8a8a8;'>" +
                                         "<img style='height: 300px' alt=\"\" src=\"" + organisersImgUrl + value + "\" />" +
                                         "<div class=\"carousel-caption\"><p>活动描述图" + (index + 1) + "</p></div>" +
                                         "</div>";
@@ -474,7 +548,7 @@
                                     activeRewardImgHtmlCarousel += "<li class=\"active\" data-slide-to=\"0\" data-target=\"#carousel-63097\">" +
                                         "</li>";
 
-                                    activeRewardImgHtmlInner += "<div class=\"item active\">" +
+                                    activeRewardImgHtmlInner += "<div class=\"item active\" style='background-color: #a8a8a8;'>" +
                                         "<img style='height: 300px' alt=\"\" src=\"" + organisersImgUrl + value + "\" />" +
                                         "<div class=\"carousel-caption\"><p>活动奖励图" + (index + 1) + "</p></div>" +
                                         "</div>";
@@ -482,7 +556,7 @@
                                 } else {
                                     activeRewardImgHtmlCarousel += "<li data-slide-to='" + index + "' data-target=\"#carousel-63097\">" +
                                         "</li>";
-                                    activeRewardImgHtmlInner += "<div class=\"item\">" +
+                                    activeRewardImgHtmlInner += "<div class=\"item\" style='background-color: #a8a8a8;'>" +
                                         "<img style='height: 300px' alt=\"\" src=\"" + organisersImgUrl + value + "\" />" +
                                         "<div class=\"carousel-caption\"><p>活动奖励图" + (index + 1) + "</p></div>" +
                                         "</div>";
@@ -533,6 +607,8 @@
 
 <!--引入等待层-->
 <div th:include="/inc/commonutil/toastrutil :: myCustomLoad"></div>
+<!--引用时间戳转时间-->
+<div th:include="/inc/commonutil/commonUtils :: timestampToDateString"></div>
 <!--通用头部信息-->
 <div class="container">
     <div th:include="inc/head/simplehead :: header"></div>
@@ -582,7 +658,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="activeDetailByIdModalBody">
                 活动详细信息加载中。。。
             </div>
             <div class="modal-footer">

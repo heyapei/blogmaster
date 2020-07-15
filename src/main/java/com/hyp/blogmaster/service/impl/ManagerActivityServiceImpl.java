@@ -5,14 +5,12 @@ import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.pojo.dto.manager.ActivityManagerDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteBase;
+import com.hyp.blogmaster.pojo.modal.WeixinVoteConf;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteOrganisers;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.query.ManageActivityQuery;
 import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailVO;
-import com.hyp.blogmaster.service.ManagerActivityService;
-import com.hyp.blogmaster.service.WeixinVoteBaseService;
-import com.hyp.blogmaster.service.WeixinVoteOrganisersService;
-import com.hyp.blogmaster.service.WeixinVoteUserService;
+import com.hyp.blogmaster.service.*;
 import com.hyp.blogmaster.utils.MyEntityUtil;
 import com.hyp.blogmaster.utils.MyErrorList;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +38,14 @@ public class ManagerActivityServiceImpl implements ManagerActivityService {
 
     @Autowired
     private WeixinVoteOrganisersService weixinVoteOrganisersService;
+    @Autowired
+    private WeixinVoteConfService weixinVoteConfService;
 
     @Autowired
     private MyErrorList myErrorList;
     @Autowired
     private WeixinVoteBaseService weixinVoteBaseService;
+
 
     private String SEPARATOR = ";";
 
@@ -78,6 +79,25 @@ public class ManagerActivityServiceImpl implements ManagerActivityService {
         String rewardImg = weixinVoteBaseByPK.getActiveRewardImg();
         if (StringUtils.isNotBlank(rewardImg) && rewardImg.contains(SEPARATOR)) {
             activeDetailVO.setActiveRewardImgS(rewardImg.split(SEPARATOR));
+        }
+
+        String weixinVoteRuleByPK = weixinVoteBaseService.getWeixinVoteRuleByPK(77);
+        activeDetailVO.setActiveRule(weixinVoteRuleByPK);
+        WeixinVoteConf weixinVoteConfByVoteWorkId = weixinVoteConfService.getWeixinVoteConfByVoteWorkId(activeId);
+        if (weixinVoteConfByVoteWorkId != null) {
+            Integer activeConfSignUp = weixinVoteConfByVoteWorkId.getActiveConfSignUp();
+            if (activeConfSignUp.equals(WeixinVoteConf.ActiveConfSignUpEnum.CAN_SIGN_UP.getCode())) {
+                activeDetailVO.setAllowUserUpload(true);
+            } else if (activeConfSignUp.equals(WeixinVoteConf.ActiveConfSignUpEnum.CANT_SIGN_UP.getCode())) {
+                activeDetailVO.setAllowUserUpload(false);
+                activeDetailVO.setAllowUploadStartTime(weixinVoteConfByVoteWorkId.getActiveUploadStartTime());
+                activeDetailVO.setAllowUploadEndTime(weixinVoteConfByVoteWorkId.getActiveUploadEndTime());
+            }
+            if (StringUtils.isNotBlank((weixinVoteConfByVoteWorkId.getActiveConfShareImg()))) {
+                activeDetailVO.setActiveConfShareImg(weixinVoteConfByVoteWorkId.getActiveConfShareImg().replaceAll(SEPARATOR, ""));
+            }
+            activeDetailVO.setActiveConfNeedWeixin(weixinVoteConfByVoteWorkId.getActiveConfNeedWeixin());
+            activeDetailVO.setActiveConfNeedPhone(weixinVoteConfByVoteWorkId.getActiveConfNeedPhone());
         }
         return activeDetailVO;
     }

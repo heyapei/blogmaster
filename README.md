@@ -1,5 +1,14 @@
 # 2020年5月31日 管理后台程序 开启
 
+
+```$xslt
+2020年7月15日
+活动内容的展示基本上完成了 没有什么问题了 
+准备使用https://blog.csdn.net/qq_36688143/article/details/79447159这个方案 
+在js中使用thymeleaf生成想要的html代码 看看能不能实现
+
+```
+
 ```$xslt
 2020年7月14日
 bootstrap的模态框弹出来 如果关闭了aria-hidden="false" 这样就不会有那个外部的y轴的进度条了

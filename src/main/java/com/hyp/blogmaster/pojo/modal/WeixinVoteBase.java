@@ -72,6 +72,35 @@ public class WeixinVoteBase {
     @Column(name = "active_public")
     private Integer activePublic = 1;
 
+    public enum ActivePublicEnum {
+        IS_PUBLIC(0, "公开"),
+        IS_NOT_PUBLIC(1, "不公开");
+        private Integer code;
+        private String msg;
+
+        @Override
+        public String toString() {
+            return "ActivePublicEnum{" +
+                    "code=" + code +
+                    ", msg='" + msg + '\'' +
+                    '}';
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        ActivePublicEnum(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+    }
+
+
     /**
      * 活动展示优先级 数值越高 优先级越高 默认为0 默认展示
      */
@@ -82,6 +111,37 @@ public class WeixinVoteBase {
      * 0 待审核 1上线  2未开始 3已结束
      */
     private Integer status = 0;
+
+    public enum ActiveStatusEnum {
+        UN_CHECK(0, "待审核"),
+        ONLINE(1, "上线"),
+        UN_START(2, "未开始"),
+        FINISHED(3, "已结束");
+        private Integer code;
+        private String msg;
+
+        @Override
+        public String toString() {
+            return "ActiveStatusEnum{" +
+                    "code=" + code +
+                    ", msg='" + msg + '\'' +
+                    '}';
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        ActiveStatusEnum(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+    }
+
 
     /**
      * 活动创建时间

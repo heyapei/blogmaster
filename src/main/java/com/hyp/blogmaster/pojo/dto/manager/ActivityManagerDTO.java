@@ -2,7 +2,6 @@ package com.hyp.blogmaster.pojo.dto.manager;
 
 import lombok.Data;
 
-import javax.persistence.Id;
 import java.util.Date;
 
 /**
@@ -73,6 +72,12 @@ public class ActivityManagerDTO {
      * 0 待审核 1上线  2未开始 3已结束 4未启动
      */
     private Integer status;
+
+    /**
+     * 活动下作品总数
+     */
+    private Integer voteWorkCountNum;
+
     /**
      * 被浏览总次数
      */

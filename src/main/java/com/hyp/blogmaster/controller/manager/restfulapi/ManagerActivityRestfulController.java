@@ -2,6 +2,7 @@ package com.hyp.blogmaster.controller.manager.restfulapi;
 
 import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailVO;
+import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailWithConfOrgVO;
 import com.hyp.blogmaster.pojo.vo.result.MyResultVO;
 import com.hyp.blogmaster.service.ManagerActivityService;
 import io.swagger.annotations.Api;
@@ -49,18 +50,17 @@ public class ManagerActivityRestfulController {
 
 
     @ApiOperation("通过活动ID获取活动的所有能编辑的信息")
-    @PostMapping("getActiveConfDetail1111")
-    public MyResultVO getWeixinActiveConfDetail(
+    @PostMapping("getActiveDetailWithConfOrg")
+    public MyResultVO getActiveDetailWithConfOrgVO(
             @ApiParam(name = "活动ID", value = "", required = true)
             @NotNull Integer activeId) {
-
-        ActiveDetailVO activeDetailVOByActiveId = null;
+        ActiveDetailWithConfOrgVO activeDetailWithConfOrgVOByActiveId = null;
         try {
-            activeDetailVOByActiveId = managerActivityService.getActiveDetailVOByActiveId(activeId);
+            activeDetailWithConfOrgVOByActiveId = managerActivityService.getActiveDetailWithConfOrgVOByActiveId(activeId);
         } catch (MyDefinitionException e) {
             return MyResultVO.genFailResult(e.getMessage());
         }
-        return MyResultVO.genSuccessResult(activeDetailVOByActiveId);
+        return MyResultVO.genSuccessResult(activeDetailWithConfOrgVOByActiveId);
     }
 
 }

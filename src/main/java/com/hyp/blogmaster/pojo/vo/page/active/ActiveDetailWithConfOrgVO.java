@@ -25,9 +25,13 @@ public class ActiveDetailWithConfOrgVO {
     private Integer activeUserId;
 
     /**
-     * 活动所属用户Id
+     * 活动配置Id
      */
     private Integer activeConfId;
+    /**
+     * 活动主办方Id
+     */
+    private Integer activeOrgId;
 
     /**
      * 活动名称
@@ -120,7 +124,14 @@ public class ActiveDetailWithConfOrgVO {
     private String orgName;
     private String orgPhone;
     private String orgLogo;
-    private String orgWeixin;
+    private String orgWeixinQrCode;
+
+    /**
+     * 排序以及活动的浏览量和投票总量
+     */
+    private Integer showOrder;
+    private Integer viewCount;
+    private Integer voteCount;
 
 
 }

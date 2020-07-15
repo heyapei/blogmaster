@@ -10,6 +10,7 @@ import com.hyp.blogmaster.pojo.modal.WeixinVoteOrganisers;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.query.ManageActivityQuery;
 import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailVO;
+import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailWithConfOrgVO;
 import com.hyp.blogmaster.service.*;
 import com.hyp.blogmaster.utils.MyEntityUtil;
 import com.hyp.blogmaster.utils.MyErrorList;
@@ -46,9 +47,72 @@ public class ManagerActivityServiceImpl implements ManagerActivityService {
     @Autowired
     private WeixinVoteBaseService weixinVoteBaseService;
 
+    @Autowired
+    private WeixinVoteWorkService weixinVoteWorkService;
+
 
     private String SEPARATOR = ";";
 
+
+    /**
+     * 通过活动ID查询所有能够编辑的数据
+     *
+     * @param activeId 活动的ID
+     * @return 能编辑的数据
+     * @throws MyDefinitionException
+     */
+    @Override
+    public ActiveDetailWithConfOrgVO getActiveDetailWithConfOrgVOByActiveId(Integer activeId) throws MyDefinitionException {
+        ActiveDetailWithConfOrgVO activeDetailWithConfOrgVO = null;
+        if (activeId == null) {
+            throw new MyDefinitionException("通过活动ID查询所有能够编辑的数据的参数不能为空");
+        }
+
+        WeixinVoteBase weixinVoteBase = weixinVoteBaseService.getWeixinVoteBaseByPK(activeId);
+        if (weixinVoteBase == null) {
+            throw new MyDefinitionException("未能查询到相应的活动数据");
+        }
+        activeDetailWithConfOrgVO = new ActiveDetailWithConfOrgVO();
+        activeDetailWithConfOrgVO.setActiveName(weixinVoteBase.getActiveName());
+        activeDetailWithConfOrgVO.setActiveId(activeId);
+        activeDetailWithConfOrgVO.setActiveUserId(weixinVoteBase.getCreateSysUserId());
+        activeDetailWithConfOrgVO.setActiveDesc(weixinVoteBase.getActiveDesc());
+        activeDetailWithConfOrgVO.setActiveDescImgS(weixinVoteBase.getActiveDescImg());
+        activeDetailWithConfOrgVO.setActiveReward(weixinVoteBase.getActiveReward());
+        activeDetailWithConfOrgVO.setActiveRewardImgS(weixinVoteBase.getActiveRewardImg());
+        activeDetailWithConfOrgVO.setActiveStartTime(weixinVoteBase.getActiveStartTime());
+        activeDetailWithConfOrgVO.setActiveEndTime(weixinVoteBase.getActiveEndTime());
+        activeDetailWithConfOrgVO.setActivePublic(weixinVoteBase.getActivePublic());
+        activeDetailWithConfOrgVO.setActiveStatus(weixinVoteBase.getStatus());
+        activeDetailWithConfOrgVO.setViewCount(weixinVoteBase.getViewCountNum());
+        activeDetailWithConfOrgVO.setVoteCount(weixinVoteBase.getVoteCountNum());
+        activeDetailWithConfOrgVO.setShowOrder(weixinVoteBase.getActiveShowOrder());
+
+
+        WeixinVoteConf weixinVoteConf = weixinVoteConfService.getWeixinVoteConfByVoteWorkId(activeId);
+        if (weixinVoteConf != null) {
+            activeDetailWithConfOrgVO.setActiveConfId(weixinVoteConf.getId());
+            activeDetailWithConfOrgVO.setActiveConfShareImg(weixinVoteConf.getActiveConfShareImg());
+            activeDetailWithConfOrgVO.setActiveConfRepeatVote(weixinVoteConf.getActiveConfRepeatVote());
+            activeDetailWithConfOrgVO.setActiveConfVoteType(weixinVoteConf.getActiveConfVoteType());
+            activeDetailWithConfOrgVO.setActiveConfSignUp(weixinVoteConf.getActiveConfSignUp());
+            activeDetailWithConfOrgVO.setAllowUploadStartTime(weixinVoteConf.getActiveUploadStartTime());
+            activeDetailWithConfOrgVO.setAllowUploadEndTime(weixinVoteConf.getActiveUploadEndTime());
+            activeDetailWithConfOrgVO.setActiveConfNeedPhone(weixinVoteConf.getActiveConfNeedPhone());
+            activeDetailWithConfOrgVO.setActiveConfNeedWeixin(weixinVoteConf.getActiveConfNeedWeixin());
+            activeDetailWithConfOrgVO.setActiveRule(weixinVoteConf.getActiveConfVoteType());
+        }
+        WeixinVoteOrganisers weixinVoteOrganisers = weixinVoteOrganisersService.getWeixinVoteConfByVoteWorkId(activeId);
+        if (weixinVoteOrganisers != null) {
+            activeDetailWithConfOrgVO.setActiveOrgId(weixinVoteOrganisers.getId());
+            activeDetailWithConfOrgVO.setOrgLogo(weixinVoteOrganisers.getLogoImg());
+            activeDetailWithConfOrgVO.setOrgName(weixinVoteOrganisers.getName());
+            activeDetailWithConfOrgVO.setOrgPhone(weixinVoteOrganisers.getPhone());
+            activeDetailWithConfOrgVO.setOrgWeixinQrCode(weixinVoteOrganisers.getWeixinQrCode());
+        }
+
+        return activeDetailWithConfOrgVO;
+    }
 
     /**
      * 根据活动ID查询活动配置等相关的信息
@@ -80,6 +144,7 @@ public class ManagerActivityServiceImpl implements ManagerActivityService {
         if (StringUtils.isNotBlank(rewardImg) && rewardImg.contains(SEPARATOR)) {
             activeDetailVO.setActiveRewardImgS(rewardImg.split(SEPARATOR));
         }
+
 
         String weixinVoteRuleByPK = weixinVoteBaseService.getWeixinVoteRuleByPK(77);
         activeDetailVO.setActiveRule(weixinVoteRuleByPK);
@@ -196,6 +261,7 @@ public class ManagerActivityServiceImpl implements ManagerActivityService {
                 /*活动信息*/
                 ActivityManagerDTO activityManagerDTO = MyEntityUtil.entity2VM(weixinVoteBase, ActivityManagerDTO.class);
                 activityManagerDTO.setActiveId(weixinVoteBase.getId());
+                activityManagerDTO.setVoteWorkCountNum(weixinVoteWorkService.getCountWorkByVoteBaseId(activityManagerDTO.getActiveId()));
                 /*公司信息*/
                 WeixinVoteOrganisers weixinVoteConfByVoteWorkId = weixinVoteOrganisersService.getWeixinVoteConfByVoteWorkId(weixinVoteBase.getId());
                 if (weixinVoteConfByVoteWorkId != null) {

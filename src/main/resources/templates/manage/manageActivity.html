@@ -350,7 +350,7 @@
             showMyCustomLoading("努力加载活动ID '" + activeId + "' 的数据");
 
             $.ajax({
-                url: "/api/admin/manager/activity/getActiveConfDetail",
+                url: "/api/admin/manager/activity/getActiveDetailWithConfOrg",
                 data: {activeId: activeId},
                 type: "POST",
                 cache: false,
@@ -652,7 +652,7 @@
 
 <div class="modal fade" id="activeDetailByIdModal" role="dialog"
      aria-labelledby="activeDetailByIdModal"
-     aria-hidden="false">
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -837,6 +837,7 @@
                 <div class="form-group">
                     <label for="query-order-column" title="排序字段">排序字段</label>
                     <select class="form-control" id="query-order-column" name="orderColumn">
+
                         <option value="viewCountNum"
                                 th:selected="${manageActivity?.getOrderColumn() == 'viewCountNum'}">
                             总浏览
@@ -938,6 +939,9 @@
                         </th>
 
                         <th>
+                            作品数
+                        </th>
+                        <th>
                             总浏览
                         </th>
                         <th>
@@ -1025,6 +1029,8 @@
                             <span th:case="4">未启用</span>
                         </td>
 
+                        <td th:text="${activityManagerDTO?.voteWorkCountNum}">
+                        </td>
                         <td th:text="${activityManagerDTO?.viewCountNum}">
                         </td>
                         <td th:text="${activityManagerDTO?.voteCountNum}">

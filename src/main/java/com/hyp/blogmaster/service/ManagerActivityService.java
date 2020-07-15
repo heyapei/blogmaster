@@ -5,6 +5,7 @@ import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.pojo.dto.manager.ActivityManagerDTO;
 import com.hyp.blogmaster.pojo.query.ManageActivityQuery;
 import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailVO;
+import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailWithConfOrgVO;
 
 /**
  * @Author 何亚培
@@ -16,13 +17,23 @@ public interface ManagerActivityService {
 
 
     /**
+     * 通过活动ID查询所有能够编辑的数据
+     *
+     * @param activeId 活动的ID
+     * @return 能编辑的数据
+     * @throws MyDefinitionException
+     */
+    ActiveDetailWithConfOrgVO getActiveDetailWithConfOrgVOByActiveId(Integer activeId) throws MyDefinitionException;
+
+
+    /**
      * 根据活动ID查询活动配置等相关的信息
      *
      * @param activeId 活动ID
      * @return 活动配置等相关的视图信息
      * @throws MyDefinitionException
      */
-    ActiveDetailVO getActiveDetailVOByActiveId(Integer  activeId) throws MyDefinitionException;
+    ActiveDetailVO getActiveDetailVOByActiveId(Integer activeId) throws MyDefinitionException;
 
 
     /**

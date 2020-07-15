@@ -37,7 +37,8 @@ public class ManagerActivityController {
     @RequestMapping
     public String toMangerActivityIndex(Model model, ManageActivityQuery manageActivityQuery) {
 
-        PageInfo<ActivityManagerDTO> activityManagerDTOByExample = managerActivityService.getActivityManagerDTOByExample(manageActivityQuery);
+        PageInfo<ActivityManagerDTO> activityManagerDTOByExample =
+                managerActivityService.getActivityManagerDTOByExample(manageActivityQuery);
         model.addAttribute("pageInfo", activityManagerDTOByExample);
         model.addAttribute("manageActivity", manageActivityQuery);
         return "manage/manageActivity";

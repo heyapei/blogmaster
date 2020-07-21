@@ -14,12 +14,14 @@ import com.hyp.blogmaster.pojo.vo.page.active.ActiveDetailWithConfOrgVO;
 import com.hyp.blogmaster.service.*;
 import com.hyp.blogmaster.utils.MyEntityUtil;
 import com.hyp.blogmaster.utils.MyErrorList;
+import com.hyp.blogmaster.utils.dateutil.MyDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,8 +98,8 @@ public class ManagerActivityServiceImpl implements ManagerActivityService {
             activeDetailWithConfOrgVO.setActiveConfRepeatVote(weixinVoteConf.getActiveConfRepeatVote());
             activeDetailWithConfOrgVO.setActiveConfVoteType(weixinVoteConf.getActiveConfVoteType());
             activeDetailWithConfOrgVO.setActiveConfSignUp(weixinVoteConf.getActiveConfSignUp());
-            activeDetailWithConfOrgVO.setAllowUploadStartTime(weixinVoteConf.getActiveUploadStartTime());
-            activeDetailWithConfOrgVO.setAllowUploadEndTime(weixinVoteConf.getActiveUploadEndTime());
+            activeDetailWithConfOrgVO.setAllowUploadStartTime(MyDateUtil.dateToLocalDateTime(weixinVoteConf.getActiveUploadEndTime()));
+            activeDetailWithConfOrgVO.setAllowUploadEndTime(MyDateUtil.dateToLocalDateTime(weixinVoteConf.getActiveUploadEndTime()));
             activeDetailWithConfOrgVO.setActiveConfNeedPhone(weixinVoteConf.getActiveConfNeedPhone());
             activeDetailWithConfOrgVO.setActiveConfNeedWeixin(weixinVoteConf.getActiveConfNeedWeixin());
             activeDetailWithConfOrgVO.setActiveRule(weixinVoteConf.getActiveConfVoteType());

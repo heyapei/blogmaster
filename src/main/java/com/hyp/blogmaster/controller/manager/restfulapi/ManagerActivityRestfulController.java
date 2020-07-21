@@ -10,6 +10,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,18 +51,21 @@ public class ManagerActivityRestfulController {
     }
 
 
-    @ApiOperation("通过活动ID获取活动的所有能编辑的信息")
+    /*@ApiOperation("通过活动ID获取活动的所有能编辑的信息")
     @PostMapping("getActiveDetailWithConfOrg")
-    public MyResultVO getActiveDetailWithConfOrgVO(
+    public String  getActiveDetailWithConfOrgVO(
             @ApiParam(name = "活动ID", value = "", required = true)
-            @NotNull Integer activeId) {
+            @NotNull Integer activeId,
+            Model model) {
         ActiveDetailWithConfOrgVO activeDetailWithConfOrgVOByActiveId = null;
         try {
             activeDetailWithConfOrgVOByActiveId = managerActivityService.getActiveDetailWithConfOrgVOByActiveId(activeId);
         } catch (MyDefinitionException e) {
-            return MyResultVO.genFailResult(e.getMessage());
+            //return MyResultVO.genFailResult(e.getMessage());
         }
-        return MyResultVO.genSuccessResult(activeDetailWithConfOrgVOByActiveId);
-    }
+        model.addAttribute("activeDetailWithConfOrgVOByActiveId", activeDetailWithConfOrgVOByActiveId);
+        //return MyResultVO.genSuccessResult(activeDetailWithConfOrgVOByActiveId);
+        return "manage/manageActivity::activeDetailByIdModalBody";
+    }*/
 
 }

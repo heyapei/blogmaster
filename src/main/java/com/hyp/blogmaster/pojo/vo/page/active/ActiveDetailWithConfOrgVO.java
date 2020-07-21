@@ -1,7 +1,10 @@
 package com.hyp.blogmaster.pojo.vo.page.active;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -67,12 +70,14 @@ public class ActiveDetailWithConfOrgVO {
     /**
      * 允许用户上传作品开始时间
      */
-    private Date allowUploadStartTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime allowUploadStartTime;
 
     /**
      * 允许用户上传作品结束时间
      */
-    private Date allowUploadEndTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime allowUploadEndTime;
 
     /**
      * 活动开始时间

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -16,6 +17,87 @@ public class MyDateUtil {
     private static final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>();
 
     private static final Object object = new Object();
+
+    /**
+     * atZone()方法返回在指定时区从此Instant生成的ZonedDateTime。
+     */
+    private static final ZoneId zoneId = ZoneId.systemDefault();
+
+    /**
+     * LocalDateTime转Date
+     *
+     * @param localDateTime 对象只包含没有任何时间信息的日期。
+     * @return
+     */
+    public static Date localDateTimeToDate(LocalDateTime localDateTime) {
+        ZonedDateTime zdt = localDateTime.atZone(zoneId);
+        Date date = null;
+        try {
+            date = Date.from(zdt.toInstant());
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("LocalDateTime转Date错误，错误原因：{}", e.toString());
+        }
+        return date;
+    }
+
+
+    /**
+     * Date转LocalDateTime
+     *
+     * @param date 特定的日期和时间
+     * @return
+     */
+    public static LocalDateTime dateToLocalDateTime(Date date) {
+        Instant instant = date.toInstant();
+
+        LocalDateTime localDateTime = null;
+        try {
+            localDateTime = instant.atZone(zoneId).toLocalDateTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Date转LocalDateTime错误，错误原因：{}", e.toString());
+        }
+        return localDateTime;
+    }
+
+    /**
+     * LocalDate转Date
+     *
+     * @param localDate 对象只包含没有任何时间信息的日期。
+     * @return
+     */
+    public static Date localDateToDate(LocalDate localDate) {
+        ZonedDateTime zdt = localDate.atStartOfDay(zoneId);
+        Date date = null;
+        try {
+            date = Date.from(zdt.toInstant());
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("LocalDate转Date错误，错误原因：{}", e.toString());
+        }
+        return date;
+    }
+
+
+    /**
+     * Date转LocalDate
+     *
+     * @param date 特定的日期和时间
+     * @return
+     */
+    public static LocalDate dateToLocalDate(Date date) {
+        Instant instant = date.toInstant();
+
+        LocalDate localDate = null;
+        try {
+            localDate = instant.atZone(zoneId).toLocalDate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Date转LocalDate错误，错误原因：{}", e.toString());
+        }
+        return localDate;
+    }
 
 
     /**

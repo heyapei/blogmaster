@@ -350,28 +350,23 @@
             showMyCustomLoading("努力加载活动ID '" + activeId + "' 的数据");
 
             $.ajax({
-                url: "/api/admin/manager/activity/getActiveDetailWithConfOrg",
+                // 使用这种方式 必定 不能使用 restful类型的接口
+                url: "/admin/manager/activity/getActiveDetailWithConfOrg",
                 data: {activeId: activeId},
                 type: "POST",
                 cache: false,
-                dataType: "json",
+                dataType: "html",
                 timeout: 10000,
                 success: function (response) {
                     hideMyCustomLoading();
-                    if (response.status == "200") {
-                        console.log(response);
-                        /*数据的组装*/
-                        /*先拿到微信程序图片地址*/
-                        /*<![CDATA[*/
-                        let organisersImgUrl = [[#{weixin.organisers.img.url}]];
-                        /*]]>*/
+                    /*数据的组装*/
+                    /*先拿到微信程序图片地址*/
+                    /*<![CDATA[*/
+                    let organisersImgUrl = [[#{weixin.organisers.img.url}]];
+                    /*]]>*/
+                    $("#activeDetailByIdModalBody").html(response);
+                    $('#activeDetailByIdModal').modal("show");
 
-
-                        $("#activeDetailByIdModalBody").html(organisersImgUrl);
-                        $('#activeDetailByIdModal').modal("show");
-                    } else {
-                        toastr.error(response.message, "错误");
-                    }
                 }, error: function (data, type, err) {
                     toastr.error("操作出现错误，请联系系统管理员");
                     hideMyCustomLoading();
@@ -652,14 +647,189 @@
 
 <div class="modal fade" id="activeDetailByIdModal" role="dialog"
      aria-labelledby="activeDetailByIdModal"
-     aria-hidden="true">
-    <div class="modal-dialog">
+     aria-hidden="true" >
+    <div class="modal-dialog" >
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body" id="activeDetailByIdModalBody">
-                活动详细信息加载中。。。
+            <div class="modal-body"  id="activeDetailByIdModalBody" th:fragment="activeDetailByIdModalBody">
+                <fieldset>
+                    <div class="table-responsive" style="height: 500px;overflow-y: scroll;">
+                        <table class="table  table-bordered table-condensed">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    活动ID
+                                </td>
+                                <td th:text="${activeDetailWithConfOrgVO?.activeId}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    活动名称
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control"
+                                           th:value="${activeDetailWithConfOrgVO?.activeName}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    活动描述
+                                </td>
+                                <td>
+                                    <textarea class="form-control"
+                                            th:text="${activeDetailWithConfOrgVO?.activeName}">
+                                    </textarea>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    活动图片
+                                </td>
+                                <td>
+                                    <textarea class="form-control"
+                                              th:text="${activeDetailWithConfOrgVO?.activeDescImgS}">
+                                    </textarea>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    活动奖励
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control"
+                                           th:value="${activeDetailWithConfOrgVO?.activeReward}">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    活动奖励图片
+                                </td>
+                                <td>
+                                    <textarea type="text" class="form-control"
+                                           th:text="${activeDetailWithConfOrgVO?.activeRewardImgS}">
+                                    </textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    活动分享图
+                                </td>
+                                <td>
+                                    <textarea type="text" class="form-control"
+                                           th:text="${activeDetailWithConfOrgVO?.activeConfShareImg}">
+                                    </textarea>
+                                </td>
+                            </tr>
+
+
+                           <!-- <tr>
+                                <td>
+                                    活动状态
+                                </td>
+                                <td>
+                                    <select class="form-control" name="messagePath" id="messagePath" >
+                                        &lt;!&ndash; 首先获取 全部类路径 然后找到该类中的遍历 然后获取其中的值 values()
+                                             然后定义个变量值进行接收，然后getCode和getMsg获取其中的值，
+                                             myTestQuery这个实体类是查询用的数据getCode 然后判断是否进行回显数据 &ndash;&gt;
+                                        <option th:each="enum : ${T(com.hyp.blogmaster.pojo.modal.WeixinVoteBase.ActiveStatusEnum).values()}"
+                                                th:value="${enum.getCode()}"
+                                                th:text="${enum.getMsg()}"
+                                                th:selected="${activeDetailWithConfOrgVO?.activeStatus == enum.getCode()}">
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>-->
+
+                           <!-- <tr>
+                                <td>
+                                    公布首页
+                                </td>
+                                <td>
+                                    <select class="form-control" name="messagePath" id="messagePath" >
+                                        <option th:each="enum : ${T(com.hyp.blogmaster.pojo.modal.WeixinVoteBase.ActivePublicEnum).values()}"
+                                                th:value="${enum.getCode()}"
+                                                th:text="${enum.getMsg()}"
+                                                th:selected="${activeDetailWithConfOrgVO?.activePublic == enum.getCode()}">
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>-->
+
+                            <tr>
+                                <td>
+                                    自主报名
+                                </td>
+                                <td>
+                                    <select class="form-control" name="messagePath" id="messagePath" >
+                                        <option th:each="enum : ${T(com.hyp.blogmaster.pojo.modal.WeixinVoteConf.ActiveConfSignUpEnum).values()}"
+                                                th:value="${enum.getCode()}"
+                                                th:text="${enum.getMsg()}"
+                                                th:selected="${activeDetailWithConfOrgVO?.activeConfSignUp == enum.getCode()}">
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    自主报名开始时间
+                                </td>
+                                <td>
+                                    <input class="form-control" type="datetime-local"
+                                           th:value="${activeDetailWithConfOrgVO?.allowUploadEndTime}"
+                                    >
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    自主报名结束时间
+                                </td>
+                                <td>
+                                    <input class="form-control" type="datetime-local"
+                                           th:value="${activeDetailWithConfOrgVO?.allowUploadEndTime}">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    允许重复投票
+                                </td>
+                                <td>
+                                    <select class="form-control" name="messagePath" id="messagePath" >
+                                        <option th:each="enum : ${T(com.hyp.blogmaster.pojo.modal.WeixinVoteConf.ActiveConfRepeatVoteEnum).values()}"
+                                                th:value="${enum.getCode()}"
+                                                th:text="${enum.getMsg()}"
+                                                th:selected="${activeDetailWithConfOrgVO?.activeConfRepeatVote == enum.getCode()}">
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td title="分为两部分：格式为 类型（1：每天，2:总共）;票数
+例如：1,4 每天；4票 ">
+                                    投票规则
+                                </td>
+                                <td>
+                                    <input class="form-control" type="text"
+                                           th:value="${activeDetailWithConfOrgVO?.activeConfVoteType}"
+                                    >
+                                </td>
+                            </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

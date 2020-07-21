@@ -2,6 +2,168 @@
 
 
 ```$xslt
+2020年7月21日
+在MyDateUtil方法类中添加了date和local时间互转的方法 为了前端能够顺利的使用h5的datetime-local属性
+
+如果需要判断还需要使用到枚举类中的值 那么可以这样
+<tr th:if="${activeDetailWithConfOrgVO?.activeConfSignUp == T(com.hyp.blogmaster.pojo.modal.WeixinVoteConf.ActiveConfSignUpEnum).CAN_SIGN_UP.code}">
+
+
+使用thymeleaf动态刷新内容
+2020年7月21日
+
+这里主要是想讲一下thymeleaf是如何遍历枚举类型的
+
+1. 首先需要创建一个枚举类型的数据  
+
+```Java
+public enum StatusEnum {
+        NO(1, "你好"),
+        YES(2, "大家在哪");
+        private Integer code;
+        private String msg;
+   		//要是静态方法的	
+    	public static String getEnumMsg(Integer code) {
+            if (code == null) {
+                return "";
+            }
+            for (StatusEnum statusEnum : StatusEnum.values()) {
+                if (code.equals(statusEnum.getCode())) {
+                    return statusEnum.getMsg();
+                }
+            }
+            return "未定义";
+        }
+        @Override
+        public String toString() {
+            return "statusEnum{" +
+                    "code=" + code +
+                    ", msg='" + msg + '\'' +
+                    '}';
+        }
+        public Integer getCode() {
+            return code;
+        }
+        public String getMsg() {
+            return msg;
+        }
+        StatusEnum(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+    }   
+```
+
+2. 前端页面中进行显示
+
+```html
+   <div class="container">
+       <div class="row clearfix">
+           <div class="col-md-12 column">
+               <h2>创建模态框（Modal）</h2>
+               <!-- 按钮触发模态框 -->
+               <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                   开始演示模态框
+               </button>
+               <!-- 模态框（Modal） -->
+               <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                   <div class="modal-dialog">
+                       <div class="modal-content">
+                           <div class="modal-header">
+                               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                   &times;
+                               </button>
+                               <h4 class="modal-title" id="myModalLabel">
+                                   模态框（Modal）标题
+                               </h4>
+                           </div>
+                            <!-- 这样可以调用方法中的内容 但是这个getEnumMsg方法是需要为static静态方法-->
+                            <p th:text="${T(com.hyp.dataobject.Journal.StatusEnum).
+                        getEnumMsg(myTestQuery?.getCode())}"></p>
+                           <div class="modal-body">
+                               <select class="form-control" name="messagePath" id="messagePath" >
+                                   <option value="">-请选择-</option>
+                                   <!-- 首先获取 全部类路径 然后找到该类中的遍历 然后获取其中的值 values() 
+										然后定义个变量值进行接收，然后getCode和getMsg获取其中的值，
+										myTestQuery这个实体类是查询用的数据getCode 然后判断是否进行回显数据 -->
+                                   <option th:each="enum : ${T(com.hyp.dataobject.Journal.StatusEnum).values()}"
+                                           th:value="${enum.getCode()}"
+                                           th:text="${enum.getMsg()}"
+                                           th:selected="${myTestQuery?.getCode() == enum.getCode()}">
+                                   </option>
+                               </select>
+                           </div>
+                           <div class="modal-footer">
+                               <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                               </button>
+                               <button type="button" class="btn btn-primary">
+                                   提交更改
+                               </button>
+                           </div>
+                       </div><!-- /.modal-content -->
+                   </div><!-- /.modal -->
+               </div>
+           </div>
+       </div>
+   </div>
+```
+
+3.  接口数据
+
+```java 
+// 该接口不能使用restful的风格 因为是需要返回的html内容
+ @RequestMapping(value = "/jqueryLoad")
+    public String jqueryLoad(ModelMap map) {
+        MyTestQuery myTestQuery = new MyTestQuery();
+        myTestQuery.setCode(1);
+        myTestQuery.setMsg("随便写写");
+        map.put("myTestQuery", myTestQuery);
+        return "myBootstrapTest/jqueryLoad";
+    }
+```
+
+4. 局部数据刷新
+```
+// 第一步是要有一个接口
+@RequestMapping(value="/test",method=RequestMethod.POST)
+public String aaa(Model model) {
+    List<ArticleType> articleTypes = articleTypeService.selectLeafArticleTypes();
+    ArticleType a = new ArticleType();
+    model.addAttribute("articleTypes",articleTypes);     
+    return "write_article::article_type";
+}
+注意返回值是write_article::article_type，write_article是视图名称（html文件名称）,article_type是fragment的名称。这样就只是填充article_type的数据，而不用刷新整个页面，达到动态刷新的目的。
+// 第二步有一个页面进行显示
+<div class="article_type" th:fragment="article_type">
+    文章分类:
+    <div th:each="articletype : ${articleTypes}">                      
+	    <label class="checkbox-inline">
+	        <input type="checkbox" th:text="${articletype.text}" id="inlineCheckbox1" value="option1"> 
+	    </label>
+    </div>
+</div>
+//第三步进行Ajax请求然后进行页面显示
+$('#btn').click(function () {
+    var url = '/blog/test';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        success: function (data) {
+            $(".article_type").html(data);
+        }
+    })
+})
+//其中，也可以这样进行局部刷新 load函数
+<script>
+    $('#btn').click(function () {
+        var url = '/blog/test';
+        $('.article_type').load(url);
+    });
+</script> 
+```
+
+
+```$xslt
 2020年7月15日
 活动内容的展示基本上完成了 没有什么问题了 
 准备使用https://blog.csdn.net/qq_36688143/article/details/79447159这个方案 

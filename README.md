@@ -17,6 +17,22 @@
 那么为啥 我就不能直接  <div th:include="weixinuser/userAnalysis :: userBaiduMap"></div>
 这样感觉不太行呀
 
+echarts中需要的数据格式是：
+{name: '北京',value:10}
+我返回的数据格式是：
+{"status":"200","message":"请求成功","data":[{"city":"Zhengzhou","countNum":3,"percent":60.0},{"city":"Xinyang","countNum":2,"percent":40.0}]}
+如何拼接用这个：
+ let sf_data = [];
+                    let legend_data = [];
+                    for (let i = 0; i < responseData.data.length; i++) {
+                        let sf_data_string = {
+                            name:responseData.data[i].city , value: responseData.data[i].countNum
+                        };
+                        sf_data.push(sf_data_string);
+                        legend_data.push(responseData.data[i].city);
+                    }
+无需在乎是不是有引号子类的 echarts也能直接使用
+
 ```
 
 ```$xslt

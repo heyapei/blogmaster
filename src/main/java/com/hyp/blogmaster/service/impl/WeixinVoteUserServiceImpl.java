@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.mapper.WeixinVoteUserMapper;
+import com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserRegionAnalysisDTO;
 import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.query.ManagerUserQuery;
@@ -32,6 +33,26 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
 
     @Autowired
     private WeixinVoteUserMapper weixinVoteUserMapper;
+
+    /**
+     * 用户所属城市分析 前200条数据
+     *
+     * @return
+     * @throws MyDefinitionException
+     */
+    @Override
+    public List<UserRegionAnalysisDTO> getWeixinUserAnalysisCityPieSimple() throws MyDefinitionException {
+        List<UserRegionAnalysisDTO> weixinUserRegionAnalysisList = null;
+        try {
+            weixinUserRegionAnalysisList = weixinVoteUserMapper.getWeixinUserRegionAnalysisList();
+        } catch (Exception e) {
+            log.error("用户所属城市分析前200条数据查询操作过程错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("用户所属城市分析前200条数据查询操作过程错误");
+        }
+
+
+        return weixinUserRegionAnalysisList;
+    }
 
     /**
      * 更新用户状态 如果是0 更新为1 如果是1更新为0

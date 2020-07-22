@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hyp.blogmaster.mapper.WeixinVoteUserMapper" >
-  <resultMap id="BaseResultMap" type="com.hyp.blogmaster.pojo.modal.WeixinVoteUser" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="open_id" property="openId" jdbcType="VARCHAR" />
-    <result column="enable" property="enable" jdbcType="INTEGER" />
-    <result column="avatar_url" property="avatarUrl" jdbcType="VARCHAR" />
-    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
-    <result column="gender" property="gender" jdbcType="VARCHAR" />
-    <result column="city" property="city" jdbcType="VARCHAR" />
-    <result column="province" property="province" jdbcType="VARCHAR" />
-    <result column="country" property="country" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <select id="getUserDashboardDataAnalysis"
-          resultType="com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO">
+<mapper namespace="com.hyp.blogmaster.mapper.WeixinVoteUserMapper">
+    <resultMap id="BaseResultMap" type="com.hyp.blogmaster.pojo.modal.WeixinVoteUser">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="enable" property="enable" jdbcType="INTEGER"/>
+        <result column="avatar_url" property="avatarUrl" jdbcType="VARCHAR"/>
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR"/>
+        <result column="gender" property="gender" jdbcType="VARCHAR"/>
+        <result column="city" property="city" jdbcType="VARCHAR"/>
+        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <result column="country" property="country" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="getUserDashboardDataAnalysis"
+            resultType="com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO">
  SELECT
 	COUNT(id) AS countNum,
 	DATE_FORMAT(create_time,'%Y-%m-%d') AS dateTime
@@ -28,4 +28,24 @@ FROM
 GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
 
   </select>
+    <select id="getWeixinUserRegionAnalysisList"
+            resultType="com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserRegionAnalysisDTO">
+     SELECT `city`,
+       countNum,
+      round(countNum / total * 100.00, 2) percent
+FROM (
+         SELECT *
+         FROM (
+                  SELECT `city`,
+                         COUNT(1) countNum
+                  FROM `weixin_vote_user`
+                  GROUP BY `city`
+              ) t1
+                  INNER JOIN(
+             SELECT COUNT(1) total
+             FROM `weixin_vote_user`
+         ) t2 ON 1 = 1
+     ) t   order by t.countNum desc  limit 200;
+
+    </select>
 </mapper>

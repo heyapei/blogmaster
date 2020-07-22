@@ -1,6 +1,7 @@
 package com.hyp.blogmaster.mapper;
 
 
+import com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserRegionAnalysisDTO;
 import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.utils.MyMapper;
@@ -17,4 +18,12 @@ public interface WeixinVoteUserMapper extends MyMapper<WeixinVoteUser> {
      * @return
      */
     List<DashboardDataAnalysisDTO> getUserDashboardDataAnalysis();
+
+
+    /**
+     * 获取用户所在城市占比
+     * @return
+     */
+    List<UserRegionAnalysisDTO> getWeixinUserRegionAnalysisList();
+
 }

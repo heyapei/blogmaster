@@ -17,6 +17,10 @@
     <head th:include="/inc/commonutil/echarts :: echarts"></head>
     <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
     <head th:include="/inc/commonutil/lazyImgLoading :: lazyImgLoading"></head>
+    <!--弹窗模块-->
+    <head th:include="/inc/iehtml5 :: iehtml5"></head>
+    <head th:include="/inc/commonutil/sweetAlert :: sweetAlert"></head>
+
     <!--table内容居中-->
     <style>
         .table tbody tr td {
@@ -456,5 +460,12 @@
         </div>
     </div>
 </div>
+
+<!--用户分析-->
+<div class="container" style="margin-bottom: 50px">
+    <div th:include="manage/weixinuser/userAnalysis :: userBaiduMap"></div>
+</div>
+
+
 </body>
 </html>

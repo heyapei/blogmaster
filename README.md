@@ -8,6 +8,15 @@
 添加了sweetAlert2的支持（好看的弹窗）
     <head th:include="/inc/commonutil/sweetAlert :: sweetAlert"></head>
 
+应用其他的页面内容 不知道为啥 路径总是感觉有点不对劲
+<div class="container" style="margin-bottom: 50px">
+    <div th:include="manage/weixinuser/userAnalysis :: userBaiduMap"></div>
+</div>
+上面是可以使用的 引用的页面在 templates\manage\manageUser.html
+                被引用的页面在 templates\manage\weixinuser\userAnalysis.html
+那么为啥 我就不能直接  <div th:include="weixinuser/userAnalysis :: userBaiduMap"></div>
+这样感觉不太行呀
+
 ```
 
 ```$xslt

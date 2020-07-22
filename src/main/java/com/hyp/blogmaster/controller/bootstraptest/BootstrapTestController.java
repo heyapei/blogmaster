@@ -28,5 +28,10 @@ public class BootstrapTestController {
         return "/bootstraptest/test1";
     }
 
+    @GetMapping("test2")
+    public String goTestSweetAlert2() {
+        return "/bootstraptest/testSweetAlert2";
+    }
+
 
 }

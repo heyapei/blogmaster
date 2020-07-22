@@ -2,6 +2,15 @@
 
 
 ```$xslt
+2020年7月22日
+添加了ie支持html5的属性的js 不过还没看出来如何使用
+      <head th:include="/inc/iehtml5 :: iehtml5"></head>
+添加了sweetAlert2的支持（好看的弹窗）
+    <head th:include="/inc/commonutil/sweetAlert :: sweetAlert"></head>
+
+```
+
+```$xslt
 2020年7月21日
 在MyDateUtil方法类中添加了date和local时间互转的方法 为了前端能够顺利的使用h5的datetime-local属性
 

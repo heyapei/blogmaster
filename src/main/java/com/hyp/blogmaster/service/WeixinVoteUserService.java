@@ -3,14 +3,13 @@ package com.hyp.blogmaster.service;
 
 import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
-import com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserRegionAnalysisDTO;
+import com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserAnalysisSimpleDTO;
 import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.query.ManagerUserQuery;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author 何亚培
@@ -26,7 +25,14 @@ public interface WeixinVoteUserService {
      * @return
      * @throws MyDefinitionException
      */
-    List<UserRegionAnalysisDTO> getWeixinUserAnalysisCityPieSimple() throws MyDefinitionException;
+    List<UserAnalysisSimpleDTO> getWeixinUserAnalysisCityPieSimple() throws MyDefinitionException;
+
+    /**
+     * 用户性别分析
+     * @return
+     * @throws MyDefinitionException
+     */
+    List<UserAnalysisSimpleDTO> getWeixinUserAnalysisSexPieSimple() throws MyDefinitionException;
 
 
     /**

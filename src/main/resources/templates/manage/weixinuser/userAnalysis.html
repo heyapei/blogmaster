@@ -18,6 +18,7 @@
 
         $(function () {
             getWeixinUserAnalysisCityPieSimple();
+            getWeixinUserAnalysisSexPieSimple();
         })
 
         /*用户城市分析*/
@@ -37,44 +38,20 @@
                     let legend_data = [];
                     for (let i = 0; i < responseData.data.length; i++) {
                         let sf_data_string = {
-                            name:responseData.data[i].city , value: responseData.data[i].countNum
+                            name:responseData.data[i].userAttribute , value: responseData.data[i].countNum
                         };
                         sf_data.push(sf_data_string);
-                        legend_data.push(responseData.data[i].city);
+                        legend_data.push(responseData.data[i].userAttribute);
                     }
-                    console.log(sf_data);
-                    console.log(legend_data);
-                    //console.log(legend_data_string);
-                    //省份信息
-                    /*let sf_data = [
-                        {name: '北京', value: 20},
-                        {name: '天津', value: 10},
-                        {name: '上海', value: 10},
-                        {name: '重庆', value: 20},
-                        {name: '河北', value: 30},
-                        {name: '河南', value: 1},
-                        {name: '云南', value: 7},
-                        {name: '辽宁', value: 8},
-                        {name: '黑龙江', value: 9},
-                        {name: '湖南', value: 10},
-                        {name: '安徽', value: 11},
-                        {name: '山东', value: 11},
-                        {name: '新疆', value: 1},
-                        {name: '江苏', value: 2},
-                        {name: '浙江', value: 3},
-                        {name: '江西', value: 4},
-                    ];*/
-                    //let sf_data = sf_data_string;
-
                     let option = {
                         backgroundColor: 'white',
                         title: {
                             text: '用户城市分析',
+                            subtext: '数据来源微信',
                             textStyle: {
                                 fontSize: 17
                             },
                             x: 'center',
-                            y: 20
                         },
                         legend: {
                             orient: 'vertical',
@@ -91,7 +68,7 @@
                             y: 25,
                             x: 930,
                             feature: {
-                                dataView: {show: true, readOnly: true},
+                                dataView: {show: true, readOnly: false},
                                 restore: {show: true},
                                 saveAsImage: {show: true},
                                 /*dataZoom: {
@@ -151,12 +128,113 @@
             });
 
         }
+        /*用户性别分析*/
+        function getWeixinUserAnalysisSexPieSimple() {
+            // 基于准备好的dom，初始化echarts实例
+            let myChart = echarts.init(document.getElementById('weixin_user_sex_pie_simple'));
+            myChart.showLoading();
+            $.ajax({
+                url: "/api/admin/manager/user/getWeixinUserAnalysisSexPieSimple",
+                type: "GET",
+                cache: true,
+                dataType: "JSON",
+                success: function (responseData) {
+                    console.log(responseData);
+
+                    let sex_data = [];
+                    let legend_data = [];
+                    for (let i = 0; i < responseData.data.length; i++) {
+                        let sf_data_string = {
+                            name:responseData.data[i].userAttribute , value: responseData.data[i].countNum
+                        };
+                        sex_data.push(sf_data_string);
+                        legend_data.push(responseData.data[i].userAttribute);
+                    }
+
+
+                  let  option = {
+                        title: {
+                            text: '用户性别分析',
+                            subtext: '数据来源微信',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: legend_data
+                        },toolbox: {
+                          show: true,
+                          y: 25,
+                          x: 930,
+                          feature: {
+                              dataView: {show: true, readOnly: false},
+                              restore: {show: true},
+                              saveAsImage: {show: true},
+                              /*dataZoom: {
+                                  yAxisIndex: 'none'
+                              },*/
+                              // magicType: {type: ['line', 'bar']}
+                          }
+                      },
+                        series: [
+                            {
+                                name: '性别',
+                                type: 'pie',
+                                radius: '55%',
+                                center: ['50%', '60%'],
+                                data: sex_data,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    myChart.hideLoading();
+                    window.addEventListener("resize", function () {
+                        myChart.resize();
+                    });
+                },
+                error: function (data, type, err) {  // 以下依次是返回过来的数据，错误类型，错误码
+                    console.log("ajax错误类型：" + type);
+                    console.log(err);
+                }
+            });
+
+        }
     </script>
 
 
-    <div id="weixin_user_city_pie_simple"
-         style="width: 100%;height: 600px">
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-6 column border border-primary">
+                <div id="weixin_user_city_pie_simple"
+                     style="width: 100%;height: 600px" >
+                </div>
+            </div>
+
+            <div class="col-md-6 column border  border-secondary">
+                <div id="weixin_user_sex_pie_simple"
+                     style="width: 100%;height: 600px">
+                </div>
+            </div>
+        </div>
     </div>
+
+
+
+
 </div>
 </body>
 </html>

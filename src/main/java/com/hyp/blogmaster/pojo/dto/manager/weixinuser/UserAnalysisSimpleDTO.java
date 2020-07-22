@@ -10,9 +10,9 @@ import lombok.Data;
  * @Description: TODO 用户分布分析
  */
 @Data
-public class UserRegionAnalysisDTO {
-    @ApiModelProperty(value = "用户所属城市")
-    private String city;
+public class UserAnalysisSimpleDTO {
+    @ApiModelProperty(value = "用户属性")
+    private String userAttribute;
     @ApiModelProperty(value = "用户数量")
     private Integer countNum;
     @ApiModelProperty(value = "用户占比")

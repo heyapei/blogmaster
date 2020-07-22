@@ -5,7 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.mapper.WeixinVoteUserMapper;
-import com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserRegionAnalysisDTO;
+import com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserAnalysisSimpleDTO;
 import com.hyp.blogmaster.pojo.dto.page.DashboardDataAnalysisDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.query.ManagerUserQuery;
@@ -41,8 +41,8 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
      * @throws MyDefinitionException
      */
     @Override
-    public List<UserRegionAnalysisDTO> getWeixinUserAnalysisCityPieSimple() throws MyDefinitionException {
-        List<UserRegionAnalysisDTO> weixinUserRegionAnalysisList = null;
+    public List<UserAnalysisSimpleDTO> getWeixinUserAnalysisCityPieSimple() throws MyDefinitionException {
+        List<UserAnalysisSimpleDTO> weixinUserRegionAnalysisList = null;
         try {
             weixinUserRegionAnalysisList = weixinVoteUserMapper.getWeixinUserRegionAnalysisList();
         } catch (Exception e) {
@@ -50,6 +50,25 @@ public class WeixinVoteUserServiceImpl implements WeixinVoteUserService {
             throw new MyDefinitionException("用户所属城市分析前200条数据查询操作过程错误");
         }
 
+
+        return weixinUserRegionAnalysisList;
+    }
+
+    /**
+     * 用户性别分析
+     *
+     * @return
+     * @throws MyDefinitionException
+     */
+    @Override
+    public List<UserAnalysisSimpleDTO> getWeixinUserAnalysisSexPieSimple() throws MyDefinitionException {
+        List<UserAnalysisSimpleDTO> weixinUserRegionAnalysisList = null;
+        try {
+            weixinUserRegionAnalysisList = weixinVoteUserMapper.getWeixinUserAnalysisSexPieSimple();
+        } catch (Exception e) {
+            log.error("用户性别分析前3条数据查询操作过程错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("用户性别分析前3条数据查询操作过程错误");
+        }
 
         return weixinUserRegionAnalysisList;
     }

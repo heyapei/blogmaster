@@ -29,8 +29,8 @@ GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
 
   </select>
     <select id="getWeixinUserRegionAnalysisList"
-            resultType="com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserRegionAnalysisDTO">
-     SELECT `city`,
+            resultType="com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserAnalysisSimpleDTO">
+     SELECT `city` as `userAttribute`,
        countNum,
       round(countNum / total * 100.00, 2) percent
 FROM (
@@ -46,6 +46,30 @@ FROM (
              FROM `weixin_vote_user`
          ) t2 ON 1 = 1
      ) t   order by t.countNum desc  limit 200;
+
+    </select>
+    <select id="getWeixinUserAnalysisSexPieSimple"
+            resultType="com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserAnalysisSimpleDTO">
+ SELECT case
+when `gender`=1 then '男'
+when `gender`=2 then '女'
+ else '未知'
+end as `userAttribute`,
+       countNum,
+      round(countNum / total * 100.00, 2) percent
+FROM (
+         SELECT *
+         FROM (
+                  SELECT `gender`,
+                         COUNT(1) countNum
+                  FROM `weixin_vote_user`
+                  GROUP BY `gender`
+              ) t1
+                  INNER JOIN(
+             SELECT COUNT(1) total
+             FROM `weixin_vote_user`
+         ) t2 ON 1 = 1
+     ) t   order by t.countNum desc  limit 3;
 
     </select>
 </mapper>

@@ -1,7 +1,7 @@
 package com.hyp.blogmaster.controller.manager.restfulapi;
 
 import com.hyp.blogmaster.exception.MyDefinitionException;
-import com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserRegionAnalysisDTO;
+import com.hyp.blogmaster.pojo.dto.manager.weixinuser.UserAnalysisSimpleDTO;
 import com.hyp.blogmaster.pojo.modal.WeixinVoteUser;
 import com.hyp.blogmaster.pojo.vo.result.MyResultVO;
 import com.hyp.blogmaster.service.WeixinVoteUserService;
@@ -37,9 +37,23 @@ public class ManageUserRestfulController {
     @GetMapping("getWeixinUserAnalysisCityPieSimple")
     public MyResultVO getWeixinUserAnalysisCityPieSimple() {
 
-        List<UserRegionAnalysisDTO> weixinUserAnalysisCityPieSimple = null;
+        List<UserAnalysisSimpleDTO> weixinUserAnalysisCityPieSimple = null;
         try {
             weixinUserAnalysisCityPieSimple = weixinVoteUserService.getWeixinUserAnalysisCityPieSimple();
+        } catch (MyDefinitionException e) {
+            return MyResultVO.genFailResult(e.getMessage());
+        }
+        return MyResultVO.genSuccessResult(weixinUserAnalysisCityPieSimple);
+    }
+
+
+    @ApiOperation("微信用户性别分析")
+    @GetMapping("getWeixinUserAnalysisSexPieSimple")
+    public MyResultVO getWeixinUserAnalysisSexPieSimple() {
+
+        List<UserAnalysisSimpleDTO> weixinUserAnalysisCityPieSimple = null;
+        try {
+            weixinUserAnalysisCityPieSimple = weixinVoteUserService.getWeixinUserAnalysisSexPieSimple();
         } catch (MyDefinitionException e) {
             return MyResultVO.genFailResult(e.getMessage());
         }

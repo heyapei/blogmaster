@@ -447,7 +447,7 @@ public class MyHttpClientUtilImpl implements MyHttpClientUtil {
     /**
      * 判断字符串是否为URL
      *
-     * @param urls 用户头像key
+     * @param urls 请求地址
      * @return true:是URL、false:不是URL
      */
     private boolean isHttpUrl(String urls) {

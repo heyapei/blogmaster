@@ -571,6 +571,7 @@ function getWeather() {
         cache: true,
         dataType: "JSON",
         success: function (responseData) {
+            //console.log(responseData);
             let locationName = responseData.data.cityInfo.city;
             $("#location_name").html(locationName);
 

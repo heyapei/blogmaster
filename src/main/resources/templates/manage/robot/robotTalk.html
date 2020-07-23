@@ -15,6 +15,10 @@
     <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
     <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
 
+    <!--引用弹窗数据-->
+    <head th:include="/inc/iehtml5 :: iehtml5"></head>
+    <head th:include="/inc/commonutil/sweetAlert :: sweetAlert"></head>
+
     <style>
         .bg {
             height: 600px;
@@ -52,19 +56,23 @@
 
 
         function talkWord() {
-            showMyCustomLoading("获取对话中");
+
             if (IsPC) {
-                $("#talkContent-img").attr("src", "http://api.btstu.cn/sjbz/?lx=meizi&"+ new Date().getTime());
+                //console.log("pc");
+                $("#talkContent-img").attr("src", "http://api.btstu.cn/sjbz/?lx=meizi&" + new Date().getTime());
             } else {
-                $("#talkContent-img").attr("src", "http://api.btstu.cn/sjbz/?lx=m_meizi&"+ new Date().getTime());
+                //console.log("not pc");
+                $("#talkContent-img").attr("src", "http://api.btstu.cn/sjbz/?lx=m_meizi&" + new Date().getTime());
             }
             $("#talkContent-img").css("background-size", "cover");
 
             var talkText = $("#talkText").val();
             if (talkText == null || talkText == "") {
-                alert("请输入聊天内容");
+                //alert("请输入聊天内容");
+                swal('请输入聊天内容');
                 return;
             }
+            showMyCustomLoading("获取对话中");
             var time = new Date().Format("yyyy-MM-dd hh:mm:ss");
             $("#talkContent").prepend("<p style='margin-right: 20px;margin-left: 20px;color: red'>" + time + "   " + talkText + "</p>");
             var url = "/api/robot/talk/qingyunke/" + talkText;
@@ -156,7 +164,7 @@
             <br><br>
             <div style="width: 100%;height:500px;font-size: 20px"
                  class="center-block">
-                <img id="talkContent-img"  class="bg bg-blur">
+                <img id="talkContent-img" class="bg bg-blur">
                 <div class="content content-front" id="talkContent"
                      style="width: 100%;height:550px;overflow:hidden">
                     <p style='margin-left: 20px;color: red'>..╥﹏╥自己和自己聊天一点都不好玩╥﹏╥...</p>

@@ -182,7 +182,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
         // 查询天气情况
         String weatherReturn = myHttpClientUtil.getParameter(
-                "http://t.weather.sojson.com/api/weather/city/" + areaCode,
+                "http://t.weather.itboy.net/api/weather/city/" + areaCode,
                 null, null, 2000, 2000, 2000);
         WeatherDTO jsonRootBean = null;
         try {

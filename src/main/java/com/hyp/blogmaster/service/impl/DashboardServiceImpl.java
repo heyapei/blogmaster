@@ -13,7 +13,7 @@ import com.hyp.blogmaster.service.*;
 import com.hyp.blogmaster.utils.MyHttpClientUtil;
 import com.hyp.blogmaster.utils.MyIpMacUtil;
 import com.hyp.blogmaster.utils.amaputil.AmapApiUtil;
-import com.hyp.blogmaster.utils.redis.RedisUtil;
+import com.hyp.blogmaster.utils.redis.MyRedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Autowired
     private MyHttpClientUtil myHttpClientUtil;
     @Autowired
-    private RedisUtil redisUtil;
+    private MyRedisUtil redisUtil;
     @Autowired
     private AmapApiUtil amapApiUtil;
     @Autowired

@@ -5,8 +5,6 @@ import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.utils.MyCommonUtil;
 import com.hyp.blogmaster.utils.thumbnailator.MyThumbnailImgOptionUtil;
 import com.hyp.blogmaster.utils.thumbnailator.MyThumbnailImgType;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FileUtils;
@@ -90,7 +88,7 @@ public class MyThumbnailImgOptionUtilImpl implements MyThumbnailImgOptionUtil {
                     .outputQuality(qualityTemp)//图片压缩质量
                     .asBufferedImage();
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "jpg", os);
+            ImageIO.write(bufferedImage, MyThumbnailImgType.IMAGE_TYPE_PNG.getImgType(), os);
             InputStream inputStream = new ByteArrayInputStream(os.toByteArray());
             //System.out.println(inputStream);
             return inputStream;

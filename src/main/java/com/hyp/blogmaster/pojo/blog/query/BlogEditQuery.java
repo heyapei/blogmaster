@@ -22,9 +22,9 @@ public class BlogEditQuery {
     private String explainWord = "";
     private String journalClassify = "";
     private Integer adminUserId;
-    @NotNull
+    @NotNull(message = "是否置顶必填")
     private Integer showOrder = 0;
-    @NotNull
+    @NotNull(message = "日志内容必填")
     private String submitArticleContent;
 
 

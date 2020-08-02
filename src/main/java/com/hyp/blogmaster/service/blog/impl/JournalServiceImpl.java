@@ -65,6 +65,17 @@ public class JournalServiceImpl implements JournalService {
         }
 
         if (blogEditQuery.getJournalId() == null) {
+
+            UserSupplyInfo userSupplyInfo = null;
+            try {
+                userSupplyInfo = userSupplyInfoService.selectByUserId(userSessionId);
+            } catch (MyDefinitionException e) {
+                throw new MyDefinitionException(e.getMessage());
+            }
+            if (userSupplyInfo == null) {
+                throw new MyDefinitionException("没有找到当前您的补充信息无法进行新增操作，请先补充个人信息");
+            }
+
             /*新增*/
             Journal journal = Journal.init();
             journal.setCreateUserId(userSessionId);

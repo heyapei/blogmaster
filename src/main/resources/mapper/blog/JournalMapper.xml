@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hyp.blogmaster.mapperblog.JournalMapper" >
+  <resultMap id="BaseResultMap" type="com.hyp.blogmaster.pojo.blog.model.Journal" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="create_user_id" property="createUserId" jdbcType="INTEGER" />
+    <result column="journal_type" property="journalType" jdbcType="INTEGER" />
+    <result column="journal_cover_img" property="journalCoverImg" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="explain_word" property="explainWord" jdbcType="VARCHAR" />
+    <result column="journal_classify" property="journalClassify" jdbcType="VARCHAR" />
+    <result column="view_num" property="viewNum" jdbcType="INTEGER" />
+    <result column="comment_num" property="commentNum" jdbcType="INTEGER" />
+    <result column="pass_word" property="passWord" jdbcType="VARCHAR" />
+    <result column="access_role" property="accessRole" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="show_order" property="showOrder" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="ext1" property="ext1" jdbcType="VARCHAR" />
+    <result column="ext2" property="ext2" jdbcType="VARCHAR" />
+    <result column="ext3" property="ext3" jdbcType="VARCHAR" />
+    <result column="ext4" property="ext4" jdbcType="VARCHAR" />
+    <result column="ext5" property="ext5" jdbcType="VARCHAR" />
+    <result column="journal_content" property="journalContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+</mapper>

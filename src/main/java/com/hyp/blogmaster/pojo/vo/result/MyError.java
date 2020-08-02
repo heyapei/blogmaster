@@ -22,4 +22,12 @@ public class MyError {
         this.codeMsg = codeMsg;
         this.errorMsg = errorMsg;
     }
+
+    public static MyError requestErrorInit() {
+        MyError myError = new MyError();
+        myError.setErrorCode(400);
+        myError.setCodeMsg("遇到了错误");
+        myError.setErrorMsg("服务器你已经长大了，你应该学会解决问题了~~~(^v^)~~~");
+        return myError;
+    }
 }

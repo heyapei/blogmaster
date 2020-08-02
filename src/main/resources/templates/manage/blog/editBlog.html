@@ -1,0 +1,348 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/7/11 11:40 
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>公告编辑</title>
+    <meta name="keywords" content="login"/>
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
+    <head th:include="/inc/commonutil/echarts :: echarts"></head>
+    <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
+    <head th:include="/inc/commonutil/sweetAlert :: sweetAlert"></head>
+    <!--table内容居中-->
+    <style>
+        .table tbody tr td {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+        .table th {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+
+        /*翻页*/
+        .jump {
+            margin: 0px 0;
+            float: right;
+        }
+
+        .jump_text {
+            float: right;
+            margin: 0 0 0 5px;
+            line-height: 33px;
+        }
+
+        .jump_text input {
+            width: 40px;
+            border: rgba(212, 212, 212, 1.00) 1px solid;
+            height: 30px;
+            line-height: 33px;
+            background: #fff;
+        }
+
+        /*取消number的样式*/
+        /* google、safari */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+
+        /* 火狐 */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+    </style>
+
+    <script>
+        /*div显示关闭*/
+        function showCrontabTime() {
+            $("#crontabTime").show();
+        }
+
+        function hideCrontabTime() {
+            $("#crontabTime").hide();
+            $("#crontab_send_time_start").val("");
+            $("#crontab_send_time_end").val("");
+        }
+    </script>
+
+    <script>
+        function submitBlogContent() {
+
+            let article = document.getElementById("submitArticleContent");
+            article.value = editor.txt.html();
+
+
+            let journalId = $("#journalId").val();
+            let adminUserId = $("#adminUserId").val();
+            let journalCoverImg = $("#journal-journalCoverImg").val();
+            let title = $("#journal-title").val();
+            let explainWord = $("#journal-explainWord").val();
+            let journalClassify = $("#journal-journalClassify").val();
+            let showOrder = $("#journal-show-order").val();
+            let submitArticleContent = $("#submitArticleContent").val();
+
+
+
+            if (title == null || title == undefined || title == "") {
+                toastr.error("标题内容必填");
+                return;
+            }
+
+
+
+
+            if (submitArticleContent == null || submitArticleContent == undefined || submitArticleContent == "") {
+                toastr.error("公告内容必填，还请输入公告内容");
+                return;
+            }
+            if (!funcChinese(submitArticleContent)) {
+                toastr.error("请输入公告内容！");
+                return;
+            }
+
+
+            showMyCustomLoading();
+            $.ajax({
+                url: "/api/admin/manager/blog/editOrUpdate",
+                data: {
+                    journalId: journalId,
+                    journalCoverImg: journalCoverImg,
+                    title: title,
+                    explainWord: explainWord,
+                    journalClassify: journalClassify,
+                    adminUserId: adminUserId,
+                    journalClassify: journalClassify,
+                    showOrder: showOrder,
+                    submitArticleContent: submitArticleContent
+                },
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                success: function (response) {
+
+                    hideMyCustomLoading();
+
+                    if (response.status == '200') {
+                       //toastr.success(response.message);
+                        /*swal(response.message);
+                        */
+
+                        swal({
+                            title: response.message,
+                            type: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: '确定',
+                        }).then(function(){
+                            window.location.reload();
+                        })
+                    } else {
+                        toastr.error(response.message);
+                    }
+                }, error: function (data, type, err) {
+                    toastr.error("操作出现错误，请联系系统管理员");
+                    hideMyCustomLoading();
+                    // 以下依次是返回过来的数据，错误类型，错误码
+                    console.log("请求错误：" + data);
+                }
+            });
+
+
+        }
+
+        /**
+         * 判断是否为email格式
+         * @param email
+         * @returns {boolean}
+         */
+        function checkEmail(email) {
+            if (email == '') {
+                toastr.error("请输入您的邮箱");
+                return false;
+            } else if (email != "") {
+                let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+                let isok = reg.test(email);
+                if (!isok) {
+                    toastr.error("邮箱格式不正确，请重新输入！");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        /**
+         * 检测是否包含中文，true表示包含中文，false表示不包含中文
+         * @param str
+         * @returns {boolean}
+         */
+        function funcChinese(str) {
+            if (/.*[\u4e00-\u9fa5]+.*$/.test(str)) {
+                return true;
+            }
+            return false;
+        }
+
+
+        /**
+         * 检测是否为中文，true表示是中文，false表示非中文
+         * @param str
+         * @returns {boolean}
+         */
+        function isChinese(str) {
+            if (/^[\u3220-\uFA29]+$/.test(str)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function showReceiveEmailContent(receiveEmailId) {
+            toastr.info('准备邮件内容....', '努力中');
+            $('#receiveEmailContentShowModalBody').html($("#" + receiveEmailId).val());
+            $('#receiveEmailContentShow').modal("show");
+            centerModals("receiveEmailContentShow");
+        }
+
+    </script>
+
+
+</head>
+<body>
+
+
+<!--引入等待层-->
+<div th:include="/inc/commonutil/toastrutil :: myCustomLoad"></div>
+<!--引入富文本编辑器-->
+<div th:include="/inc/wangeditor :: wangeditor"></div>
+<!--通用头部信息-->
+<div class="container">
+    <div th:include="inc/head/simplehead :: header"></div>
+</div>
+
+
+<div class="container" style="margin-bottom: 30px">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+            <!--编辑器内容-->
+            <input id="submitArticleContent"
+                   th:value="${journal?.journalContent}"
+                   name="emailContext"
+                   type="hidden" required>
+            <!--公告ID-->
+            <input id="journalId"
+                   th:value="${journal?.id != null } ?${journal?.id}:'' "
+                   name="receiveEmailId"
+                   type="hidden" required>
+            <input id="adminUserId"
+                   th:value="${journal?.createUserId != null } ?${journal?.createUserId}:'' "
+                   name="adminUserId"
+                   type="hidden" required>
+
+            <!--<div class="form-group">
+                <label for="sendTo">邮件地址</label>
+                <input type="email" name="sendTo" class="form-control"
+                       id="sendTo" required th:value="${receiveMailForReplyAppointDTO?.receiveEmailFrom}"/>
+            </div>-->
+            <form role="form">
+                <div class="form-group">
+                    <label for="journal-journalCoverImg" title="封面图">封面图</label>
+                    <input class="form-control" type="text" id="journal-journalCoverImg" name="journalCoverImg"
+                           th:value="${journal?.journalCoverImg}" placeholder="请先验证图片||ps:尺寸最好为200*200">
+                </div>
+
+                <div class="form-group">
+                    <label for="journal-title" title="标题">标题</label>
+                    <input class="form-control" type="text" id="journal-title" name="title"
+                           th:value="${journal?.title}" placeholder="标题信息">
+                </div>
+
+                <div class="form-group">
+                    <label for="journal-explainWord" title="描述">描述</label>
+                    <input class="form-control" type="text" id="journal-explainWord" name="explainWord"
+                           th:value="${journal?.explainWord}" placeholder="描述信息">
+                </div>
+
+                <div class="form-group">
+                    <label for="journal-journalClassify" title="分类">分类</label>
+                    <input class="form-control" type="text" id="journal-journalClassify" name="journalClassify"
+                           th:value="${journal?.journalClassify}" placeholder="使用;隔开">
+                </div>
+
+                <div class="form-group">
+                    <label for="journal-show-order" title="是否置顶">是否置顶</label>
+                    <select class="form-control" id="journal-show-order" name="showOrder">
+                        <option value="0">常规</option>
+                        <option value="1"
+                                th:selected="${journal?.showOrder > 0}">置顶
+                        </option>
+                    </select>
+                </div>
+            </form>
+
+            <button class="btn btn-default" onclick="submitBlogContent()">提交内容</button>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+            <div id="editor">
+                <p></p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var E = window.wangEditor;
+    var editor = new E('#editor');
+    //开启debug模式
+    editor.customConfig.debug = true;
+    // 关闭粘贴内容中的样式
+    editor.customConfig.pasteFilterStyle = false
+    // 忽略粘贴内容中的图片
+    editor.customConfig.pasteIgnoreImg = true
+
+    // 或者 var editor = new E( document.getElementById('editor') )
+    editor.create()
+    //E.fullscreen.init('#editor');
+    E.fullscreen.init(editor);
+    E.viewSource.init(editor);
+    /*回显*/
+    var introduce = $(" #submitArticleContent ").val();
+    if (introduce != null) {
+        editor.txt.html(introduce);
+    }
+</script>
+
+<!--底部信息-->
+<div class="container" style="margin-bottom: 30px">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="btn-group">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

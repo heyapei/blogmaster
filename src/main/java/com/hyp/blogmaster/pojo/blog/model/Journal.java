@@ -1,4 +1,5 @@
 package com.hyp.blogmaster.pojo.blog.model;
+import java.util.Date;
 
 import lombok.Data;
 
@@ -8,6 +9,32 @@ import java.util.Date;
 
 @Data
 public class Journal {
+
+
+    public static Journal init() {
+        Journal journal = new Journal();
+        journal.setCreateUserId(0);
+        journal.setJournalType(0);
+        journal.setJournalCoverImg("");
+        journal.setTitle("");
+        journal.setExplainWord("");
+        journal.setJournalClassify("");
+        journal.setViewNum(0);
+        journal.setCommentNum(0);
+        journal.setPassWord("");
+        journal.setAccessRole("");
+        journal.setStatus(0);
+        journal.setShowOrder(0);
+        journal.setCreateTime(new Date());
+        journal.setUpdateTime(new Date());
+        journal.setExt1("");
+        journal.setExt2("");
+        journal.setExt3("");
+        journal.setExt4("");
+        journal.setExt5("");
+        journal.setJournalContent("");
+        return journal;
+    }
     /**
      * 主键
      */

@@ -2,11 +2,11 @@ package com.hyp.blogmaster.service.blog.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-
 import com.hyp.blogmaster.exception.MyDefinitionException;
 import com.hyp.blogmaster.mapperblog.JournalMapper;
 import com.hyp.blogmaster.pojo.blog.model.Journal;
 import com.hyp.blogmaster.pojo.blog.model.JournalModalJournalTypeEnum;
+import com.hyp.blogmaster.pojo.blog.query.BlogEditQuery;
 import com.hyp.blogmaster.pojo.blog.query.BlogListQuery;
 import com.hyp.blogmaster.pojo.blog.vo.BlogListVO;
 import com.hyp.blogmaster.pojo.blog.vo.BlogShowVO;
@@ -17,6 +17,7 @@ import com.hyp.blogmaster.utils.MyEntityUtil;
 import com.hyp.blogmaster.utils.MyEnumUtil;
 import com.hyp.blogmaster.utils.dateutil.MyDateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -43,6 +44,76 @@ public class JournalServiceImpl implements JournalService {
     private UserSupplyInfoService userSupplyInfoService;
 
     private static final String SEMICOLON_SEPARATOR = ";";
+
+    /**
+     * 新增数据
+     * 1. 如果存在 则更新
+     * 2. 如果不存在则新建
+     *
+     * @param blogEditQuery
+     * @return 主键信息
+     * @throws MyDefinitionException
+     */
+    @Override
+    public Integer addJournalByBlogEditQuery(BlogEditQuery blogEditQuery) throws MyDefinitionException {
+        log.info("canshu 的主键：{}", blogEditQuery.getJournalId());
+
+        Integer userSessionId = (Integer) SecurityUtils.getSubject().getSession().getAttribute("userSessionId");
+
+        if (blogEditQuery == null) {
+            throw new MyDefinitionException("日志新增参数不能为空");
+        }
+
+        if (blogEditQuery.getJournalId() == null) {
+            /*新增*/
+            Journal journal = Journal.init();
+            journal.setCreateUserId(userSessionId);
+            journal.setExplainWord(blogEditQuery.getExplainWord());
+            journal.setJournalClassify(blogEditQuery.getJournalClassify());
+            journal.setJournalCoverImg(blogEditQuery.getJournalCoverImg());
+            journal.setTitle(blogEditQuery.getTitle());
+            journal.setJournalType(JournalModalJournalTypeEnum.QUTOUPIAO.getCode());
+            journal.setJournalContent(blogEditQuery.getSubmitArticleContent());
+            journal.setShowOrder(blogEditQuery.getShowOrder());
+            try {
+                Integer pkId = insertReturnPkId(journal);
+                return pkId;
+            } catch (MyDefinitionException e) {
+                throw new MyDefinitionException(e.getMessage());
+            }
+        } else {
+
+            log.info("当前的主键：{}", blogEditQuery.getJournalId());
+            /*更新*/
+            Journal journal = null;
+            try {
+                journal = selectJournalById(blogEditQuery.getJournalId());
+            } catch (MyDefinitionException e) {
+                throw new MyDefinitionException(e.getMessage());
+            }
+            if (journal == null) {
+                throw new MyDefinitionException("未能查询到要更改的公告内容");
+            }
+            if (!blogEditQuery.getAdminUserId().equals(userSessionId)) {
+                throw new MyDefinitionException("公告修改人必须为当前管理员");
+            }
+            journal.setUpdateTime(new Date());
+            journal.setExplainWord(blogEditQuery.getExplainWord());
+            journal.setJournalClassify(blogEditQuery.getJournalClassify());
+            journal.setJournalCoverImg(blogEditQuery.getJournalCoverImg());
+            journal.setTitle(blogEditQuery.getTitle());
+            journal.setJournalType(JournalModalJournalTypeEnum.QUTOUPIAO.getCode());
+            journal.setJournalContent(blogEditQuery.getSubmitArticleContent());
+            journal.setShowOrder(blogEditQuery.getShowOrder());
+
+            try {
+                Integer pkId = updateSelectiveByPkId(journal);
+                return pkId;
+            } catch (MyDefinitionException e) {
+                throw new MyDefinitionException(e.getMessage());
+            }
+        }
+    }
 
     /**
      * 浏览日志信息
@@ -106,7 +177,7 @@ public class JournalServiceImpl implements JournalService {
         }
 
         Boolean enumKeyRight = MyEnumUtil.enumKeyRight(blogListQuery.getJournalType(), JournalModalJournalTypeEnum.class);
-        log.error("判断结果：{}", enumKeyRight);
+        //log.error("判断结果：{}", enumKeyRight);
         if (!enumKeyRight) {
             throw new MyDefinitionException("我们还没有您想要的日志内容");
         }
@@ -200,5 +271,56 @@ public class JournalServiceImpl implements JournalService {
             throw new MyDefinitionException("根据主键更新日志信息操作过程错误");
         }
         return i;
+    }
+
+    /**
+     * 新增数据
+     *
+     * @param journal 日志信息（不含主键）
+     * @return 主键信息
+     * @throws MyDefinitionException
+     */
+    @Override
+    public Integer insertReturnPkId(Journal journal) throws MyDefinitionException {
+        if (journal == null) {
+            throw new MyDefinitionException("更新信息不能为空");
+        }
+
+        Integer pkId = null;
+        try {
+            int i = journalMapper.insertUseGeneratedKeys(journal);
+            if (i > 0) {
+                pkId = journal.getId();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("新增数据操作过程错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("新增数据操作过程错误");
+        }
+        return pkId;
+    }
+
+    /**
+     * 通过主键删除
+     *
+     * @param pkId 主键
+     * @return 影响行数
+     * @throws MyDefinitionException
+     */
+    @Override
+    public Integer deleteByPkId(Integer pkId) throws MyDefinitionException {
+
+        if (pkId == null) {
+            throw new MyDefinitionException("必须置顶内容");
+        }
+        try {
+            int i = journalMapper.deleteByPrimaryKey(pkId);
+            return i;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("通过主键删除操作过程错误，错误原因：{}", e.toString());
+            throw new MyDefinitionException("操作过程错误");
+        }
+
     }
 }

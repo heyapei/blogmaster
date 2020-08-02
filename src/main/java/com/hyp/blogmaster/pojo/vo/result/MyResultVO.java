@@ -130,12 +130,32 @@ public class MyResultVO<T> {
     }
 
     /**
+     * 封装默认错误400 信息自定义
+     *
+     * @param message 自定义错误的信息
+     * @return
+     */
+    public static <T> MyResultVO<T> genFailResult400(String message) {
+        return new MyResultVO(Status.BAD_REQUEST.getCode(), message);
+    }
+
+    /**
      * 封装默认错误500 信息自定义
      *
      * @param message 自定义错误的信息
      * @return
      */
     public static <T> MyResultVO<T> genFailResult(String message) {
+        return new MyResultVO(Status.INTERNAL_SERVER_ERROR.getCode(), message);
+    }
+
+    /**
+     * 封装默认错误500 信息自定义
+     *
+     * @param message 自定义错误的信息
+     * @return
+     */
+    public static <T> MyResultVO<T> genFailResult500(String message) {
         return new MyResultVO(Status.INTERNAL_SERVER_ERROR.getCode(), message);
     }
 

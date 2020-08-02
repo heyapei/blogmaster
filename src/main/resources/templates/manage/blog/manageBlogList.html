@@ -1,0 +1,437 @@
+<!--
+  @Description: TODO 
+ 
+  @Author    何亚培
+  @Version   V1.0  
+  @Date      2020/6/28 21:11 
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>动态新闻</title>
+    <meta name="keywords" content="login"/>
+    <script src="/static/res/bootstrap/js/jQuery.js"></script>
+    <!--引用公共的bootstrap的内容-->
+    <head th:include="/inc/bootstrapbasejs :: bootstrapbasejs"></head>
+    <head th:include="/inc/bootstrapbasecss :: bootstrapbasecss"></head>
+    <head th:include="/inc/commonutil/echarts :: echarts"></head>
+    <head th:include="/inc/commonutil/toastrutil :: toastr"></head>
+    <head th:include="/inc/commonutil/lazyImgLoading :: lazyImgLoading"></head>
+    <!--弹窗模块-->
+    <head th:include="/inc/iehtml5 :: iehtml5"></head>
+    <head th:include="/inc/commonutil/sweetAlert :: sweetAlert"></head>
+
+    <!--table内容居中-->
+    <style>
+        .table tbody tr td {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+        .table th {
+            text-align: center; /** 设置水平方向居中 */
+            vertical-align: middle /** 设置垂直方向居中 */
+        }
+
+
+        /*翻页*/
+        .jump {
+            margin: 0px 0;
+            float: right;
+        }
+
+        .jump_text {
+            float: right;
+            margin: 0 0 0 5px;
+            line-height: 33px;
+        }
+
+        .jump_text input {
+            width: 40px;
+            border: rgba(212, 212, 212, 1.00) 1px solid;
+            height: 30px;
+            line-height: 33px;
+            background: #fff;
+        }
+
+        /*取消number的样式*/
+        /* google、safari */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+
+        /* 火狐 */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+    </style>
+
+    <script>
+        /*模态框居中*/
+        function centerModals() {
+            $('#myModal').each(function (i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 0 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top);
+            });
+        };
+
+
+        function cp(ipage) {
+            $("#pageNum").val(ipage);
+            $("#userManagerInfo").append("<input type='hidden' name='pageNum' value='" + ipage + "' />");
+            $("#userManagerInfo").submit();
+        }
+
+
+        function goPage(maxPageNum) {
+            var jumpPage = document.getElementById("jumpPage").value;
+            var totalPage = maxPageNum;
+            if (isNaN(jumpPage)) {
+                toastr.error("请输入数字!");
+                return;
+            } else if (jumpPage.length == 0) {
+                toastr.error("请输入页码!");
+            } else if (jumpPage <= 0 || Number(jumpPage) > Number(totalPage)) {
+                toastr.error("非法的页码【" + jumpPage + "】!");
+                document.getElementById("jumpPage").value = "";
+                return;
+            } else {
+                var flag = $("input[name='pageNumber']");
+                flag.remove();
+                $("#userManagerInfo").append("<input type='hidden' name='pageNum' value='" + jumpPage + "' />");
+                $("#userManagerInfo").submit();
+            }
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        /**
+         * 一键粘贴
+         * @param  {String} id [需要粘贴的内容]
+         * @param  {String} attr [需要 copy 的属性，默认是 innerText，主要用途例如赋值 a 标签上的 href 链接]
+         *
+         * range + selection
+         *
+         * 1.创建一个 range
+         * 2.把内容放入 range
+         * 3.把 range 放入 selection
+         *
+         * 注意：参数 attr 不能是自定义属性
+         * 注意：对于 user-select: none 的元素无效
+         * 注意：当 id 为 false 且 attr 不会空，会直接复制 attr 的内容
+         */
+        function copy(id, attr) {
+            let target = null;
+
+            if (attr) {
+                target = document.createElement('div');
+                target.id = 'tempTarget';
+                target.style.opacity = '0';
+                if (id) {
+                    let curNode = document.querySelector('#' + id);
+                    target.innerText = curNode[attr];
+                } else {
+                    target.innerText = attr;
+                }
+                document.body.appendChild(target);
+            } else {
+                target = document.querySelector('#' + id);
+            }
+
+            try {
+                let range = document.createRange();
+                range.selectNode(target);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                //console.log('复制成功')
+                toastr.success("复制成功!");
+            } catch (e) {
+                // console.log('复制失败')
+                toastr.error("复制失败!");
+            }
+
+            if (attr) {
+                // remove temp target
+                target.parentElement.removeChild(target);
+            }
+        }
+
+        function deleteBlog(blogId) {
+            if (blogId == null) {
+                toastr.error("请确认你已选中了公告");
+                return;
+            }
+
+            if (confirm("该操作会彻底删除当前公告"+blogId+"？")) {
+                showMyCustomLoading();
+                $.ajax({
+                    url: "/api/admin/manager/blog/delete/"+blogId,
+                    type: "GET",
+                    cache: false,
+                    dataType: "json",
+                    success: function (response) {
+                        hideMyCustomLoading();
+                        if (response.status == '200') {
+                            toastr.success(response.message);
+                            window.location.reload();
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    }, error: function (data, type, err) {
+                        toastr.error("操作出现错误，请联系系统管理员");
+                        hideMyCustomLoading();
+                        // 以下依次是返回过来的数据，错误类型，错误码
+                        console.log("请求错误：" + data);
+                    }
+                });
+
+            }
+        }
+
+
+    </script>
+
+    <script>
+
+        function showBlogContent(blogId, from, date) {
+            toastr.info('准备日志内容....', '努力中');
+            let title = "当前查看日志是：<b>" + from + "</b>，在  <b>" + date + "</b>  创建的集团公告";
+            $('#receiveEmailContentShowModalLabel').html(title);
+            $('#receiveEmailContentShowModalBody').html($("#" + blogId).val());
+            $('#receiveEmailContentShow').modal("show");
+            centerModals("receiveEmailContentShow");
+        }
+
+    </script>
+
+
+</head>
+<body>
+
+<!--引入等待层-->
+<div th:include="/inc/commonutil/toastrutil :: myCustomLoad"></div>
+
+<!--通用头部信息-->
+<div class="container">
+    <div th:include="inc/head/simplehead :: header"></div>
+</div>
+
+
+<!--日志内容展示-->
+<div class="modal fade" id="receiveEmailContentShow"
+     role="dialog"
+     aria-labelledby="organisersInfoByIdModal"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width: 95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="receiveEmailContentShowModalLabel">
+
+                </h4>
+            </div>
+            <div class="modal-body" id="receiveEmailContentShowModalBody"
+                 style="width:100%; height:300px;overflow:auto;">
+                显示日志内容。。。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">保存</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row clearfix">
+        <!--中间信息-->
+        <div class="col-md-12 column">
+            <form role="form" class="form-inline" action="/admin/manager/user"
+                  method="post" id="userManagerInfo">
+
+            </form>
+
+            <button onclick="javascript:window.location.href='/admin/manager/blog/addBlogContent'">新增公告</button>
+
+            <br><br>
+        </div>
+    </div>
+</div>
+<!--用户显示页面-->
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>
+                        </th>
+                        <th>
+                            编号
+                        </th>
+                        <th>
+                            创建人
+                        </th>
+                        <th>
+                            封面图
+                        </th>
+                        <th>
+                            标题
+                        </th>
+                        <th>
+                            分类
+                        </th>
+                        <th>
+                            描述
+                        </th>
+                        <th>
+                            日志
+                        </th>
+                        <th>
+                            创建时间
+                        </th>
+                        <th>
+                            更新时间
+                        </th>
+                        <th>
+                            是否置顶
+                        </th>
+                        <th>
+                            观看人数
+                        </th>
+                        <th>
+
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="blogListVO,seqNum : ${pageInfo?.getList()}">
+                        <td th:text="${seqNum?.index+1}">
+                        </td>
+                        <td th:text="${blogListVO?.id}">
+                        </td>
+
+                        <td th:text="${blogListVO?.name}">
+                        </td>
+                        <td>
+                            <a th:if="${!#strings.isEmpty(blogListVO?.journalCoverImg)}"
+                               th:href="${blogListVO?.journalCoverImg}"
+                               target="_blank"
+                               title="打开图片">
+                                <img src="/static/res/lazyImgLoading/imglazyloadingtype1.gif"
+                                     th:data-lazy="${blogListVO?.journalCoverImg}"
+                                     style="width: 30px;height: 30px">
+                            </a>
+
+                            <img th:if="${#strings.isEmpty(blogListVO?.journalCoverImg)}"
+                                 src="/static/res/lazyImgLoading/imglazyloadingtype1.gif"
+                                 th:data-lazy="@{/static/res/lazyImgLoading/noimgtype1.png}"
+                                 style="width: 30px;height: 30px">
+
+                        </td>
+                        <td th:text="${blogListVO?.title}">
+                        </td>
+                        <td th:text="${blogListVO?.journalClassify}">
+                        </td>
+
+                        <td th:text="${blogListVO?.explainWord}">
+                        </td>
+
+                        <td>
+                            <a th:href="|javascript:showBlogContent('blogContent${blogListVO?.getId()}','${blogListVO?.name}','${blogListVO?.createTime}')|">
+                                查看公告内容
+                            </a>
+                            <input type="hidden" th:value="${blogListVO?.journalContent}"
+                                   th:id="|blogContent${blogListVO?.getId()}|">
+                        </td>
+
+                        <td th:text="${#dates.format(blogListVO?.createTime, 'yyyy/MM/dd HH:mm:ss')}">
+                        </td>
+                        <td th:text="${#dates.format(blogListVO?.updateTime, 'yyyy/MM/dd HH:mm:ss')}">
+                        </td>
+
+                        <td th:switch="${blogListVO?.showOrder}">
+                            <span th:case="1">置顶</span>
+                            <span th:case="0">常规</span>
+                            <span th:case="*">未知</span>
+                        </td>
+
+                        <td th:text="${blogListVO?.viewNum}">
+                        </td>
+
+                        <td nowrap="nowrap">
+                            <a th:href="@{'/admin/manager/blog/editBlogContent/'+${blogListVO?.id}}"
+                               class='btn btn-xs green'
+                               title='更新公告内容'
+                            ><span class='glyphicon glyphicon-pencil'></span></a>
+
+                            <a th:href="|javascript:deleteBlog(${blogListVO?.getId()})|"
+                               class='btn btn-xs green'
+                               title='删除当前公告'
+                            ><span class='glyphicon  glyphicon-minus'></span></a>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <nav>
+
+                <ul class="pagination">
+                    <li th:class="${!pageInfo?.isHasPreviousPage()}?'disabled' : ''"><a
+                            th:href="|javascript:cp(${pageInfo?.getPageNum()-1})|">上一页</a>
+                    </li>
+
+                    <li th:each="navigatepageNum : ${pageInfo?.getNavigatepageNums()}"
+                        th:class="${navigatepageNum == pageInfo?.getPageNum()}?'active' : ''">
+                        <a th:href="|javascript:cp(${navigatepageNum})|"
+                           th:text="${navigatepageNum}"></a>
+                    </li>
+
+                    <li th:class="${!pageInfo?.isHasNextPage()}?'disabled' : ''"><a
+                            th:href="|javascript:cp(${pageInfo?.getPageNum()+1})|">下一页</a>
+                    </li>
+                </ul>
+
+
+                <div class="jump">
+                            <span class="jump_text">
+                                当前<label th:title="'当前共有'+${pageInfo?.getSize()}+'条目录'"
+                                         th:text="${pageInfo?.getSize()}"></label>/<label
+                                    th:title="'每页显示'+${pageInfo?.getPageSize()}+'条目录'"
+                                    th:text="${pageInfo?.getPageSize()}"></label>/<label
+                                    th:title="'共有'+${pageInfo?.getTotal()}+'条目录'"
+                                    th:text="${pageInfo?.getTotal()}"></label>条 | <label
+                                    th:title="'当前在第'+${pageInfo?.getPageNum()}+'页'"
+                                    th:text="${pageInfo?.getPageNum()}"></label>/<label
+                                    th:title="'总共'+${pageInfo?.getPages()}+'页'"
+                                    th:text="${pageInfo?.getPages()}"></label>页,跳到
+                                <input type="number" name="jumpPage"
+                                       id="jumpPage" th:value="${pageInfo?.getPageNum()}"
+                                       οnkeyup="this.value=this.value.replace(/[^0-9-]+/,'');">页
+                                <button type="button" class="btn btn-primary btn-sm"
+                                        th:onclick="|javascript:goPage(${pageInfo?.getTotal()})|">跳转</button>
+                            </span>
+                </div>
+
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

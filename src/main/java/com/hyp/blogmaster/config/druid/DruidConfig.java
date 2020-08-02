@@ -1,4 +1,4 @@
-/*
+
 package com.hyp.blogmaster.config.druid;
 
 import com.alibaba.druid.support.http.StatViewServlet;
@@ -10,15 +10,13 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-*/
+
 /**
  * @author yangqj
  * @date 2017/4/19
- *//*
+ */
 
-*/
-/*@Configuration*//*
-
+@Configuration
 @Slf4j
 public class DruidConfig {
 
@@ -49,4 +47,4 @@ public class DruidConfig {
         return filterRegistrationBean;
     }
 }
-*/
+

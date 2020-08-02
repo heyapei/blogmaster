@@ -5,6 +5,17 @@
 多数据源时候一定要注意区分mapper（Java）的文件夹
 因为一旦有重复或者覆盖就会导致程序不知道使用那个数据源或者使用了不想要的数据源去操作数据库
 
+
+使用了validate验证参数 如果想要返回格式化的参数 就可以这样做
+BindingResult result
+然后方法体中
+if (result.hasErrors()) {
+            //取一条错误信息
+            ObjectError next = result.getAllErrors().iterator().next();
+            //后边可以自己返回错误信息也可以自定义
+            return MyResultVO.genFailResult400(next.getDefaultMessage());
+}
+
 ```
 
 

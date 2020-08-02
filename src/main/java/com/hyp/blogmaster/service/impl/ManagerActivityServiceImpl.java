@@ -148,7 +148,7 @@ public class ManagerActivityServiceImpl implements ManagerActivityService {
         }
 
 
-        String weixinVoteRuleByPK = weixinVoteBaseService.getWeixinVoteRuleByPK(77);
+        String weixinVoteRuleByPK = weixinVoteBaseService.getWeixinVoteRuleByPK(weixinVoteBaseByPK.getId());
         activeDetailVO.setActiveRule(weixinVoteRuleByPK);
         WeixinVoteConf weixinVoteConfByVoteWorkId = weixinVoteConfService.getWeixinVoteConfByVoteWorkId(activeId);
         if (weixinVoteConfByVoteWorkId != null) {
